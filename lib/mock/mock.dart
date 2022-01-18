@@ -20,6 +20,21 @@ class Mock {
     email: "antony@gmail.com",
   );
 
+  static User userManagerOwner2 = User(
+    "id1",
+    "profilePicture",
+    20,
+    "FFELink",
+    "phoneNumber",
+    UserRole.manager,
+    [],
+    DateTime.now(),
+    Type.owner,
+    userName: "Antony",
+    password: "12345",
+    email: "antony@gmail.com",
+  );
+
   static User userRiderDp = User(
     "id2",
     "profilePicture",
@@ -45,7 +60,21 @@ class Mock {
     race: HorseRace.appaloosa,
     gender: Gender.other,
     speciality: Speciality.endurance,
-    owner: userManagerOwner,
+    owner: userManagerOwner2,
+    createdAt: DateTime.now(),
+  );
+
+  static Horse horse2 = Horse(
+    [],
+    "id2",
+    name: "Pegase",
+    age: 5,
+    picturePath: "picturePath",
+    dress: "brown",
+    race: HorseRace.arabe,
+    gender: Gender.male,
+    speciality: Speciality.complete,
+    owner: userManagerOwner2,
     createdAt: DateTime.now(),
   );
 

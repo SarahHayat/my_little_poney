@@ -1,21 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:my_little_poney/helper/gender.dart';
 import 'package:my_little_poney/helper/listview.dart';
 import 'package:my_little_poney/mock/mock.dart';
 import 'package:my_little_poney/models/Horse.dart';
 import 'package:my_little_poney/models/User.dart';
+import 'package:my_little_poney/view/confirm_deletion_button.dart';
 
-class HorseList extends StatefulWidget {
-  const HorseList({Key? key}) : super(key: key);
-  static const tag = "horse_liste";
+//@todo : Icon Navigation for Contest : emoji_events_outlined or event_note_sharp;
+//  for party : festival, free_breakfast, liquor_sharp,localbar, night_life_sharp
+// for lesson : local_library, school_sharp
+// for profile : manage_account
+//for stable (horse liste) : gite
+
+
+class HorsesList extends StatefulWidget {
+  const HorsesList({Key? key}) : super(key: key);
+  static const tag = "horses_liste";
 
   @override
-  State<HorseList> createState() => _HorseListState();
+  State<HorsesList> createState() => _HorsesListState();
 }
 
-class _HorseListState extends State<HorseList> {
-  List<Horse> horses = [Mock.horse, Mock.horse2];
-  final User user = Mock.userManagerOwner2;
+class _HorsesListState extends State<HorsesList> {
+  late List<Horse> horses ;
+  final User user = Mock.userManagerOwner;
+
+  @override
+  void initState() {
+    super.initState();
+    _getHorses();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,47 +44,45 @@ class _HorseListState extends State<HorseList> {
 
   Widget _buildRow(Horse horse) {
     return ListTile(
-      title: Text(
-        horse.name
+      title: Container(
+        child: Row(
+          children: [
+            Text( horse.name ),
+            horse.gender.getGenderIcon()
+          ],
+        )
       ),
       subtitle: Container(
-        child:Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children:[
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children:[
-              Text('age: ${horse.age}'),
-              Text('dress: ${horse.dress}'),
-              Text('race: ${horse.race}'),
-              Text('speciality: ${horse.speciality}'),
-            ]
-          ),
-          getGenderIcon(horse.gender)
+            Text('age: ${horse.age}'),
+            Text('dress: ${horse.dress}'),
+            Text('race: ${horse.race.toShortString()}'),
+            Text('speciality: ${horse.speciality.toShortString()}'),
           ]
-        )
+        ),
       ),
       trailing: _buildDeleteButton(horse),
     );
-
   }
 
   _buildDeleteButton(Horse horse){
-    return user.role == UserRole.manager
-        ? TextButton(
-            onPressed: (){
-              dialogue(horse);
-            },
-            child: Icon(Icons.delete_forever, color: Colors.red,),
-          )
-        : Container();
-  }
-
-  _removeHorse(Horse horse){
-    setState(() {
-      horses.remove(horse);
-    });
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [user.isManager()
+          ? ElevatedButton(
+        onPressed: (){
+          dialogue(horse);
+        },
+        child: Icon(Icons.delete_forever, color: Colors.red,),
+        style: ElevatedButton.styleFrom(primary: Colors.white),
+      )
+          : Container(width: 0,)
+    ]
+    );
   }
 
   Future<Null> dialogue(Horse horse) async{
@@ -89,8 +100,8 @@ class _HorseListState extends State<HorseList> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _confirmDeletionButton(true, horse, context),
-                  _confirmDeletionButton(false, horse, context),
+                  ConfirmDeletionButton(true, context, trueFunction: ()=>_removeHorse(horse),),
+                  ConfirmDeletionButton(false, context),
                 ],
               ),
             ],
@@ -99,17 +110,22 @@ class _HorseListState extends State<HorseList> {
     );
   }
 
-  ElevatedButton _confirmDeletionButton (bool confirm, Horse horse, BuildContext context){
-    return ElevatedButton(
-      onPressed: (){
-        Navigator.pop(context);
-        if(confirm){
-          _removeHorse(horse);
-        }
-      },
-      child: Text(confirm ? "Yes" : "No"),
-    );
+  _getHorses(){
+    //@todo : use request here to get horses list from DB
+    setState(() {
+      horses = [Mock.horse, Mock.horse2];
+    });
   }
+
+  _removeHorse(Horse horse){
+    //@todo : add one more row to delete horse in DB with a request
+    // all user related to this horse should removed it from their horses list
+    setState(() {
+      horses.remove(horse);
+    });
+  }
+
+
 }
 
 

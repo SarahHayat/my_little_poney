@@ -50,6 +50,21 @@ class Mock {
     email: "antony@gmail.com",
   );
 
+  static User userRiderDp2 = User(
+    "id2",
+    "profilePicture",
+    20,
+    "FFELink",
+    "phoneNumber",
+    UserRole.rider,
+    [],
+    DateTime.now(),
+    Type.dp,
+    userName: "Jojo",
+    password: "12345",
+    email: "antony@gmail.com",
+  );
+
   static Horse horse = Horse(
     [],
     "id1",
@@ -71,9 +86,9 @@ class Mock {
     age: 5,
     picturePath: "picturePath",
     dress: "brown",
-    race: HorseRace.arabe,
+    race: HorseRace.pureSang,
     gender: Gender.male,
-    speciality: Speciality.complete,
+    speciality: Speciality.showJumping,
     owner: userManagerOwner2,
     createdAt: DateTime.now(),
   );

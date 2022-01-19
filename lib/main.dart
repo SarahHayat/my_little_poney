@@ -5,6 +5,7 @@ import 'package:my_little_poney/widets/navigation.dart';
 import 'package:my_little_poney/widets/test.dart';
 
 import 'models/User.dart';
+import 'package:my_little_poney/widgets/contest.dart';
 
 void main() {
   runApp(const MyApp());
@@ -24,7 +25,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Navigation(),
+      //home: Navigation(),
+      home: const ContestListView(title: 'Concours'),
     );
   }
 }
@@ -48,7 +50,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   UserUseCase userUseCase = UserUseCase();
   int _counter = 0;
 

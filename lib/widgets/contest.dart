@@ -49,6 +49,9 @@ class _ContestListState extends State<ContestListView> {
 
   Widget _buildRow(Contest contest) {
     return ListTile(
+      onTap: () {
+        Navigator.of(context).pushNamed(ContestView.tag, arguments: contest);
+      },
       title: Row(
         children: [Text(contest.name)],
       ),
@@ -145,8 +148,7 @@ class _ContestListState extends State<ContestListView> {
                 child: const Text('Ajouter'),
                 onPressed: () {
                   createContest();
-                  Navigator.of(context)
-                      .pushNamed(ContestView.tag, arguments: newContest.id);
+                  Navigator.pop(context);
                 },
               ),
             ],

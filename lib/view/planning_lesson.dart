@@ -89,11 +89,9 @@ class _PlanningLessonState extends State<PlanningLesson> {
     return Expanded(
         flex: 1,
         child:Container(
-            color: date.getWeekDayColor().withAlpha(50),
-
-            child:ElevatedButton(
+            child:TextButton(
               child: _buildButtonDetails(date, daylyLessons),
-              style: ElevatedButton.styleFrom(primary: (nbLessons>0 ? Colors.blue[300] : Colors.grey[600])),
+              //style: ElevatedButton.styleFrom(primary: (nbLessons>0 ? Colors.blue[300] : Colors.grey[600])),
               onPressed: (){
                 if(nbLessons>0) {
                   dialogue(date, daylyLessons);
@@ -114,11 +112,11 @@ class _PlanningLessonState extends State<PlanningLesson> {
       children:[
         Row(
           children: [
-            Container(
-              width: 10,
-              height: 10,
-              color: date.getWeekDayColor(),
+            Icon(
+                date.compareTo(DateTime.now().getOnlyDate())>=0 ? Icons.school_outlined : Icons.do_not_disturb_on,
+                color: date.getWeekDayColor(),
             ),
+            Container(width: 10,),
             Text("${date.getWeekDayName()}, ${date.day} ${date.getMonthName()}" ),
           ],
         ),

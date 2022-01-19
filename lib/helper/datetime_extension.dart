@@ -26,17 +26,17 @@ extension DateTimeExtension on DateTime{
       case 1:
         return Colors.red;
       case 2:
-        return Colors.deepOrange;
-      case 3:
         return Colors.orange;
-      case 4:
+      case 3:
         return Colors.yellow;
-      case 5:
+      case 4:
         return Colors.lightGreenAccent;
-      case 6:
+      case 5:
         return Colors.green;
-      case 7:
+      case 6:
         return Colors.greenAccent;
+      case 7:
+        return Colors.lightBlueAccent;
       default:
         return Colors.red;
     }

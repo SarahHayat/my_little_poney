@@ -68,12 +68,14 @@ class MyListEvents extends State<ListEvents> {
     user: userRiderDp,
     theme: Themes.happyHour,
     createdAt: DateTime.now(),
+    partyDateTime: DateTime.now(),
   );
   static Party party1 = Party("id2", 'e', "picturePath",
       [AttendeeParty("Des chips !", user: userManagerOwner)],
       user: userRiderDp,
       theme: Themes.happyHour,
       createdAt: DateTime.now(),
+      partyDateTime: DateTime.now(),
       isValid: true);
 
   static Lesson lesson = Lesson("id1", [],
@@ -87,9 +89,15 @@ class MyListEvents extends State<ListEvents> {
 
   static Contest contest = Contest(
     "id1",
-    [AttendeeContest(user: userManagerOwner, level: Level.amateur)],
+    [
+      AttendeeContest(
+        user: userManagerOwner,
+        level: Level.amateur,
+      )
+    ],
     user: userRiderDp,
-    name: "azeagiuazyeiuazieakeyiazyueyuieayzeizayiaezuiueziauyeazeuiyazuieyazieyazuie eaz eaz eaz eaz e zae az e a e a ea e az eza e ",
+    name:
+        "azeagiuazyeiuazieakeyiazyueyuieayzeizayiaezuiueziauyeazeuiyazuieyazieyazuie eaz eaz eaz eaz e zae az e a e a ea e az eza e ",
     address: "address",
     picturePath: "picturePath",
     contestDateTime: DateTime.now(),
@@ -195,8 +203,7 @@ class MyListEvents extends State<ListEvents> {
     return ListView.builder(
         itemCount: listEvents.length,
         itemBuilder: (context, position) {
-          final sortedItems = listEvents
-            ..sort((a, b) => isDescending
+          final sortedItems = listEvents..sort((a, b) => isDescending
                 ? b.name.compareTo(a.name)
                 : a.name.compareTo(b.name));
           return Container(child: _cardsEvents(position, context, sortedItems));
@@ -207,38 +214,216 @@ class MyListEvents extends State<ListEvents> {
     return Card(
       elevation: 2.0,
       child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(5)),
+          color: Colors.red,
+        ),
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height / 4,
-        child: Column(
+        child: Row(
           children: [
-            Text(
-              listEvents[position].name,
+            Container(
+              width: MediaQuery.of(context).size.width * 0.25,
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.celebration,
+                          size: 20,
+                        ),
+                        Text(
+                          '${listEvents[position].eventType}',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 12),
+                        ),
+                      ],
+                    ),
+                    Text(
+                      listEvents[position].isValid
+                          ? 'Disponible'
+                          : 'Indisponible',
+                      style:
+                      TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                    ),
+                    Text(
+                      '${listEvents[position].theme}',
+                      style:
+                      TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                    ),
+                  ],
+                ),
+              ),
             ),
-            Text('Created by : ${listEvents[position].user.userName}'),
-            Text(listEvents[position].isValid ? 'Disponible' : 'Indisponible'),
-            Text('Tag : ${listEvents[position].eventType}')
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 20),
+              child: VerticalDivider(
+                color: Colors.black,
+                thickness: 0.5,
+              ),
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width * 0.60,
+              padding: EdgeInsets.only(left: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(listEvents[position].name,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 24),
+                          overflow: TextOverflow.ellipsis),
+                      Text(
+                        'Créer par : ${listEvents[position].user.userName}',
+                        style: TextStyle(fontSize: 10),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Date: ',
+                        style: TextStyle(fontSize: 10),
+                      ),
+                      Text('${listEvents[position].partyDateTime}', style: TextStyle(fontSize: 14)),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Commentaires: ',
+                        style: TextStyle(fontSize: 10),
+                      ),
+                      Text('à faire', style: TextStyle(fontSize: 14)),
+                    ],
+                  )
+                ],
+              ),
+            )
           ],
         ),
       ),
     );
   }
-
+  /*
+  Text('Created by : ${listEvents[position].user.userName}'),
+  Text(listEvents[position].isValid ? 'Disponible' : 'Indisponible'),
+  Text('Tag : ${listEvents[position].eventType}')
+*/
   Card cardLesson(
       int position, BuildContext context, List<dynamic> listEvents) {
     return Card(
       elevation: 2.0,
       child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(5)),
+          color: Colors.teal,
+        ),
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height / 4,
-        child: Column(
+        child: Row(
           children: [
-            Text(listEvents[position].name),
-            Text('Created by : ${listEvents[position].user.userName}'),
-            Text(
-                'For: ${listEvents[position].duration == 60 ? '1 hour' : '30 minutes'} at ${listEvents[position].lessonDateTime}'),
-            Text('Discipline: ${listEvents[position].discipline}'),
-            Text('Ground: ${listEvents[position].ground}'),
-            Text('Tag: ${listEvents[position].eventType}'),
+            Container(
+              width: MediaQuery.of(context).size.width * 0.25,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.book,
+                          size: 20,
+                        ),
+                        Text(
+                          '${listEvents[position].eventType}',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 12),
+                        ),
+                      ],
+                    ),
+                    Text(
+                      listEvents[position].isValid
+                          ? 'Disponible'
+                          : 'Indisponible',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                    ),
+                    Text(
+                      '${listEvents[position].ground}',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                    ),
+                    Text(
+                      '${listEvents[position].discipline}',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 20),
+              child: VerticalDivider(
+                color: Colors.black,
+                thickness: 0.5,
+              ),
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width * 0.60,
+              padding: EdgeInsets.only(left: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(listEvents[position].name,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 24),
+                          overflow: TextOverflow.ellipsis),
+                      Text(
+                        'Créer par : ${listEvents[position].user.userName}',
+                        style: TextStyle(fontSize: 10),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Durée: ',
+                        style: TextStyle(fontSize: 10),
+                      ),
+                      Text(listEvents[position].duration == 60 ? '1 hour' : '30 minutes', style: TextStyle(fontSize: 14),)
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Date: ',
+                        style: TextStyle(fontSize: 10),
+                      ),
+                      Text('${listEvents[position].lessonDateTime}', style: TextStyle(fontSize: 14)),
+                    ],
+                  )
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -266,25 +451,73 @@ class MyListEvents extends State<ListEvents> {
                   child: Text(
                     listEvents[position].name,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                Column(
-                  children: [
-                    Text('Tag: ${listEvents[position].eventType}'),
-                    Text(listEvents[position].isValid
-                        ? 'Disponible'
-                        : 'Indisponible'),
-                  ],
+                Container(
+                  padding: EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                      color: Colors.amberAccent,
+                      borderRadius: BorderRadius.circular(5)),
+                  child: Row(
+                    children: [
+                      Icon(Icons.celebration),
+                      Text(listEvents[position].eventType),
+                    ],
+                  ),
                 ),
               ],
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
             ),
-            Text('Created by : ${listEvents[position].user.userName}'),
-            Text(
-                'The contest begin at : ${listEvents[position].contestDateTime}'),
-            Text('Address: ${listEvents[position].address}'),
-            Text(
-                'For levels : ${listEvents[position].attendeesContest.length != 0 ? listEvents[position].attendeesContest[0].level : 'No levels required'}'),
+            Row(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Organisateur :',
+                      style: TextStyle(fontSize: 10),
+                    ),
+                    Text(listEvents[position].user.userName)
+                  ],
+                ),
+                Text(listEvents[position].isValid
+                    ? 'Disponible'
+                    : 'Indisponible'),
+              ],
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Date du concours :',
+                  style: TextStyle(fontSize: 10),
+                ),
+                Text('${listEvents[position].contestDateTime}')
+              ],
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Adresse :',
+                  style: TextStyle(fontSize: 10),
+                ),
+                Text('${listEvents[position].address}')
+              ],
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Pour les niveaux :',
+                  style: TextStyle(fontSize: 10),
+                ),
+                Text(
+                    ' ${listEvents[position].attendeesContest.length != 0 ? listEvents[position].attendeesContest[0].level : 'No levels required'}')
+              ],
+            ),
           ],
         ),
       ),

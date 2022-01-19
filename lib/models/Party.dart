@@ -24,6 +24,7 @@ class Party {
   List<AttendeeParty> attendeesParty;
   bool isValid;
   DateTime createdAt;
+  DateTime partyDateTime;
   String eventType;
 
   Party(
@@ -31,6 +32,7 @@ class Party {
     this.name,
     this.picturePath,
     this.attendeesParty, {
+    required this.partyDateTime,
     required this.user,
     required this.theme,
     this.isValid = false,

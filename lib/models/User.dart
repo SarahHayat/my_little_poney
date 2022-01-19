@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:my_little_poney/models/Horse.dart';
 
-import 'Horse.dart';
 
 
 enum UserRole {
@@ -22,10 +22,10 @@ class User {
   int? age;
   String? ffeLink;
   String? phoneNumber;
-  UserRole? role;
-  Type? type;
-  List<DocumentReference>? horses;
-  DateTime? createdAt;
+  String? role;
+  String? type;
+  List<dynamic>? horsesIds;
+  Timestamp? createdAt;
 
   User(
      {
@@ -35,7 +35,7 @@ class User {
        this.ffeLink,
        this.phoneNumber,
        this.role,
-       this.horses,
+       this.horsesIds,
        this.createdAt,
        this.type,
        required this.userName,
@@ -44,15 +44,15 @@ class User {
   });
 
   User.fromJson(Map<String, Object?> json) : this(
-    id: json['id']! as String,
-    profilePicture: json['profilePicture']! as String,
-    age: json['age']! as int,
-    ffeLink: json['ffeLink']! as String,
-    phoneNumber: json['phoneNumber']! as String,
-    role: json['role']! as UserRole,
-    horses: json['horses']! as List<DocumentReference>,
-    createdAt: json['createdAt']! as DateTime,
-    type: json['type']! as Type,
+    id: json['id'] != null ? json['id']! as String : "",
+    profilePicture: json['profilePicture']!= null ? json['profilePicture']! as String : "",
+    age: json['age']!= null ? json['age']! as int : 0,
+    ffeLink: json['ffeLink'] != null ? json['ffeLink']! as String : "",
+    phoneNumber: json['phoneNumber']!= null ? json['phoneNumber']! as String : "",
+    role: json['role']!= null ? json['role']! as String : "",
+    horsesIds: json['horses']! as List<dynamic>,
+    createdAt: json['createdAt']! as Timestamp,
+    type: json['type']! as String,
     userName: json['userName']! as String,
     password: json['password']! as String,
     email: json['email']! as String,
@@ -66,13 +66,30 @@ class User {
       'ffeLink': ffeLink,
       'phoneNumber': phoneNumber,
       'role': role,
-      'horses': horses,
+      'horses': horsesIds,
       'createdAt': createdAt,
       'type': type,
       'userName': userName,
       'password': password,
       'email': email,
     };
+  }
+
+  static CollectionReference<User> ref = FirebaseFirestore
+      .instance.collection('users')
+      .withConverter<User>(
+    fromFirestore: (snapshot, _) =>
+        User.fromJson(snapshot.data()!),
+    toFirestore: (user, _) => user.toJson(),
+  );
+
+  factory User.empty() => User(userName: "", password: "", email: "");
+
+  Future<List<Horse>> getHorses() async {
+    Future<List<Horse>> futureHorses = Future(Horse.emptyList);
+
+    // return horsesIds?.(e) => Horse.ref.doc(e.id).get().then((snapshot) => snapshot.data()!)
+    // return ownerId?.id != null ? await User.ref.doc(ownerId?.id).get().then((snapshot) => snapshot.data()!) : await futureUser;
   }
 }
 

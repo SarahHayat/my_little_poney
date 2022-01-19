@@ -94,32 +94,45 @@ class _LoginScreenState extends State<LoginScreen> {
                         title: 'Login',
                         ontapp: () async {
 
-                          CollectionReference horseRef = FirebaseFirestore.instance.collection('horses')
-                              .withConverter<Horse>(
-                                    fromFirestore: (snapshot, _) => Horse.fromJson(snapshot.data()!),
-                                    toFirestore: (horse, _) => horse.toJson(),
-                          );
+
+                          // CollectionReference<
+                          //     Horse> horseRef = FirebaseFirestore.instance
+                          //     .collection('horses')
+                          //     .withConverter<Horse>(
+                          //   fromFirestore: (snapshot, _) =>
+                          //       Horse.fromJson(snapshot.data()!),
+                          //   toFirestore: (horse, _) => horse.toJson(),
+                          // );
+                          //
+                          //
+                          // CollectionReference<User> userRef = FirebaseFirestore
+                          //     .instance.collection('users')
+                          //     .withConverter<User>(
+                          //   fromFirestore: (snapshot, _) =>
+                          //       User.fromJson(snapshot.data()!),
+                          //   toFirestore: (user, _) => user.toJson(),
+                          // );
+                          //
+
+                          Horse horse = await Horse.ref.doc('b0vJMVMOXnQ8wwWEkXMs').get().then((snapshot) => snapshot.data()!);
+                          print(horse.name);
+
+                          horse.getOwner().then((value) => value.horsesIds?.forEach((element) {print(element.id);}));
 
 
-                          CollectionReference userRef = FirebaseFirestore.instance.collection('users')
-                              .withConverter<User>(
-                            fromFirestore: (snapshot, _) => User.fromJson(snapshot.data()!),
-                            toFirestore: (user, _) => user.toJson(),
-                          );
-
-                          horseRef.add(
-                            Horse(
-                                name: "étole d'argent",
-                                owner: userRef.doc('SbeW3uQKszmHEGy1p3oL'),
-                                age: 2,
-                                picturePath: "picturePath",
-                                dress: "dress",
-                                race: HorseRace.mustang,
-                                gender: Gender.other,
-                                speciality: Speciality.endurance,
-                                createdAt: DateTime.now()
-                            )
-                          );
+                          // horseRef.add(
+                          //   Horse(
+                          //       name: "étole d'argent",
+                          //       owner: userRef.doc('SbeW3uQKszmHEGy1p3oL'),
+                          //       age: 2,
+                          //       picturePath: "picturePath",
+                          //       dress: "dress",
+                          //       race: HorseRace.mustang,
+                          //       gender: Gender.other,
+                          //       speciality: Speciality.endurance,
+                          //       createdAt: DateTime.now()
+                          //   )
+                          // );
 
 
                           // await usersRef.add(User(

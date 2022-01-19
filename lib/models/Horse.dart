@@ -1,3 +1,5 @@
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'User.dart';
@@ -59,11 +61,11 @@ class Horse {
   int age;
   String picturePath;
   String dress;
-  HorseRace race;
-  Gender gender;
-  Speciality speciality;
-  DocumentReference? owner;
-  DateTime createdAt;
+  String race;
+  String gender;
+  String speciality;
+  DocumentReference? ownerId;
+  Timestamp createdAt;
   // maybe for after
   // List<User> dpUsers;
 
@@ -71,7 +73,7 @@ class Horse {
 
       {
         this.id,
-        this.owner,
+        this.ownerId,
         // this.dpUsers = const [],
         required this.name,
         required this.age,
@@ -84,22 +86,22 @@ class Horse {
       });
 
   Horse.fromJson(Map<String, Object?> json) : this(
-    id: json['id']! as String,
-    owner: json['owner']! as DocumentReference,
+    id: json['id'] != null ? json['id']! as String : "" ,
+    ownerId: json['owner']! as DocumentReference,
     name: json['name']! as String,
     age: json['age']! as int,
     picturePath: json['picturePath']! as String,
     dress: json['dress']! as String,
-    race: json['race']! as HorseRace,
-    gender: json['gender']! as Gender,
-    speciality: json['speciality']! as Speciality,
-    createdAt: json['createdAt']! as DateTime,
+    race: json['race']! as String,
+    gender: json['gender']! as String,
+    speciality: json['speciality']! as String,
+    createdAt: json['createdAt']! as Timestamp,
   );
 
   Map<String, Object?> toJson() {
     return {
       'id': id,
-      'owner': owner,
+      'owner': ownerId,
       'name': name,
       'age': age,
       'picturePath': picturePath,
@@ -111,4 +113,40 @@ class Horse {
     };
   }
 
+  static CollectionReference<Horse> ref = FirebaseFirestore
+      .instance.collection('horses')
+      .withConverter<Horse>(
+    fromFirestore: (snapshot, _) =>
+        Horse.fromJson(snapshot.data()!),
+    toFirestore: (horse, _) => horse.toJson(),
+  );
+
+  factory Horse.empty() => Horse(
+      name: "",
+      age: 0,
+      picturePath: "",
+      dress: "",
+      race: HorseRace.mustang.name,
+      gender: Gender.other.name,
+      speciality: Speciality.endurance.name,
+      createdAt: Timestamp.now()
+  );
+
+  static List<Horse> emptyList() {
+    return [Horse(
+        name: "",
+        age: 0,
+        picturePath: "",
+        dress: "",
+        race: HorseRace.mustang.name,
+        gender: Gender.other.name,
+        speciality: Speciality.endurance.name,
+        createdAt: Timestamp.now()
+    )];
+  }
+
+  Future<User> getOwner() async {
+    Future<User> futureUser = Future(User.empty);
+    return ownerId?.id != null ? await User.ref.doc(ownerId?.id).get().then((snapshot) => snapshot.data()!) : await futureUser;
+  }
 }

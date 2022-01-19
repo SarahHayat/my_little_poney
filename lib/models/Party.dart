@@ -1,6 +1,6 @@
 import 'User.dart';
 
-enum Theme {
+enum Themes {
   happyHour,
   dinner,
 }
@@ -17,20 +17,24 @@ class AttendeeParty {
 
 class Party {
   String id;
+  String name;
   User user;
-  Theme theme;
+  Themes theme;
   String picturePath;
   List<AttendeeParty> attendeesParty;
   bool isValid;
   DateTime createdAt;
+  String eventType;
 
   Party(
     this.id,
+    this.name,
     this.picturePath,
     this.attendeesParty, {
     required this.user,
     required this.theme,
     this.isValid = false,
     required this.createdAt,
+    this.eventType = 'party',
   });
 }

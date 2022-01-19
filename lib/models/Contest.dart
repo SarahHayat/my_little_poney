@@ -28,16 +28,16 @@ class Contest {
   DateTime createdAt;
   List<AttendeeContest> attendeesContest;
   bool isValid;
+  String eventType;
 
-  Contest(
-    this.id,
-    this.attendeesContest, {
-    required this.user,
-    required this.name,
-    required this.address,
-    required this.picturePath,
-    required this.contestDateTime,
-    required this.createdAt,
-    this.isValid = false,
-  });
+  Contest(this.id, this.attendeesContest,
+      {required this.user,
+      required this.name,
+      required this.address,
+      required this.picturePath,
+      required this.contestDateTime,
+      required this.createdAt,
+      this.isValid = false,
+      this.eventType = 'contest'
+      });
 }

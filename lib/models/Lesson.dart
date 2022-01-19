@@ -22,17 +22,17 @@ class Lesson {
   Discipline discipline;
   List<User> attendees;
   bool isValid;
+  String eventType;
 
-  Lesson(
-    this.id,
-    this.attendees, {
-    required this.name,
-    required this.user,
-    required this.ground,
-    required this.lessonDateTime,
-    required this.createdAt,
-    required this.duration,
-    required this.discipline,
-    this.isValid = false,
-  });
+  Lesson(this.id, this.attendees,
+      {required this.name,
+      required this.user,
+      required this.ground,
+      required this.lessonDateTime,
+      required this.createdAt,
+      required this.duration,
+      required this.discipline,
+      this.isValid = false,
+      this.eventType = 'lesson'
+      });
 }

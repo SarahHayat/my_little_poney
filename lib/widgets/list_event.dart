@@ -151,10 +151,10 @@ class MyListEvents extends State<ListEvents> {
                   value: dropdownValue,
                   icon: const Icon(Icons.arrow_downward),
                   elevation: 16,
-                  style: const TextStyle(color: Colors.deepPurple),
+                  style: const TextStyle(color: Colors.black),
                   underline: Container(
                     height: 2,
-                    color: Colors.deepPurpleAccent,
+                    color: Colors.black,
                   ),
                   items: <String>['all', 'contest', 'lesson', 'party']
                       .map<DropdownMenuItem<String>>((String value) {
@@ -216,7 +216,7 @@ class MyListEvents extends State<ListEvents> {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(5)),
-          color: Colors.red,
+          color: Color.fromRGBO(37, 144, 193, 1.0),
         ),
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height / 4,
@@ -303,7 +303,7 @@ class MyListEvents extends State<ListEvents> {
                         'Commentaires: ',
                         style: TextStyle(fontSize: 10),
                       ),
-                      Text('à faire', style: TextStyle(fontSize: 14)),
+                      Text('${listEvents[position].attendeesParty.length != 0 ? listEvents[position].attendeesParty.length : 'Pas de commentaies'}', style: TextStyle(fontSize: 14)),
                     ],
                   )
                 ],
@@ -314,11 +314,7 @@ class MyListEvents extends State<ListEvents> {
       ),
     );
   }
-  /*
-  Text('Created by : ${listEvents[position].user.userName}'),
-  Text(listEvents[position].isValid ? 'Disponible' : 'Indisponible'),
-  Text('Tag : ${listEvents[position].eventType}')
-*/
+
   Card cardLesson(
       int position, BuildContext context, List<dynamic> listEvents) {
     return Card(
@@ -326,7 +322,7 @@ class MyListEvents extends State<ListEvents> {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(5)),
-          color: Colors.teal,
+          color: Color.fromRGBO(222, 68, 68, 1.0),
         ),
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height / 4,
@@ -434,89 +430,96 @@ class MyListEvents extends State<ListEvents> {
       int position, BuildContext context, List<dynamic> listEvents) {
     return Card(
       elevation: 2.0,
-      shape: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: Colors.white)),
       child: Container(
-        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(5)),
+          color: Colors.amber,
+        ),
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height / 4,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Row(
           children: [
-            Row(
-              children: [
-                Flexible(
-                  child: Text(
-                    listEvents[position].name,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                      color: Colors.amberAccent,
-                      borderRadius: BorderRadius.circular(5)),
-                  child: Row(
-                    children: [
-                      Icon(Icons.celebration),
-                      Text(listEvents[position].eventType),
-                    ],
-                  ),
-                ),
-              ],
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            ),
-            Row(
-              children: [
-                Column(
+            Container(
+              width: MediaQuery.of(context).size.width * 0.25,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Organisateur :',
-                      style: TextStyle(fontSize: 10),
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.auto_awesome,
+                          size: 20,
+                        ),
+                        Text(
+                          '${listEvents[position].eventType}',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 12),
+                        ),
+                      ],
                     ),
-                    Text(listEvents[position].user.userName)
+                    Text(
+                      listEvents[position].isValid
+                          ? 'Disponible'
+                          : 'Indisponible',
+                      style:
+                      TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                    ),
                   ],
                 ),
-                Text(listEvents[position].isValid
-                    ? 'Disponible'
-                    : 'Indisponible'),
-              ],
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              ),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Date du concours :',
-                  style: TextStyle(fontSize: 10),
-                ),
-                Text('${listEvents[position].contestDateTime}')
-              ],
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 20),
+              child: VerticalDivider(
+                color: Colors.black,
+                thickness: 0.5,
+              ),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Adresse :',
-                  style: TextStyle(fontSize: 10),
-                ),
-                Text('${listEvents[position].address}')
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Pour les niveaux :',
-                  style: TextStyle(fontSize: 10),
-                ),
-                Text(
-                    ' ${listEvents[position].attendeesContest.length != 0 ? listEvents[position].attendeesContest[0].level : 'No levels required'}')
-              ],
+            Container(
+              width: MediaQuery.of(context).size.width * 0.60,
+              padding: EdgeInsets.only(left: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(listEvents[position].name,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 24),
+                          overflow: TextOverflow.ellipsis),
+                      Text(
+                        'Créer par : ${listEvents[position].user.userName}',
+                        style: TextStyle(fontSize: 10),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Adresse: ',
+                        style: TextStyle(fontSize: 10),
+                      ),
+                      Text('${listEvents[position].address}', style: TextStyle(fontSize: 14),)
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Date: ',
+                        style: TextStyle(fontSize: 10),
+                      ),
+                      Text('${listEvents[position].contestDateTime}', style: TextStyle(fontSize: 14)),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ],
         ),

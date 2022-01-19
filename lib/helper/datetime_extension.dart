@@ -21,6 +21,26 @@ extension DateTimeExtension on DateTime{
         return "monday";
     }
   }
+  Color getWeekDayColor() {
+    switch (this.weekday) {
+      case 1:
+        return Colors.red;
+      case 2:
+        return Colors.deepOrange;
+      case 3:
+        return Colors.orange;
+      case 4:
+        return Colors.yellow;
+      case 5:
+        return Colors.lightGreenAccent;
+      case 6:
+        return Colors.green;
+      case 7:
+        return Colors.greenAccent;
+      default:
+        return Colors.red;
+    }
+  }
 
   String getMonthName() {
     switch (this.month) {

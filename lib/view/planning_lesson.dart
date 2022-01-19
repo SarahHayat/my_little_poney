@@ -44,10 +44,9 @@ class _PlanningLessonState extends State<PlanningLesson> {
 
   @override
   Widget build(BuildContext context) {
-    double rowHeight = MediaQuery.of(context).size.height / 7;
     List<Widget> t = [];
     displayedLessons.forEach((key, value) {
-      t.add(_buildPlanning(rowHeight, key, value));
+      t.add(_buildPlanning(key, value));
     });
     return Scaffold(
       appBar: AppBar(
@@ -61,17 +60,11 @@ class _PlanningLessonState extends State<PlanningLesson> {
           child: Icon(Icons.calendar_today),
         ),
       ),
-      body:GridView(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 7,
-          mainAxisExtent:400,
-      ),
-        scrollDirection: Axis.horizontal,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: t,
       )
-      /*body: Column(
-        children: t,
-      )*/
     );
   }
 
@@ -90,28 +83,48 @@ class _PlanningLessonState extends State<PlanningLesson> {
     }
   }
 
-  _buildPlanning(double height, DateTime date, List<Lesson> daylyLessons){
+  _buildPlanning(DateTime date, List<Lesson> daylyLessons){
     int nbLessons = daylyLessons.length;
-    return Container(
-      height: height,
-      child: SizedBox(
-        child: TextButton(
-          child: Container(
-            alignment: Alignment.centerLeft,
-            child:Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children:[
-                  Text("${date.getWeekDayName()} ${date.day} ${date.getMonthName()}" ),
-                  Text("$nbLessons lesson${nbLessons>1 ? "s" : ""}" ),
-                ]
+    //(nbLessons>0 ? Colors.white : Colors.grey[100])
+    return Expanded(
+        flex: 1,
+        child:Container(
+            color: date.getWeekDayColor().withAlpha(50),
+
+            child:ElevatedButton(
+              child: _buildButtonDetails(date, daylyLessons),
+              style: ElevatedButton.styleFrom(primary: (nbLessons>0 ? Colors.blue[300] : Colors.grey[600])),
+              onPressed: (){
+                if(nbLessons>0) {
+                  dialogue(date, daylyLessons);
+                }
+              },
+            )
+        )
+    );
+  }
+
+  Widget _buildButtonDetails(DateTime  date, List<Lesson> daylyLessons){
+    int nbLessons = daylyLessons.length;
+    return  Container(
+      alignment: Alignment.centerLeft,
+      child:Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children:[
+        Row(
+          children: [
+            Container(
+              width: 10,
+              height: 10,
+              color: date.getWeekDayColor(),
             ),
-          ),
-          onPressed: (){
-            dialogue(date, daylyLessons );
-          },
+            Text("${date.getWeekDayName()}, ${date.day} ${date.getMonthName()}" ),
+          ],
         ),
-      )
+        Text("$nbLessons lesson${nbLessons>1 ? "s" : ""}" ),
+      ]
+      ),
     );
   }
 

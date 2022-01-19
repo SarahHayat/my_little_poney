@@ -3,6 +3,7 @@ import 'package:my_little_poney/helper/listview.dart';
 import 'package:my_little_poney/models/Contest.dart';
 import 'package:my_little_poney/helper/temporaryContest.dart';
 import 'contest_view.dart';
+import 'package:intl/intl.dart';
 
 class ContestListView extends StatefulWidget {
   const ContestListView({Key? key, required this.title}) : super(key: key);
@@ -22,6 +23,12 @@ class _ContestListState extends State<ContestListView> {
   final TextEditingController adressController = TextEditingController();
   final TextEditingController dateController = TextEditingController();
   final TextEditingController pictureController = TextEditingController();
+
+  @override
+  void initState() {
+    dateController.text = ""; //set the initial value of text field
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +69,7 @@ class _ContestListState extends State<ContestListView> {
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: const Text('Bière'),
+            title: const Text('Ajouter un concours'),
             content: Card(
               elevation: 5,
               margin: const EdgeInsets.all(20),
@@ -81,10 +88,40 @@ class _ContestListState extends State<ContestListView> {
                       decoration: const InputDecoration(
                           hintText: "Adresse du concours"),
                     ),
-                    TextFormField(
-                      controller: dateController,
-                      decoration:
-                          const InputDecoration(hintText: "Date du concours"),
+                    TextField(
+                      controller:
+                          dateController, //editing controller of this TextField
+                      decoration: const InputDecoration(
+                          icon: Icon(Icons.calendar_today), //icon of text field
+                          labelText: "Enter Date" //label text of field
+                          ),
+                      readOnly:
+                          true, //set it true, so that user will not able to edit text
+                      onTap: () async {
+                        DateTime? pickedDate = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(
+                                2000), //DateTime.now() - not to allow to choose before today.
+                            lastDate: DateTime(2101));
+
+                        if (pickedDate != null) {
+                          print(
+                              pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
+                          String formattedDate =
+                              DateFormat('yyyy-MM-dd').format(pickedDate);
+                          print(
+                              formattedDate); //formatted date output using intl package =>  2021-03-16
+                          //you can implement different kind of Date Format here according to your requirement
+
+                          setState(() {
+                            dateController.text =
+                                formattedDate; //set output date to TextField value.
+                          });
+                        } else {
+                          print("Date is not selected");
+                        }
+                      },
                     ),
                     TextFormField(
                       controller: pictureController,
@@ -117,5 +154,21 @@ class _ContestListState extends State<ContestListView> {
         });
   }
 
-  createContest() {}
+  createContest() {
+    Contest newContestObject = Contest(
+      'idTest',
+      [],
+      user: userRiderDp,
+      name: nameController.value.text,
+      address: adressController.value.text,
+      picturePath: pictureController.value.text,
+      contestDateTime: DateTime.parse(dateController.text),
+      createdAt: DateTime.now(),
+    );
+
+    setState(() {
+      contests.add(newContestObject);
+      newContest = newContestObject;
+    });
+  }
 }

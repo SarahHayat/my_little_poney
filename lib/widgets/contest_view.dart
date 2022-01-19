@@ -4,10 +4,8 @@ import 'package:my_little_poney/models/Contest.dart';
 import 'package:my_little_poney/helper/temporaryContest.dart';
 
 class ContestView extends StatefulWidget {
-  const ContestView({Key? key, required this.title}) : super(key: key);
+  const ContestView({Key? key}) : super(key: key);
   static const tag = "contest_view";
-
-  final String title;
 
   @override
   State<ContestView> createState() => _ContestViewState();

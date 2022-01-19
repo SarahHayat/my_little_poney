@@ -6,6 +6,7 @@ import 'package:my_little_poney/widets/test.dart';
 
 import 'models/User.dart';
 import 'package:my_little_poney/widgets/contest.dart';
+import 'package:my_little_poney/widgets/contest_view.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,10 +19,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'My Little Poney',
-      routes: {
-        // put routes here
-        Test.routeName: (context) => Test()
-      },
+      // routes: {
+      //   // put routes here
+      //   Test.routeName: (context) => Test()
+      // },
+      routes: {ContestView.tag: (context) => const ContestView()},
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),

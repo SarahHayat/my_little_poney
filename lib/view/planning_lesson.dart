@@ -1,6 +1,8 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:my_little_poney/helper/datetime_extension.dart';
 import 'package:my_little_poney/helper/listview.dart';
 import 'package:my_little_poney/mock/mock.dart';
 import 'package:my_little_poney/models/Lesson.dart';
@@ -17,6 +19,8 @@ class PlanningLesson extends StatefulWidget {
 class _PlanningLessonState extends State<PlanningLesson> {
   final User currentUser = Mock.userManagerOwner2;
   late Map<String, List<Lesson>> lessons ;
+  final Map<DateTime, Map<String, List<Lesson>>> weeksLessons = {};
+  DateTime selectedDate = DateTime.now();
 
   @override
   void initState() {
@@ -33,9 +37,15 @@ class _PlanningLessonState extends State<PlanningLesson> {
     });
     return Scaffold(
       appBar: AppBar(
-        title: Text("Lesson planning"),
+        title: Text("Lesson planning week : ${selectedDate.getWeekFirstDay().getFrenchDate()}"),
         elevation: 10,
         centerTitle: true,
+        leading: ElevatedButton(
+          onPressed: (){
+            _selectDate(context);
+          },
+          child: Icon(Icons.calendar_today),
+        ),
       ),
       body:GridView(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -49,6 +59,19 @@ class _PlanningLessonState extends State<PlanningLesson> {
         children: t,
       )*/
     );
+  }
+
+  _selectDate(BuildContext context) async {
+    final DateTime? selected = await showDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2026),
+    );
+    if (selected != null && selected != selectedDate)
+      setState(() {
+        selectedDate = selected;
+      });
   }
 
   _buildPlanning(double height, String day, List<Lesson> daylyLessons){
@@ -110,19 +133,28 @@ class _PlanningLessonState extends State<PlanningLesson> {
 
   _getLessons(){
     //@todo : use request here to get lessons list from DB
+    //il faut qu'on ai une gestion par semaine
+
     setState(() {
       lessons = {
-        "monday":[Mock.lesson, Mock.lesson],
-        "tuesday":[Mock.lesson],
-        "wednesday":[],
-        "thursday":[Mock.lesson, Mock.lesson, Mock.lesson, Mock.lesson],
-        "friday":[Mock.lesson],
-        "saturday":[Mock.lesson],
-        "sunday":[Mock.lesson],
+        _fakeDate(DateTime.monday):[Mock.lesson, Mock.lesson],
+        _fakeDate(DateTime.tuesday):[Mock.lesson],
+        _fakeDate(DateTime.wednesday):[],
+        _fakeDate(DateTime.thursday):[Mock.lesson, Mock.lesson, Mock.lesson, Mock.lesson],
+        _fakeDate(DateTime.friday):[Mock.lesson],
+        _fakeDate(DateTime.saturday):[Mock.lesson],
+        _fakeDate(DateTime.sunday):[Mock.lesson],
       };
+      weeksLessons[DateTime.now().getWeekFirstDay()] = lessons;
+      weeksLessons[DateTime.now().add(Duration(days: 30)).getWeekFirstDay()] = lessons;
+      log(weeksLessons.keys.toString());
     });
+
+  }
+
+  String _fakeDate(int weekdayInt){
+    int sundayDate = 16;
+    log(DateTime.parse("2022-01-${sundayDate + weekdayInt}").getWeekFirstDay().toString());
+    return DateTime.parse("2022-01-${sundayDate + weekdayInt}").getWeekDayName();
   }
 }
-
-
-

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:my_little_poney/models/Contest.dart';
-import 'package:my_little_poney/models/Event.dart';
 import 'package:my_little_poney/models/Horse.dart';
 import 'package:my_little_poney/models/Lesson.dart';
 import 'package:my_little_poney/models/Party.dart';
 import 'package:my_little_poney/models/User.dart';
+import 'package:my_little_poney/widgets/cards_events.dart';
 
 class ListEvents extends StatefulWidget {
   const ListEvents({Key? key}) : super(key: key);
@@ -122,11 +122,11 @@ class MyListEvents extends State<ListEvents> {
     var eventPosition = listEvents[position];
 
     if (eventPosition.eventType == 'contest') {
-      return cardContest(position, context, listEvents);
+      return CardsEvents.cardContest(position, context, listEvents);
     } else if (eventPosition.eventType == 'lesson') {
-      return cardLesson(position, context, listEvents);
+      return CardsEvents.cardLesson(position, context, listEvents);
     } else if (eventPosition.eventType == 'party') {
-      return cardParty(position, context, listEvents);
+      return CardsEvents.cardParty(position, context, listEvents);
     }
   }
 
@@ -134,17 +134,17 @@ class MyListEvents extends State<ListEvents> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('List events'),
+        title: const Text('List events'),
       ),
       body: Container(
-        padding: EdgeInsets.only(top: 5, bottom: 5, right: 10, left: 10),
+        padding: const EdgeInsets.only(top: 5, bottom: 5, right: 10, left: 10),
         child: Column(children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
                 width: 100,
-                margin: EdgeInsets.symmetric(horizontal: 10),
+                margin: const EdgeInsets.symmetric(horizontal: 10),
                 child: DropdownButton(
                   borderRadius: BorderRadius.circular(5),
                   isExpanded: true,
@@ -171,14 +171,14 @@ class MyListEvents extends State<ListEvents> {
                 ),
               ),
               TextButton.icon(
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.sort_rounded,
                     size: 28,
                     color: Colors.black,
                   ),
                   label: Text(
                     isDescending ? 'Desc' : 'Asc',
-                    style: TextStyle(fontSize: 18, color: Colors.black),
+                    style: const TextStyle(fontSize: 18, color: Colors.black),
                   ),
                   onPressed: () =>
                       setState(() => isDescending = !isDescending)),
@@ -208,322 +208,5 @@ class MyListEvents extends State<ListEvents> {
                 : a.name.compareTo(b.name));
           return Container(child: _cardsEvents(position, context, sortedItems));
         });
-  }
-
-  Card cardParty(int position, BuildContext context, List<dynamic> listEvents) {
-    return Card(
-      elevation: 2.0,
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(5)),
-          color: Color.fromRGBO(37, 144, 193, 1.0),
-        ),
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height / 4,
-        child: Row(
-          children: [
-            Container(
-              width: MediaQuery.of(context).size.width * 0.25,
-              child: Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.celebration,
-                          size: 20,
-                        ),
-                        Text(
-                          '${listEvents[position].eventType}',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 12),
-                        ),
-                      ],
-                    ),
-                    Text(
-                      listEvents[position].isValid
-                          ? 'Disponible'
-                          : 'Indisponible',
-                      style:
-                      TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-                    ),
-                    Text(
-                      '${listEvents[position].theme}',
-                      style:
-                      TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 20),
-              child: VerticalDivider(
-                color: Colors.black,
-                thickness: 0.5,
-              ),
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width * 0.60,
-              padding: EdgeInsets.only(left: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(listEvents[position].name,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 24),
-                          overflow: TextOverflow.ellipsis),
-                      Text(
-                        'Créer par : ${listEvents[position].user.userName}',
-                        style: TextStyle(fontSize: 10),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Date: ',
-                        style: TextStyle(fontSize: 10),
-                      ),
-                      Text('${listEvents[position].partyDateTime}', style: TextStyle(fontSize: 14)),
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Commentaires: ',
-                        style: TextStyle(fontSize: 10),
-                      ),
-                      Text('${listEvents[position].attendeesParty.length != 0 ? listEvents[position].attendeesParty.length : 'Pas de commentaies'}', style: TextStyle(fontSize: 14)),
-                    ],
-                  )
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  Card cardLesson(
-      int position, BuildContext context, List<dynamic> listEvents) {
-    return Card(
-      elevation: 2.0,
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(5)),
-          color: Color.fromRGBO(222, 68, 68, 1.0),
-        ),
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height / 4,
-        child: Row(
-          children: [
-            Container(
-              width: MediaQuery.of(context).size.width * 0.25,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.book,
-                          size: 20,
-                        ),
-                        Text(
-                          '${listEvents[position].eventType}',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 12),
-                        ),
-                      ],
-                    ),
-                    Text(
-                      listEvents[position].isValid
-                          ? 'Disponible'
-                          : 'Indisponible',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-                    ),
-                    Text(
-                      '${listEvents[position].ground}',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-                    ),
-                    Text(
-                      '${listEvents[position].discipline}',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 20),
-              child: VerticalDivider(
-                color: Colors.black,
-                thickness: 0.5,
-              ),
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width * 0.60,
-              padding: EdgeInsets.only(left: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(listEvents[position].name,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 24),
-                          overflow: TextOverflow.ellipsis),
-                      Text(
-                        'Créer par : ${listEvents[position].user.userName}',
-                        style: TextStyle(fontSize: 10),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Durée: ',
-                        style: TextStyle(fontSize: 10),
-                      ),
-                      Text(listEvents[position].duration == 60 ? '1 hour' : '30 minutes', style: TextStyle(fontSize: 14),)
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Date: ',
-                        style: TextStyle(fontSize: 10),
-                      ),
-                      Text('${listEvents[position].lessonDateTime}', style: TextStyle(fontSize: 14)),
-                    ],
-                  )
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Card cardContest(
-      int position, BuildContext context, List<dynamic> listEvents) {
-    return Card(
-      elevation: 2.0,
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(5)),
-          color: Colors.amber,
-        ),
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height / 4,
-        child: Row(
-          children: [
-            Container(
-              width: MediaQuery.of(context).size.width * 0.25,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.auto_awesome,
-                          size: 20,
-                        ),
-                        Text(
-                          '${listEvents[position].eventType}',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 12),
-                        ),
-                      ],
-                    ),
-                    Text(
-                      listEvents[position].isValid
-                          ? 'Disponible'
-                          : 'Indisponible',
-                      style:
-                      TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 20),
-              child: VerticalDivider(
-                color: Colors.black,
-                thickness: 0.5,
-              ),
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width * 0.60,
-              padding: EdgeInsets.only(left: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(listEvents[position].name,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 24),
-                          overflow: TextOverflow.ellipsis),
-                      Text(
-                        'Créer par : ${listEvents[position].user.userName}',
-                        style: TextStyle(fontSize: 10),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Adresse: ',
-                        style: TextStyle(fontSize: 10),
-                      ),
-                      Text('${listEvents[position].address}', style: TextStyle(fontSize: 14),)
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Date: ',
-                        style: TextStyle(fontSize: 10),
-                      ),
-                      Text('${listEvents[position].contestDateTime}', style: TextStyle(fontSize: 14)),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

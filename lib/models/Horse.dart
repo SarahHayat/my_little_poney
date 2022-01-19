@@ -19,7 +19,6 @@ enum HorseRace {
 enum Gender {
   male,
   female,
-  other,
 }
 
 enum Speciality {
@@ -38,13 +37,14 @@ class Horse {
   HorseRace race;
   Gender gender;
   Speciality speciality;
-  User owner;
+  User? owner;
   DateTime createdAt;
   // maybe for after
   List<User> dpUsers;
 
   Horse(this.dpUsers,
       this.id,
+      this.owner,
       {required this.name,
       required this.age,
       required this.picturePath,
@@ -52,6 +52,5 @@ class Horse {
       required this.race,
       required this.gender,
       required this.speciality,
-      required this.owner,
       required this.createdAt,});
 }

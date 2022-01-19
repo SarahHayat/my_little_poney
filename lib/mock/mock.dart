@@ -38,14 +38,14 @@ class Mock {
   static Horse horse = Horse(
     [],
     "id1",
+    userManagerOwner,
     name: "Etoile d'argent",
     age: 2,
     picturePath: "picturePath",
     dress: "dress",
     race: HorseRace.appaloosa,
-    gender: Gender.other,
+    gender: Gender.female,
     speciality: Speciality.endurance,
-    owner: userManagerOwner,
     createdAt: DateTime.now(),
   );
 

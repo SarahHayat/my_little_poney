@@ -1,10 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloud_firestore_odm/cloud_firestore_odm.dart';
-import 'package:json_annotation/json_annotation.dart';
 
 import 'User.dart';
 
-part 'Horse.g.dart';
 
 enum HorseRace {
   arabe,
@@ -34,9 +31,30 @@ enum Speciality {
   complete,
 }
 
-@JsonSerializable()
+class Movie {
+  Movie({required this.title, required this.genre});
+
+
+  Movie.fromJson(Map<String, Object?> json)
+      : this(
+    title: json['title']! as String,
+    genre: json['genre']! as String,
+  );
+
+  final String title;
+  final String genre;
+
+  Map<String, Object?> toJson() {
+    return {
+      'title': title,
+      'genre': genre,
+    };
+  }
+}
+
+
 class Horse {
-  String id;
+  String? id;
   String name;
   int age;
   String picturePath;
@@ -44,16 +62,17 @@ class Horse {
   HorseRace race;
   Gender gender;
   Speciality speciality;
-  User owner;
+  DocumentReference? owner;
   DateTime createdAt;
   // maybe for after
-  List<User> dpUsers;
+  // List<User> dpUsers;
 
   Horse(
-      this.id,
-      this.owner,
+
       {
-        this.dpUsers = const [],
+        this.id,
+        this.owner,
+        // this.dpUsers = const [],
         required this.name,
         required this.age,
         required this.picturePath,
@@ -64,9 +83,32 @@ class Horse {
         required this.createdAt,
       });
 
-  factory Horse.fromJson(Map<String, Object?> json) => _$HorseFromJson(json);
-  Map<String, Object?> toJson() => _$HorseToJson(this);
-}
+  Horse.fromJson(Map<String, Object?> json) : this(
+    id: json['id']! as String,
+    owner: json['owner']! as DocumentReference,
+    name: json['name']! as String,
+    age: json['age']! as int,
+    picturePath: json['picturePath']! as String,
+    dress: json['dress']! as String,
+    race: json['race']! as HorseRace,
+    gender: json['gender']! as Gender,
+    speciality: json['speciality']! as Speciality,
+    createdAt: json['createdAt']! as DateTime,
+  );
 
-@Collection<Horse>('horses')
-final horsesRef = HorseCollectionReference();
+  Map<String, Object?> toJson() {
+    return {
+      'id': id,
+      'owner': owner,
+      'name': name,
+      'age': age,
+      'picturePath': picturePath,
+      'dress': dress,
+      'race': race,
+      'gender': gender,
+      'speciality': speciality,
+      'createdAt': createdAt,
+    };
+  }
+
+}

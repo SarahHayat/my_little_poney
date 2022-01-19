@@ -36,8 +36,6 @@ dependencies:
   cupertino_icons: ^1.0.2
   firebase_core: ^1.11.0
   cloud_firestore: ^3.1.6
-  json_annotation: ^4.4.0
-  cloud_firestore_odm: ^1.0.0-dev.6
 
 dev_dependencies:
   flutter_test:
@@ -50,8 +48,6 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^1.0.0
   build_runner: ^2.1.7
-  cloud_firestore_odm_generator: ^1.0.0-dev.6
-  json_serializable: ^6.1.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

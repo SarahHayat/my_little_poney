@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:my_little_poney/components/login-sigup-button.dart';
@@ -93,6 +94,33 @@ class _LoginScreenState extends State<LoginScreen> {
                         title: 'Login',
                         ontapp: () async {
 
+                          CollectionReference horseRef = FirebaseFirestore.instance.collection('horses')
+                              .withConverter<Horse>(
+                                    fromFirestore: (snapshot, _) => Horse.fromJson(snapshot.data()!),
+                                    toFirestore: (horse, _) => horse.toJson(),
+                          );
+
+
+                          CollectionReference userRef = FirebaseFirestore.instance.collection('users')
+                              .withConverter<User>(
+                            fromFirestore: (snapshot, _) => User.fromJson(snapshot.data()!),
+                            toFirestore: (user, _) => user.toJson(),
+                          );
+
+                          horseRef.add(
+                            Horse(
+                                name: "étole d'argent",
+                                owner: userRef.doc('SbeW3uQKszmHEGy1p3oL'),
+                                age: 2,
+                                picturePath: "picturePath",
+                                dress: "dress",
+                                race: HorseRace.mustang,
+                                gender: Gender.other,
+                                speciality: Speciality.endurance,
+                                createdAt: DateTime.now()
+                            )
+                          );
+
 
                           // await usersRef.add(User(
                           //     "1",
@@ -116,14 +144,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           //   print('hallo');
                           //   print(doc.data.owner);
                           // }
-
-                          horsesRef.add(Horse(
-                              id,
-                              owner,
-                              name: name,
-                              age: age,
-                              picturePath: picturePath,
-                              dress: dress, race: race, gender: gender, speciality: speciality, createdAt: createdAt))
 
                           if (formkey.currentState!.validate()) {
                             setState(() {

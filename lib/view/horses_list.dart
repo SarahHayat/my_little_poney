@@ -38,7 +38,7 @@ class _HorsesListState extends State<HorsesList> {
           elevation: 10,
           centerTitle: true,
         ),
-        body: buildListView(horses, _buildRow),
+        body: ListViewSeparated(data: horses,buildRow: _buildRow),
     );
   }
 

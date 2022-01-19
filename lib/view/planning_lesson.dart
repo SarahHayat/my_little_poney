@@ -1,12 +1,11 @@
-import 'dart:developer';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:my_little_poney/helper/datetime_extension.dart';
 import 'package:my_little_poney/helper/listview.dart';
 import 'package:my_little_poney/mock/mock.dart';
 import 'package:my_little_poney/models/Lesson.dart';
 import 'package:my_little_poney/models/User.dart';
+
+import 'lesson_resume.dart';
 
 class PlanningLesson extends StatefulWidget {
   const PlanningLesson({Key? key}) : super(key: key);
@@ -78,8 +77,8 @@ class _PlanningLessonState extends State<PlanningLesson> {
     if (selected != null && selected != selectedDate) {
       setState(() {
         selectedDate = selected;
-        _filterLessonsOfWeek();
       });
+      _filterLessonsOfWeek();
     }
   }
 
@@ -139,7 +138,7 @@ class _PlanningLessonState extends State<PlanningLesson> {
               Container(
                 height: height,
                 width: width,
-                child: buildListView(dailyLesson, _buildRow),
+                child: ListViewSeparated(data: dailyLesson,buildRow: _buildRow),
               )
             ],
           );
@@ -153,15 +152,7 @@ class _PlanningLessonState extends State<PlanningLesson> {
       title: Container(
         child:Text( "${lesson.name} - ${lesson.discipline}" ),
       ),
-      subtitle: Container(
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children:[
-              Text('duration: ${lesson.duration}'),
-            ]
-        ),
-      ),
+      subtitle: LessonResume(lesson: lesson,)
     );
   }
 

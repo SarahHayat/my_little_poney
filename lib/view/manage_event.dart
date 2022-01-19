@@ -6,6 +6,8 @@ import 'package:my_little_poney/models/Contest.dart';
 import 'package:my_little_poney/models/Lesson.dart';
 import 'package:my_little_poney/models/User.dart';
 import 'package:my_little_poney/view/confirm_deletion_button.dart';
+import 'package:my_little_poney/view/lesson_resume.dart';
+import 'package:my_little_poney/view/contest_resume.dart';
 
 class ManageEvent extends StatefulWidget {
   const ManageEvent({Key? key}) : super(key: key);
@@ -36,13 +38,16 @@ class _ManageEventState extends State<ManageEvent> {
     DateTime date = selectedDate.getOnlyDate();
     List<Lesson> lessonList = [];
     List<Contest> contestList = [];
+
+    // condition for same day => allLessons[i].lessonDateTime.getOnlyDate() == date
+    // condition for same week => allContest[i].contestDateTime.areDateSameWeek(date)
     for(int i=0; i<allLessons.length; i++){
-      if(allLessons[i].lessonDateTime.getOnlyDate() == date ){
+      if(allLessons[i].lessonDateTime.areDateSameWeek(date)){
         lessonList.add(allLessons[i]);
       }
     }
     for(int i=0; i<allContest.length; i++){
-      if(allContest[i].contestDateTime.getOnlyDate() == date ){
+      if(allContest[i].contestDateTime.areDateSameWeek(date)){
         contestList.add(allContest[i]);
       }
     }
@@ -75,8 +80,9 @@ class _ManageEventState extends State<ManageEvent> {
     if(currentUser.isManager()){
       return Row(
         children: [
-          Expanded(flex:1, child:buildListView(displayedLessons, _buildRowLesson)),
-          Expanded(flex:1, child:buildListView(displayedContest, _buildRowContest)),
+
+          Expanded(flex:1, child:ListViewSeparated(data: displayedLessons, buildRow: _buildRowLesson)),
+          Expanded(flex:1, child: ListViewSeparated(data: displayedContest, buildRow: _buildRowContest)),
         ]
       );
     }
@@ -97,8 +103,8 @@ class _ManageEventState extends State<ManageEvent> {
     if (selected != null && selected != selectedDate) {
       setState(() {
         selectedDate = selected;
-        _filterEvents();
       });
+      _filterEvents();
     }
   }
 
@@ -110,15 +116,7 @@ class _ManageEventState extends State<ManageEvent> {
       title: Container(
         child:Text( "${lesson.name} - ${lesson.discipline}" ),
       ),
-      subtitle: Container(
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children:[
-              Text('duration: ${lesson.duration}'),
-            ]
-        ),
-      ),
+      subtitle: LessonResume(lesson: lesson,)
     );
   }
 
@@ -130,15 +128,7 @@ class _ManageEventState extends State<ManageEvent> {
       title: Container(
         child:Text( "${contest.name} - ${contest.address}" ),
       ),
-      subtitle: Container(
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children:[
-              Text('date: ${contest.contestDateTime.getFrenchDateTime()}'),
-            ]
-        ),
-      ),
+      subtitle: ContestResume(contest:contest)
     );
   }
 
@@ -191,7 +181,7 @@ class _ManageEventState extends State<ManageEvent> {
   _updateLesson(Lesson lesson, bool isValid){
     //@todo : add one more row to update data on this lesson in DB with a request
     setState(() {
-      //le modele devrait permettre d'update son etat
+      //need a method to update lesson validate bool
       //allLessons.remove(lesson);
     });
   }
@@ -199,7 +189,7 @@ class _ManageEventState extends State<ManageEvent> {
   _updateContest(Contest contest, bool isValid){
     //@todo : add one more row to update data on this contest in DB with a request
     setState(() {
-      //le modele devrait permettre d'update son etat
+      //need a method to update contest validate bool
       //allLessons.remove(lesson);
     });
   }

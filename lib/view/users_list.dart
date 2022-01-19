@@ -31,7 +31,7 @@ class _UsersListState extends State<UsersList> {
         elevation: 10,
         centerTitle: true,
       ),
-      body: buildListView(users, _buildRow),
+      body: ListViewSeparated(data: users,buildRow: _buildRow),
     );
   }
 

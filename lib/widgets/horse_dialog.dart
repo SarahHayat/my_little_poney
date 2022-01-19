@@ -54,15 +54,6 @@ class HorseDialogState extends State<HorseDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return getContent();
-  }
-
-  getContent() {
-    return dialogContent();
-  }
-
-  dialogContent() {
-    var size = MediaQuery.of(context).size;
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: (inEditForm) ? buildHorseForm() : buildHorseInfo(),
@@ -70,7 +61,6 @@ class HorseDialogState extends State<HorseDialog> {
   }
 
   List<Widget> buildHorseInfo() {
-    var size = MediaQuery.of(context).size;
     List<Widget> list = [
       Image.network(
         "https://cdn.radiofrance.fr/s3/cruiser-production/2021/03/e51f683c-1f29-4136-8e62-31baa8fbf95a/1280x680_origines-equides-cheval.jpg",
@@ -78,7 +68,7 @@ class HorseDialogState extends State<HorseDialog> {
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('${widget.horse.name}'),
+          Text(widget.horse.name),
           (widget.horse.gender == Gender.male)
               ? const Icon(Icons.male)
               : const Icon(Icons.female)
@@ -96,7 +86,7 @@ class HorseDialogState extends State<HorseDialog> {
                   inEditForm = (inEditForm) ? false : true;
                 });
               },
-              child: (inEditForm) ? Icon(Icons.close) : Icon(Icons.edit),
+              child: (inEditForm) ? const Icon(Icons.close) : const Icon(Icons.edit),
             )
           : Container()
     ];
@@ -111,27 +101,33 @@ class HorseDialogState extends State<HorseDialog> {
         width: 200,
       ),
       TextFormField(
-        decoration: InputDecoration(labelText: 'Nom', labelStyle: TextStyle(color: Colors.black)),
+        decoration: const InputDecoration(
+            labelText: 'Nom', labelStyle: TextStyle(color: Colors.black)),
         controller: horseNameController,
       ),
-      Padding(
-        padding: const EdgeInsets.only(top:8.0),
+      const Padding(
+        padding: EdgeInsets.only(top: 8.0),
         child: Align(
           alignment: Alignment.centerLeft,
-          child: Text('Genre ', style: TextStyle(fontSize: 13),),
+          child: Text(
+            'Genre ',
+            style: TextStyle(fontSize: 13),
+          ),
         ),
       ),
       buildRadioButtonGender(),
       TextFormField(
-        decoration: InputDecoration(labelText: 'Robe', labelStyle: TextStyle(color: Colors.black)),
+        decoration: const InputDecoration(
+            labelText: 'Robe', labelStyle: TextStyle(color: Colors.black)),
         controller: horseDressController,
       ),
       TextFormField(
-        decoration: InputDecoration(labelText: 'Age', labelStyle: TextStyle(color: Colors.black)),
+        decoration: const InputDecoration(
+            labelText: 'Age', labelStyle: TextStyle(color: Colors.black)),
         controller: horseAgeController,
       ),
-      buildDropdownRace(),
-      buildDropdownSpeciality(),
+      buildDropdown(dropdownValue: dropdownValueRace, horseRace: true ,speciality: null),
+      buildDropdown(dropdownValue: dropdownValueSpeciality, speciality: true, horseRace: null),
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -142,7 +138,7 @@ class HorseDialogState extends State<HorseDialog> {
                       inEditForm = (inEditForm) ? false : true;
                     });
                   },
-                  child: (inEditForm) ? Icon(Icons.close) : Icon(Icons.edit),
+                  child: (inEditForm) ? const Icon(Icons.close) : const Icon(Icons.edit),
                 )
               : Container(),
           ElevatedButton(
@@ -167,7 +163,9 @@ class HorseDialogState extends State<HorseDialog> {
     }
     return ElevatedButton(
       onPressed: () {
-        associateHorse();
+        setState(() {
+          user.horses.add(widget.horse);
+        });
       },
       child: Text("S'associer' à ${widget.horse.name}"),
     );
@@ -180,9 +178,9 @@ class HorseDialogState extends State<HorseDialog> {
     }
     return ElevatedButton(
       onPressed: () {
-        associateHorse();
-        beingOwner();
         setState(() {
+          user.horses.add(widget.horse);
+          widget.horse.owner = user;
           canEditHorse = true;
         });
       },
@@ -190,58 +188,50 @@ class HorseDialogState extends State<HorseDialog> {
     );
   }
 
-  buildDropdownRace() {
+  buildDropdown(
+      {required String dropdownValue, required bool? horseRace, required bool? speciality}) {
+    List<DropdownMenuItem<String>> list;
+    if(horseRace != null){
+      list  = HorseRace.values.map<DropdownMenuItem<String>>((HorseRace value) {
+        return DropdownMenuItem<String>(
+          value: value.name,
+          child: Text(value.name),
+        );
+      }).toList();
+    }else{
+      list = Speciality.values.map<DropdownMenuItem<String>>((Speciality value) {
+        return DropdownMenuItem<String>(
+          value: value.name,
+          child: Text(value.name),
+        );
+      }).toList();
+    }
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        Text('Race :'),
+        (horseRace != null)? Text("Race: "):Text('Spécialité: '),
         DropdownButton<String>(
-          value: dropdownValueRace,
-          icon: const Icon(Icons.arrow_downward, size: 17,),
+          value: dropdownValue,
+          icon: const Icon(
+            Icons.arrow_downward,
+            size: 17,
+          ),
           elevation: 16,
           underline: Container(
             height: 2,
           ),
           onChanged: (String? newValue) {
             setState(() {
-              dropdownValueRace = newValue!;
-            });
-          },
-          items: HorseRace.values.map<DropdownMenuItem<String>>((HorseRace value) {
-            return DropdownMenuItem<String>(
-              value: value.name,
-              child: Text(value.name),
-            );
-          }).toList(),
-        ),
-      ],
-    );
-  }
-
-  buildDropdownSpeciality() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Text('Spécialité :'),
-        DropdownButton(
-          value: dropdownValueSpeciality,
-          icon: const Icon(Icons.arrow_downward, size: 17,),
-          elevation: 16,
-          underline: Container(
-            height: 2,
-          ),
-          onChanged: (String? newValue) {
-            setState(() {
-              dropdownValueSpeciality = newValue!;
+              if( dropdownValue == dropdownValueRace){
+                dropdownValueRace = newValue!;
+              }
+              else{
+                dropdownValueSpeciality = newValue!;
+              }
             });
           },
           items:
-              Speciality.values.map<DropdownMenuItem<String>>((Speciality value) {
-            return DropdownMenuItem<String>(
-              value: value.name,
-              child: Text(value.name),
-            );
-          }).toList(),
+          list,
         ),
       ],
     );
@@ -266,10 +256,8 @@ class HorseDialogState extends State<HorseDialog> {
     }
     return Column(
       children: [
-        Container(
-          child: Row(
-            children: genderRadio,
-          ),
+        Row(
+          children: genderRadio,
         ),
       ],
     );
@@ -298,17 +286,5 @@ class HorseDialogState extends State<HorseDialog> {
         canEditHorse = false;
       });
     }
-  }
-
-  associateHorse() {
-    setState(() {
-      user.horses.add(widget.horse);
-    });
-  }
-
-  beingOwner() {
-    setState(() {
-      widget.horse.owner = user;
-    });
   }
 }

@@ -7,6 +7,7 @@ Widget buildListView(data, Function _buildRow, {axis:Axis.vertical}) {
       padding: const EdgeInsets.all(16.0),
       itemCount: data.length * 2,
       scrollDirection: axis,
+      controller: ScrollController(),
       itemBuilder: (context, i) {
         if (i.isOdd) return const Divider();
         final index = i ~/ 2;

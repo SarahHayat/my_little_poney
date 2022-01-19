@@ -93,4 +93,7 @@ extension DateTimeExtension on DateTime{
     return "${this.day}/${this.month}/${this.year}";
   }
 
+  String getFrenchDateTime(){
+    return "${this.day}/${this.month}/${this.year} ${this.hour}:${this.minute}";
+  }
 }

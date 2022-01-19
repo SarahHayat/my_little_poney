@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_little_poney/view/horses_list.dart';
+import 'package:my_little_poney/view/manage_event.dart';
 import 'package:my_little_poney/view/planning_lesson.dart';
 import 'package:my_little_poney/view/users_list.dart';
 
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const PlanningLesson(),
+      home: const ManageEvent(),
     );
   }
 }

@@ -1,4 +1,7 @@
 
+import 'package:flutter/material.dart';
+import 'package:my_little_poney/helper/string_extension.dart';
+
 import 'User.dart';
 
 enum HorseRace {
@@ -15,11 +18,33 @@ enum HorseRace {
   percheron,
   breton,
 }
+extension HorseRaceExtension on HorseRace {
+  String toShortString() {
+    return this.toString().enumValueToNormalCase();
+  }
+}
 
 enum Gender {
   male,
   female,
   other,
+}
+extension GenderExtension on Gender {
+  Icon getGenderIcon() {
+    switch (this) {
+      case Gender.male:
+        return Icon(Icons.male);
+      case Gender.female:
+        return Icon(Icons.female);
+      case Gender.other:
+        return Icon(Icons.transgender_outlined);
+      default:
+        return Icon(Icons.male);
+    }
+  }
+  String toShortString() {
+    return this.toString().enumValueToNormalCase();
+  }
 }
 
 enum Speciality {
@@ -27,6 +52,11 @@ enum Speciality {
   showJumping,
   endurance,
   complete,
+}
+extension SpecialityExtension on Speciality {
+  String toShortString() {
+    return this.toString().enumValueToNormalCase();
+  }
 }
 
 class Horse {

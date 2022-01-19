@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:my_little_poney/view/horses_list.dart';
+import 'package:my_little_poney/view/users_list.dart';
 
 void main() {
   runApp(const MyApp());
@@ -24,7 +26,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const UsersList(),
     );
   }
 }

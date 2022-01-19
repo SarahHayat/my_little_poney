@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "968054122840",
+    "project_id": "my-little-poney-ecbee",
+    "storage_bucket": "my-little-poney-ecbee.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:968054122840:android:f7671a48622b4dad549d2d",
+        "android_client_info": {
+          "package_name": "com.mylittleponey.my_little_poney"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "968054122840-8mndi0sireup8t4nfvj3fgul0ao7fi4h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzUEdzbDbtzmp2mmZ6tkXWEBL5CivMl4s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "968054122840-8mndi0sireup8t4nfvj3fgul0ao7fi4h.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "968054122840-0gbi54k51a0b85h6susqhpkk0ee2iv2r.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mylittleponey.myLittlePoney"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

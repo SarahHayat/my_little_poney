@@ -1,4 +1,10 @@
-import 'package:my_little_poney/models/Horse.dart';
+import 'package:cloud_firestore_odm/cloud_firestore_odm.dart';
+import 'package:json_annotation/json_annotation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'Horse.dart';
+
+part 'User.g.dart';
 
 enum UserRole {
   rider,
@@ -10,6 +16,7 @@ enum Type {
   owner,
 }
 
+@JsonSerializable()
 class User {
   String id;
   String userName;
@@ -38,4 +45,10 @@ class User {
     required this.password,
     required this.email,
   });
+
+  factory User.fromJson(Map<String, Object?> json) => _$UserFromJson(json);
+  Map<String, Object?> toJson() => _$UserToJson(this);
 }
+
+@Collection<User>('users')
+final usersRef = UserCollectionReference();

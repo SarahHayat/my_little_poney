@@ -18,21 +18,35 @@ class PlanningLesson extends StatefulWidget {
 
 class _PlanningLessonState extends State<PlanningLesson> {
   final User currentUser = Mock.userManagerOwner2;
-  late Map<String, List<Lesson>> lessons ;
-  final Map<DateTime, Map<String, List<Lesson>>> weeksLessons = {};
+  late Map<DateTime, List<Lesson>> allLessons ;
+  late Map<DateTime, List<Lesson>> displayedLessons ;
   DateTime selectedDate = DateTime.now();
 
   @override
   void initState() {
     super.initState();
     _getLessons();
+    _filterLessonsOfWeek();
   }
+
+  void _filterLessonsOfWeek(){
+    DateTime mondayOfWeek = selectedDate.getWeekFirstDay();
+    Map<DateTime, List<Lesson>> lessonList = {};
+    for(int i=0; i<DateTime.sunday; i++){
+      DateTime weekDay = mondayOfWeek.add(Duration(days: i));
+      lessonList[weekDay] = allLessons.keys.contains(weekDay) ? allLessons[weekDay] as List<Lesson> : [];
+    }
+    setState(() {
+      displayedLessons = lessonList;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
     double rowHeight = MediaQuery.of(context).size.height / 7;
     List<Widget> t = [];
-    lessons.forEach((key, value) {
+    displayedLessons.forEach((key, value) {
       t.add(_buildPlanning(rowHeight, key, value));
     });
     return Scaffold(
@@ -50,8 +64,8 @@ class _PlanningLessonState extends State<PlanningLesson> {
       body:GridView(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 7,
-          mainAxisExtent: 200
-        ),
+          mainAxisExtent:400,
+      ),
         scrollDirection: Axis.horizontal,
         children: t,
       )
@@ -68,38 +82,47 @@ class _PlanningLessonState extends State<PlanningLesson> {
       firstDate: DateTime(2020),
       lastDate: DateTime(2026),
     );
-    if (selected != null && selected != selectedDate)
+    if (selected != null && selected != selectedDate) {
       setState(() {
         selectedDate = selected;
+        _filterLessonsOfWeek();
       });
+    }
   }
 
-  _buildPlanning(double height, String day, List<Lesson> daylyLessons){
+  _buildPlanning(double height, DateTime date, List<Lesson> daylyLessons){
     int nbLessons = daylyLessons.length;
     return Container(
       height: height,
-      child: TextButton(
-        child: Container(
-          alignment: Alignment.centerLeft,
-          child:Text(
-            "$day - $nbLessons cour${nbLessons>1 ? "s" : ""}",
+      child: SizedBox(
+        child: TextButton(
+          child: Container(
+            alignment: Alignment.centerLeft,
+            child:Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children:[
+                  Text("${date.getWeekDayName()} ${date.day} ${date.getMonthName()}" ),
+                  Text("$nbLessons lesson${nbLessons>1 ? "s" : ""}" ),
+                ]
+            ),
           ),
+          onPressed: (){
+            dialogue(date, daylyLessons );
+          },
         ),
-        onPressed: (){
-          dialogue(day, daylyLessons );
-        },
-      ),
+      )
     );
   }
 
-  Future<Null> dialogue(String day, List<Lesson> dailyLesson) async{
+  Future<Null> dialogue(DateTime day, List<Lesson> dailyLesson) async{
     double width = MediaQuery.of(context).size.width *0.75;
     double height = MediaQuery.of(context).size.height *0.75;
     return showDialog(
         context: context,
         builder: (BuildContext context){
           return SimpleDialog(
-            title: Text("$day Lesson"),
+            title: Text("${day.getWeekDayName()} Lesson"),
             contentPadding: EdgeInsets.all(5.0),
             children: [
               Container(
@@ -136,7 +159,7 @@ class _PlanningLessonState extends State<PlanningLesson> {
     //il faut qu'on ai une gestion par semaine
 
     setState(() {
-      lessons = {
+      allLessons = {
         _fakeDate(DateTime.monday):[Mock.lesson, Mock.lesson],
         _fakeDate(DateTime.tuesday):[Mock.lesson],
         _fakeDate(DateTime.wednesday):[],
@@ -144,17 +167,15 @@ class _PlanningLessonState extends State<PlanningLesson> {
         _fakeDate(DateTime.friday):[Mock.lesson],
         _fakeDate(DateTime.saturday):[Mock.lesson],
         _fakeDate(DateTime.sunday):[Mock.lesson],
+        _fakeDate(8):[Mock.lesson],
+        _fakeDate(9):[Mock.lesson, Mock.lesson, Mock.lesson, Mock.lesson],
       };
-      weeksLessons[DateTime.now().getWeekFirstDay()] = lessons;
-      weeksLessons[DateTime.now().add(Duration(days: 30)).getWeekFirstDay()] = lessons;
-      log(weeksLessons.keys.toString());
     });
 
   }
 
-  String _fakeDate(int weekdayInt){
+  DateTime _fakeDate(int weekdayInt){
     int sundayDate = 16;
-    log(DateTime.parse("2022-01-${sundayDate + weekdayInt}").getWeekFirstDay().toString());
-    return DateTime.parse("2022-01-${sundayDate + weekdayInt}").getWeekDayName();
+    return DateTime.parse("2022-01-${sundayDate + weekdayInt}");
   }
 }

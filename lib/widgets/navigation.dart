@@ -16,22 +16,26 @@ class Navigation extends StatefulWidget {
 class NavigationState extends State<Navigation> {
   int _selectedIndex = 0;
   int _drawerSelectedIndex = 0;
-  List<Widget> drawerLinks = [
+  List<Map<String, dynamic>> drawerLinks = [
     //const ContestListView(title: 'Concours'),
-    ProfilePage(),
-    const UsersList(),
-    const HorsesList(),
-    const ManageEvent(),
-    const PlanningLesson()
+    {"widget":ProfilePage(), "title":"Profile"},
+    {"widget":UsersList(), "title":"Liste des utilisateurs"},
+    {"widget":HorsesList(), "title":"Liste des cheveaux"},
+    {"widget":ManageEvent(), "title":"Gestion écurie"},
+    {"widget":PlanningLesson(), "title":"Planning des cours"},
+    {"widget":ListEvents(), "title":"Liste des événements"},
   ];
 
   Widget getBody() {
-    if(drawerLinks.length>=_drawerSelectedIndex){
-      return drawerLinks[_drawerSelectedIndex];
+    return drawerLinks[_drawerSelectedIndex]["widget"];
+  }
+
+  List<Widget> getDrawerLinks(BuildContext context){
+    List<Widget> links = [];
+    for(int i=0; i<drawerLinks.length; i++) {
+      links.add(_buildDrawerLinks(drawerLinks[i]["title"], ()=> _onDrawerTap(i, context)));
     }
-    else{
-      return const ListEvents();
-    }
+    return links;
   }
 
   void _onItemTapped(int index) {
@@ -78,12 +82,8 @@ class NavigationState extends State<Navigation> {
                 child: Text('Pablo'),
               ),
             ),
-            _buildDrawerLinks("Profile", ()=> _onDrawerTap(1, context)),
-            _buildDrawerLinks("Liste des utilisateurs", ()=>_onDrawerTap(2, context)),
-            _buildDrawerLinks("Liste des cheveaux", ()=>_onDrawerTap(3, context)),
-            _buildDrawerLinks("Gestion écurie", ()=>_onDrawerTap(4, context)),
-            _buildDrawerLinks("Planning des cours", ()=>_onDrawerTap(5, context)),
-          ],
+            ...getDrawerLinks(context)
+          ] ,
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(

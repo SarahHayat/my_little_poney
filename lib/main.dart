@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:my_little_poney/api/user_service_io.dart';
+import 'package:my_little_poney/usecase/user_usecase.dart';
+
+import 'models/User.dart';
 
 void main() {
   runApp(const MyApp());
@@ -48,7 +52,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
+  UserUseCase userUseCase = UserUseCase();
   int _counter = 0;
+
+  late Future<List<User>?> futureUsers;
 
   void _incrementCounter() {
     setState(() {
@@ -61,6 +69,11 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  @override
+  void initState() {
+    super.initState();
+    futureUsers = userUseCase.getAllUser();
+  }
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done

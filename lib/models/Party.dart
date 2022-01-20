@@ -17,6 +17,7 @@ class AttendeeParty {
 
 class Party {
   String? id;
+  String name;
   User user;
   String theme;
   String? picturePath;
@@ -27,6 +28,7 @@ class Party {
 
   Party({
     this.id,
+    required this.name,
     this.picturePath,
     this.attendeesParty,
     required this.user,
@@ -38,7 +40,8 @@ class Party {
 
   factory Party.fromJson(Map<String, dynamic> json) {
     return Party(
-      id: json['id'] != null ? json['id']! as String : "",
+      id: json['_id'] != null ? json['_id']! as String : "",
+      name: json['name'] as String,
       picturePath: json['picturePath'] != null ? json['picturePath']! as String : "",
       attendeesParty: json['attendeesParty'] != null ? json['attendeesParty']! as List<AttendeeParty> : [],
       user: json['user'] as User,
@@ -51,7 +54,8 @@ class Party {
 
   Map<String, Object?> toJson() {
     return {
-      'id': id,
+      '_id': id,
+      'name': name,
       'picturePath': picturePath,
       'attendeesParty': attendeesParty,
       'user': user,

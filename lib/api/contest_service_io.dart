@@ -54,6 +54,8 @@ class ContestServiceApi {
       body: jsonEncode(contest.toJson()),
     );
 
+    print('response : ${response.body}');
+
     if (response.statusCode == 200) {
       return Contest.fromJson(jsonDecode(response.body));
     } else {

@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
+
 enum Level {
   amateur,
   club1,
@@ -14,6 +18,20 @@ class AttendeeContest {
     required this.user,
     required this.level,
   });
+
+  factory AttendeeContest.fromJson(Map<String, dynamic> json) {
+    return AttendeeContest(
+      user: json['user'] != null ? json['user']! as String : "",
+      level: json['user'] != null ? json['user']! as String : "",
+    );
+  }
+
+  Map<String, Object?> toJson() {
+    return {
+      'user': user,
+      'level': level,
+    };
+  }
 }
 
 class Contest {
@@ -42,9 +60,7 @@ class Contest {
   factory Contest.fromJson(Map<String, dynamic> json) {
     return Contest(
       id: json['_id'] != null ? json['_id']! as String : "",
-      attendeesContest: json['attendeesContest'] != null
-          ? json['attendeesContest']! as List<AttendeeContest>
-          : [],
+      attendeesContest: json['attendees'] != null ? json['attendees']! : [],
       user: json['user'] as String,
       name: json['name'] as String,
       address: json['address'] as String,
@@ -59,7 +75,7 @@ class Contest {
   Map<String, Object?> toJson() {
     return {
       '_id': id,
-      'attendeesContest': attendeesContest,
+      'attendees': jsonEncode(attendeesContest.map((e) => e.toJson()).toList()),
       'user': user,
       'name': name,
       'address': address,

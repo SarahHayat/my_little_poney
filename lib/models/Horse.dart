@@ -1,3 +1,8 @@
+import 'dart:developer';
+
+import 'package:flutter/material.dart';
+import 'package:my_little_poney/helper/string_extension.dart';
+
 import 'User.dart';
 
 enum HorseRace {
@@ -14,11 +19,33 @@ enum HorseRace {
   percheron,
   breton,
 }
+extension HorseRaceExtension on HorseRace {
+  String toShortString() {
+    return this.toString().enumValueToNormalCase();
+  }
+}
 
 enum Gender {
   male,
   female,
   other,
+}
+extension GenderExtension on Gender {
+  Icon getGenderIcon() {
+    switch (this) {
+      case Gender.male:
+        return Icon(Icons.male);
+      case Gender.female:
+        return Icon(Icons.female);
+      case Gender.other:
+        return Icon(Icons.transgender_outlined);
+      default:
+        return Icon(Icons.male);
+    }
+  }
+  String toShortString() {
+    return this.toString().enumValueToNormalCase();
+  }
 }
 
 enum Speciality {
@@ -26,6 +53,11 @@ enum Speciality {
   showJumping,
   endurance,
   complete,
+}
+extension SpecialityExtension on Speciality {
+  String toShortString() {
+    return this.toString().enumValueToNormalCase();
+  }
 }
 
 class Horse {
@@ -37,11 +69,11 @@ class Horse {
   String race;
   String gender;
   String speciality;
-  User? owner;
+  String? owner;
   DateTime createdAt;
 
   // maybe for after
-  List<String>? dpUsers;
+  List<dynamic>? dpUsers;
 
   Horse({
     this.id,
@@ -60,8 +92,8 @@ class Horse {
   factory Horse.fromJson(Map<String, dynamic> json) {
     return Horse(
       id: json['_id'] != null ? json['_id']! as String : "",
-      dpUsers: json['dpUsers'] != null ? json['dpUsers']! as List<String>? : [],
-      owner: json['owner'] != null ? json['owner']! as User? : null,
+      dpUsers: json['dpUsers'] != null ? json['dpUsers']! as List<dynamic>? : [],
+      owner: json['owner'] != null ? json['owner']! as String : null,
       picturePath: json['picturePath'] != null ? json['picturePath']! as String : "",
       age: json['age'] as int,
       dress: json['dress'] as String,
@@ -81,7 +113,7 @@ class Horse {
       'picturePath': picturePath,
       'age': age,
       'dress': dress,
-      'createdAt': createdAt,
+      'createdAt': createdAt.toString(),
       'name': name,
       'race': race,
       'speciality': speciality,

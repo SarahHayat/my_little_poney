@@ -4,7 +4,7 @@ import 'package:my_little_poney/models/User.dart';
 class UserUseCase {
   UserServiceApi api = UserServiceApi();
 
-  Future<List<User>?> getAllUser() async {
+  Future<List<User>> getAllUser() async {
     return api.getAll().then((value) => value);
   }
 

@@ -10,7 +10,7 @@ enum Level {
 
 class AttendeeContest {
   String level;
-  User user;
+  String user;
 
   AttendeeContest({
     required this.user,
@@ -20,24 +20,24 @@ class AttendeeContest {
 
 class Contest {
   String? id;
-  User user;
+  String user;
   String name;
   String address;
   String picturePath;
   DateTime contestDateTime;
-  DateTime createdAt;
-  List<AttendeeContest>? attendeesContest;
+  DateTime? createdAt;
+  List<AttendeeContest> attendeesContest;
   bool isValid;
 
   Contest({
     this.id,
-    this.attendeesContest,
+    required this.attendeesContest,
     required this.user,
     required this.name,
     required this.address,
     required this.picturePath,
     required this.contestDateTime,
-    required this.createdAt,
+    this.createdAt,
     this.isValid = false,
   });
 
@@ -47,7 +47,7 @@ class Contest {
       attendeesContest: json['attendeesContest'] != null
           ? json['attendeesContest']! as List<AttendeeContest>
           : [],
-      user: json['user'] as User,
+      user: json['user'] as String,
       name: json['name'] as String,
       address: json['address'] as String,
       picturePath:
@@ -66,8 +66,8 @@ class Contest {
       'name': name,
       'address': address,
       'picturePath': picturePath,
-      'contestDateTime': contestDateTime,
-      'createdAt': createdAt,
+      'contestDateTime': contestDateTime.toString(),
+      'createdAt': createdAt.toString(),
       'isValid': isValid
     };
   }

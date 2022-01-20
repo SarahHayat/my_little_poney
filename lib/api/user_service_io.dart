@@ -24,6 +24,25 @@ class UserServiceApi {
       throw Exception('Failed to load user');
     }
   }
+
+  Future<User> loggin(String email,String password) async {
+    final response = await http.post(
+      Uri.parse('https://my-little-poney.herokuapp.com/users/login'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'email': email,
+        'password': password,
+      }),
+    );
+    if (response.statusCode == 201) {
+      return User.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to load user');
+    }
+  }
+
   Future<User> createUser(User user) async {
     final response = await http.post(
       Uri.parse('https://my-little-poney.herokuapp.com/users'),
@@ -42,12 +61,12 @@ class UserServiceApi {
   }
 
   Future<User> updateUser(User user) async {
-    final response = await http.put(
+    final response = await http.patch(
       Uri.parse('https://my-little-poney.herokuapp.com/users/${user.id}'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: user.toJson(),
+      body: jsonEncode(user.toJson()),
     );
 
     if (response.statusCode == 200) {

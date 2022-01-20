@@ -14,13 +14,13 @@ enum Discipline {
 class Lesson {
   String? id;
   String name;
-  User user;
+  String user;
   String ground;
   DateTime lessonDateTime;
   DateTime createdAt;
   int duration;
   String discipline;
-  List<User>? attendees;
+  List<dynamic>? attendees;
   bool isValid;
 
   Lesson({
@@ -40,9 +40,9 @@ class Lesson {
     return Lesson(
       id: json['_id'] != null ? json['_id']! as String : "",
       attendees:
-          json['attendees'] != null ? json['attendees']! as List<User> : [],
+          json['attendees'] != null ? json['attendees']! as List<dynamic> : [],
       name: json['name'] as String,
-      user: json['user'] as User,
+      user: json['user'] as String,
       ground: json['ground'] as String,
       lessonDateTime: DateTime.parse(json['lessonDateTime']! as String),
       createdAt: DateTime.parse(json['createdAt']! as String),

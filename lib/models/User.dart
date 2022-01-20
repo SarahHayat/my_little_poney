@@ -39,9 +39,6 @@ class User {
     required this.email,
   });
 
-
-
-
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['_id'] != null ? json['_id']! as String : "",
@@ -49,7 +46,7 @@ class User {
           ? json['profilePicture']! as String
           : "",
       age: json['age'] != null ? json['age']! as int : 0,
-      ffeLink: json['ffeLink'] != null ? json['ffeLink']! as String : "",
+      ffeLink: json['FFELink'] != null ? json['FFELink']! as String : "",
       phoneNumber:
           json['phoneNumber'] != null ? json['phoneNumber']! as String : "",
       role: json['role'] != null ? json['role']! as String : "",
@@ -67,11 +64,11 @@ class User {
       '_id': id,
       'profilePicture': profilePicture,
       'age': age,
-      'ffeLink': ffeLink,
+      'FFELink': ffeLink,
       'phoneNumber': phoneNumber,
       'role': role,
       'horses': horses,
-      'createdAt': createdAt,
+      'createdAt': createdAt.toString(),
       'type': type,
       'userName': userName,
       'password': password,

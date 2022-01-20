@@ -20,7 +20,7 @@ class ContestListView extends StatefulWidget {
 class _ContestListState extends State<ContestListView> {
   ContestUseCase contestUseCase = ContestUseCase();
 
-  late Future<List<Contest>?> contests;
+  late List<Contest>? contests;
 
   late Contest newContest;
 
@@ -37,8 +37,7 @@ class _ContestListState extends State<ContestListView> {
   }
 
   Future<List<Contest>?> getAllContestsFromDb() async {
-    contests = contestUseCase.getAllContests();
-    print('contests : ${contests}');
+    contests = await contestUseCase.getAllContests();
 
     return contests;
   }
@@ -52,9 +51,8 @@ class _ContestListState extends State<ContestListView> {
       body: FutureBuilder<List<Contest>?>(
           future: getAllContestsFromDb(),
           builder: (context, snapshot) {
-            print('Snapshot : ${snapshot}');
             if (snapshot.hasData) {
-              return buildListView(snapshot, _buildRow);
+              return buildListView(snapshot.data, _buildRow);
             } else if (snapshot.hasError) {
               return Center(child: Text(snapshot.error.toString()));
             }
@@ -186,17 +184,14 @@ class _ContestListState extends State<ContestListView> {
       name: nameController.value.text,
       address: adressController.value.text,
       picturePath: pictureController.value.text,
-      contestDateTime: DateTime.parse(dateController.text),
-      createdAt: DateTime.now(),
+      contestDateTime: DateTime.parse(dateController.text)
     );
 
     Future<Contest?> createdContest =
-        ContestServiceApi().createContest(newContestObject);
-
-    print('New contest : ${newContestObject.toJson()}');
+        contestUseCase.createContest(newContestObject);
 
     setState(() {
-      // contests?.add(newContestObject);
+      contests?.add(newContestObject);
       newContest = newContestObject;
     });
   }

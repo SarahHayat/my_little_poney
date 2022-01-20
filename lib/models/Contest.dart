@@ -23,7 +23,7 @@ class Contest {
   String address;
   String picturePath;
   DateTime contestDateTime;
-  DateTime createdAt;
+  DateTime? createdAt;
   List<AttendeeContest> attendeesContest;
   bool isValid;
 
@@ -35,7 +35,7 @@ class Contest {
     required this.address,
     required this.picturePath,
     required this.contestDateTime,
-    required this.createdAt,
+    this.createdAt,
     this.isValid = false,
   });
 
@@ -64,8 +64,8 @@ class Contest {
       'name': name,
       'address': address,
       'picturePath': picturePath,
-      'contestDateTime': contestDateTime,
-      'createdAt': createdAt,
+      'contestDateTime': contestDateTime.toString(),
+      'createdAt': createdAt.toString(),
       'isValid': isValid
     };
   }

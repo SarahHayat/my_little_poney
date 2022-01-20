@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_little_poney/models/Contest.dart';
 import 'package:my_little_poney/helper/temporaryContest.dart';
-import 'package:http/http.dart' as http;
+import 'package:my_little_poney/usecase/contest_usecase.dart';
 
 class ContestView extends StatefulWidget {
   const ContestView({Key? key}) : super(key: key);
@@ -13,6 +13,7 @@ class ContestView extends StatefulWidget {
 
 class _ContestViewState extends State<ContestView> {
   String levelValue = Level.amateur.name;
+  ContestUseCase contestUseCase = ContestUseCase();
   late Contest contestToUpdate;
 
   @override
@@ -214,6 +215,9 @@ class _ContestViewState extends State<ContestView> {
     setState(() {
       contestToUpdate.attendeesContest.add(newAttendee);
     });
+
+    Future<Contest?> updatedContest =
+        contestUseCase.updateContestById(contestToUpdate);
 
     Navigator.pop(context);
   }

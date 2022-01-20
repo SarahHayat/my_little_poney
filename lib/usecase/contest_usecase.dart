@@ -13,8 +13,7 @@ class ContestUseCase {
   }
 
   Future<Contest?> createContest(contest) async {
-    print('Contest in usecase : $contest');
-    api.createContest(contest).then((value) => value);
+    return api.createContest(contest).then((value) => value);
   }
 
   Future<Contest?> updateContestById(contest) async {

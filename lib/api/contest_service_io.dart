@@ -32,7 +32,7 @@ class ContestServiceApi {
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: contest.toJson(),
+      body: jsonEncode(contest.toJson()),
     );
 
     print('Response contest : $response');
@@ -46,12 +46,12 @@ class ContestServiceApi {
   }
 
   Future<Contest> updateContest(Contest contest) async {
-    final response = await http.put(
+    final response = await http.patch(
       Uri.parse('https://my-little-poney.herokuapp.com/contests/${contest.id}'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: contest.toJson(),
+      body: jsonEncode(contest.toJson()),
     );
 
     if (response.statusCode == 200) {

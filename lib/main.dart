@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:my_little_poney/widgets/list_event.dart';
+import 'package:my_little_poney/api/user_service_io.dart';
+import 'package:my_little_poney/usecase/user_usecase.dart';
+
+import 'models/User.dart';
 
 void main() {
   runApp(const MyApp());
@@ -49,7 +53,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
+  UserUseCase userUseCase = UserUseCase();
   int _counter = 0;
+
+  // late Future<List<User>?> futureUsers;
+  late Future<User?> futureUser;
 
   void _incrementCounter() {
     setState(() {
@@ -60,6 +69,12 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
       _counter++;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    futureUser = userUseCase.fetchUserById('61e886829e6435822db10be7');
   }
 
   @override

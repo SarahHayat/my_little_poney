@@ -42,12 +42,12 @@ class UserServiceApi {
   }
 
   Future<User> updateUser(User user) async {
-    final response = await http.put(
+    final response = await http.patch(
       Uri.parse('https://my-little-poney.herokuapp.com/users/${user.id}'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: user.toJson(),
+      body: jsonEncode(user.toJson()),
     );
 
     if (response.statusCode == 200) {

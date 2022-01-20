@@ -14,20 +14,20 @@ class HorseDialog extends StatefulWidget {
 }
 
 class HorseDialogState extends State<HorseDialog> {
-  static User user = User(
-    "id",
-    "profilePicture",
-    24,
-    "https://ffelink.com",
-    "07 70 13 99 65",
-    UserRole.rider,
-    [],
-    DateTime.now(),
-    Type.owner,
-    userName: "Amandine",
-    password: "password",
-    email: "amandine@gmail.com",
-  );
+  // static User user = User(
+  //   "id",
+  //   "profilePicture",
+  //   24,
+  //   "https://ffelink.com",
+  //   "07 70 13 99 65",
+  //   UserRole.rider,
+  //   [],
+  //   DateTime.now(),
+  //   Type.owner,
+  //   userName: "Amandine",
+  //   password: "password",
+  //   email: "amandine@gmail.com",
+  // );
   TextEditingController horseNameController = TextEditingController();
   TextEditingController horseAgeController = TextEditingController();
   TextEditingController horseDressController = TextEditingController();
@@ -42,10 +42,10 @@ class HorseDialogState extends State<HorseDialog> {
   @override
   void initState() {
     super.initState();
-    checkIfUserCanEditHorse();
-    dropdownValueRace = widget.horse.race.name;
-    dropdownValueSpeciality = widget.horse.speciality.name;
-    radioValueGender = widget.horse.gender;
+    // checkIfUserCanEditHorse();
+    // dropdownValueRace = widget.horse.race.name;
+    // dropdownValueSpeciality = widget.horse.speciality.name;
+    // radioValueGender = widget.horse.gender;
 
     horseNameController.text = widget.horse.name;
     horseAgeController.text = widget.horse.age.toString();
@@ -54,44 +54,45 @@ class HorseDialogState extends State<HorseDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: (inEditForm) ? buildHorseForm() : buildHorseInfo(),
-    );
+    return Text('test');
+    // return Column(
+    //   mainAxisAlignment: MainAxisAlignment.start,
+    //   children: (inEditForm) ? buildHorseForm() : buildHorseInfo(),
+    // );
   }
 
-  List<Widget> buildHorseInfo() {
-    List<Widget> list = [
-      Image.network(
-        "https://cdn.radiofrance.fr/s3/cruiser-production/2021/03/e51f683c-1f29-4136-8e62-31baa8fbf95a/1280x680_origines-equides-cheval.jpg",
-      ),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(widget.horse.name),
-          (widget.horse.gender == Gender.male)
-              ? const Icon(Icons.male)
-              : const Icon(Icons.female)
-        ],
-      ),
-      Text('Robe : ${widget.horse.dress} '),
-      Text('Specialité : ${widget.horse.speciality.name}'),
-      Text('Age : ${widget.horse.age} ans'),
-      Text('Race : ${widget.horse.race.name} '),
-      (user.type == Type.dp) ? buildDpButton() : buildOwnerButton(),
-      (canEditHorse)
-          ? ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  inEditForm = (inEditForm) ? false : true;
-                });
-              },
-              child: (inEditForm) ? const Icon(Icons.close) : const Icon(Icons.edit),
-            )
-          : Container()
-    ];
-    return list;
-  }
+  // List<Widget> buildHorseInfo() {
+  //   List<Widget> list = [
+  //     Image.network(
+  //       "https://cdn.radiofrance.fr/s3/cruiser-production/2021/03/e51f683c-1f29-4136-8e62-31baa8fbf95a/1280x680_origines-equides-cheval.jpg",
+  //     ),
+  //     Row(
+  //       mainAxisAlignment: MainAxisAlignment.center,
+  //       children: [
+  //         Text(widget.horse.name),
+  //         (widget.horse.gender == Gender.male)
+  //             ? const Icon(Icons.male)
+  //             : const Icon(Icons.female)
+  //       ],
+  //     ),
+  //     Text('Robe : ${widget.horse.dress} '),
+  //     Text('Specialité : ${widget.horse.speciality.name}'),
+  //     Text('Age : ${widget.horse.age} ans'),
+  //     Text('Race : ${widget.horse.race.name} '),
+  //     (user.type == Type.dp) ? buildDpButton() : buildOwnerButton(),
+  //     (canEditHorse)
+  //         ? ElevatedButton(
+  //             onPressed: () {
+  //               setState(() {
+  //                 inEditForm = (inEditForm) ? false : true;
+  //               });
+  //             },
+  //             child: (inEditForm) ? const Icon(Icons.close) : const Icon(Icons.edit),
+  //           )
+  //         : Container()
+  //   ];
+  //   return list;
+  // }
 
   List<Widget> buildHorseForm() {
     List<Widget> list = [
@@ -145,7 +146,7 @@ class HorseDialogState extends State<HorseDialog> {
             onPressed: () {
               setState(() {
                 inEditForm = false;
-                submitHorseForm();
+                // submitHorseForm();
               });
             },
             child: Text('Enregistrer'),
@@ -156,37 +157,37 @@ class HorseDialogState extends State<HorseDialog> {
     return list;
   }
 
-  buildDpButton() {
-    // the dp user has already one horse or the horse has already an owner
-    if (user.horses.length == 1 || widget.horse.owner != null) {
-      return Container();
-    }
-    return ElevatedButton(
-      onPressed: () {
-        setState(() {
-          user.horses.add(widget.horse);
-        });
-      },
-      child: Text("S'associer' à ${widget.horse.name}"),
-    );
-  }
+  // buildDpButton() {
+  //   // the dp user has already one horse or the horse has already an owner
+  //   if (user.horses.length == 1 || widget.horse.owner != null) {
+  //     return Container();
+  //   }
+  //   return ElevatedButton(
+  //     onPressed: () {
+  //       setState(() {
+  //         user.horses.add(widget.horse);
+  //       });
+  //     },
+  //     child: Text("S'associer' à ${widget.horse.name}"),
+  //   );
+  // }
 
-  buildOwnerButton() {
-    // the horse has already an owner
-    if (widget.horse.owner != null) {
-      return Container();
-    }
-    return ElevatedButton(
-      onPressed: () {
-        setState(() {
-          user.horses.add(widget.horse);
-          widget.horse.owner = user;
-          canEditHorse = true;
-        });
-      },
-      child: Text("devenir propriétaire de ${widget.horse.name}"),
-    );
-  }
+  // buildOwnerButton() {
+  //   // the horse has already an owner
+  //   if (widget.horse.owner != null) {
+  //     return Container();
+  //   }
+  //   return ElevatedButton(
+  //     onPressed: () {
+  //       setState(() {
+  //         user.horses.add(widget.horse);
+  //         widget.horse.owner = user;
+  //         canEditHorse = true;
+  //       });
+  //     },
+  //     child: Text("devenir propriétaire de ${widget.horse.name}"),
+  //   );
+  // }
 
   buildDropdown(
       {required String dropdownValue, required bool? horseRace, required bool? speciality}) {
@@ -263,28 +264,28 @@ class HorseDialogState extends State<HorseDialog> {
     );
   }
 
-  submitHorseForm() {
-    widget.horse.name = horseNameController.value.text;
-    widget.horse.dress = horseDressController.value.text;
-    widget.horse.age = int.parse(horseAgeController.value.text);
-    widget.horse.race =
-        HorseRace.values.firstWhere((el) => el.name == dropdownValueRace);
-    widget.horse.speciality = Speciality.values
-        .firstWhere((el) => el.name == dropdownValueSpeciality);
-    widget.horse.gender = radioValueGender;
-  }
+  // submitHorseForm() {
+  //   widget.horse.name = horseNameController.value.text;
+  //   widget.horse.dress = horseDressController.value.text;
+  //   widget.horse.age = int.parse(horseAgeController.value.text);
+  //   widget.horse.race =
+  //       HorseRace.values.firstWhere((el) => el.name == dropdownValueRace);
+  //   widget.horse.speciality = Speciality.values
+  //       .firstWhere((el) => el.name == dropdownValueSpeciality);
+  //   widget.horse.gender = radioValueGender;
+  // }
 
-  checkIfUserCanEditHorse() {
-    if (user.type == Type.owner && widget.horse.owner != null) {
-      if (widget.horse.owner!.id == user.id) {
-        setState(() {
-          canEditHorse = true;
-        });
-      }
-    } else {
-      setState(() {
-        canEditHorse = false;
-      });
-    }
-  }
+  // checkIfUserCanEditHorse() {
+  //   if (user.type == Type.owner && widget.horse.owner != null) {
+  //     if (widget.horse.owner!.id == user.id) {
+  //       setState(() {
+  //         canEditHorse = true;
+  //       });
+  //     }
+  //   } else {
+  //     setState(() {
+  //       canEditHorse = false;
+  //     });
+  //   }
+  // }
 }

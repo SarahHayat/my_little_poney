@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_little_poney/widets/test.dart';
+import 'package:my_little_poney/widgets/profile_page.dart';
 
 class Navigation extends StatefulWidget {
   @override
@@ -16,10 +17,10 @@ class NavigationState extends State<Navigation> {
       return Test();
     } else if (_selectedIndex == 1) {
       // return the second page
-      return Test();
+      return ProfilePage();
     } else {
       // return the third page
-      return Test();
+      return ProfilePage();
     }
   }
 

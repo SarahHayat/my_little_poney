@@ -38,7 +38,7 @@ class Lesson {
 
   factory Lesson.fromJson(Map<String, dynamic> json) {
     return Lesson(
-      id: json['id'] != null ? json['id']! as String : "",
+      id: json['_id'] != null ? json['_id']! as String : "",
       attendees:
           json['attendees'] != null ? json['attendees']! as List<User> : [],
       name: json['name'] as String,

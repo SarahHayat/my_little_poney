@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:my_little_poney/api/user_service_io.dart';
+import 'package:my_little_poney/usecase/user_usecase.dart';
 import 'package:my_little_poney/view/horses_list.dart';
 import 'package:my_little_poney/view/manage_event.dart';
-import 'package:my_little_poney/view/planning_lesson.dart';
-import 'package:my_little_poney/view/users_list.dart';
+import 'package:my_little_poney/widets/navigation.dart';
+import 'package:my_little_poney/widets/test.dart';
+
+import 'models/User.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,25 +15,19 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'My Little Poney',
+      routes: {
+        // put routes here
+        Test.routeName: (context) => Test()
+      },
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const ManageEvent(),
-      //home: const HorsesList(),
+      home:ManageEvent(),
+      //home: Navigation(),
     );
   }
 }
@@ -53,7 +51,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
+  UserUseCase userUseCase = UserUseCase();
   int _counter = 0;
+
+  // late Future<List<User>?> futureUsers;
+  late Future<User?> futureUser;
 
   void _incrementCounter() {
     setState(() {
@@ -64,6 +67,12 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
       _counter++;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    futureUser = userUseCase.fetchUserById('61e886829e6435822db10be7');
   }
 
   @override

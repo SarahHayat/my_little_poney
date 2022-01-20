@@ -13,7 +13,8 @@ class PartyTile extends StatelessWidget {
       title: Container(
           child: Row(
             children: [
-              TextIcon(title: party.theme.toShortString(), icon: party.theme.getIcon(), ),
+              Text(party.theme)
+              //TextIcon(title: party.theme, icon: party.theme.getIcon(), ),
             ],
           )
       ),

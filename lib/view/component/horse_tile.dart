@@ -13,7 +13,7 @@ class HorseTile extends StatelessWidget {
           child: Row(
             children: [
               Text( horse.name ),
-              horse.gender.getGenderIcon()
+              //@todo : horse.gender.getGenderIcon()
             ],
           )
       ),
@@ -24,8 +24,8 @@ class HorseTile extends StatelessWidget {
             children:[
               Text('age: ${horse.age}'),
               Text('dress: ${horse.dress}'),
-              Text('race: ${horse.race.toShortString()}'),
-              Text('speciality: ${horse.speciality.toShortString()}'),
+              Text('race: ${horse.race}'),
+              Text('speciality: ${horse.speciality}'),
             ]
         ),
       ),

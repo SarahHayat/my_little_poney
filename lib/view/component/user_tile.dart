@@ -13,7 +13,7 @@ class UserTile extends StatelessWidget {
           child: Row(
             children: [
               Text( user.userName ),
-              user.role.getRoleIcon()
+              // @todo : user.role.getRoleIcon()
             ],
           )
       ),
@@ -23,10 +23,10 @@ class UserTile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children:[
               Text('age: ${user.age}'),
-              Text('type: ${user.type.toShortString()}'),
+              Text('type: ${user.type}'),
               Text('phone: ${user.phoneNumber}'),
               Text('email: ${user.email}'),
-              Text('profil FFE: ${user.FFELink}'),
+              Text('profil FFE: ${user.ffeLink}'),
             ]
         ),
       ),

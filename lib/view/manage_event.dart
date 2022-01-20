@@ -129,7 +129,7 @@ class _ManageEventState extends State<ManageEvent> {
           return YesNoDialog(
             title: "Validate this party?",
             children: [
-              Text("${party.theme.toShortString()} will be validate."),
+              Text("${party.theme} will be validate."),
             ],
             trueFunction: ()=>_updateParty(party, true),
             falseFunction: ()=>_updateParty(party, false),
@@ -151,7 +151,7 @@ class _ManageEventState extends State<ManageEvent> {
 
   _updateParty(Party party, bool isValid){
     //@todo : add one more row to update data on this party in DB with a request
-    log("Update party ${party.theme.toShortString()} $isValid");
+    log("Update party ${party.theme} $isValid");
     setState(() {
       //need a method to update party validate bool
       //allLessons.remove(lesson);
@@ -189,7 +189,7 @@ class _ManageEventState extends State<ManageEvent> {
       }
     }
     for(int i=0; i<allParty.length; i++){
-      if(allParty[i].createdAt.areDateSameWeek(date)){
+      if(allParty[i].partyDateTime.areDateSameWeek(date)){
         partyList.add(allParty[i]);
       }
     }

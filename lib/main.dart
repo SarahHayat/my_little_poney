@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:my_little_poney/widgets/list_event.dart';
 import 'package:my_little_poney/api/user_service_io.dart';
 import 'package:my_little_poney/usecase/user_usecase.dart';
+import 'package:my_little_poney/widets/navigation.dart';
+import 'package:my_little_poney/widets/test.dart';
 
 import 'models/User.dart';
 
@@ -16,7 +17,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'My Little Poney',
+      routes: {
+        // put routes here
+        Test.routeName: (context) => Test()
+      },
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -29,7 +34,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const ListEvents(),
+      home: Navigation(),
     );
   }
 }

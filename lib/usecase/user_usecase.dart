@@ -11,4 +11,16 @@ class UserUseCase {
   Future<User?> fetchUserById(id) async {
     api.fetchUserById(id).then((value) => value);
   }
+
+  Future<User?> createUser(user) async {
+    api.createUser(user).then((value) => value);
+  }
+
+  Future<User?> updateUserById(user) async {
+    api.updateUser(user).then((value) => value);
+  }
+
+  Future<User?> deleteUserById(id) async {
+    api.deleteUser(id).then((value) => value);
+  }
 }

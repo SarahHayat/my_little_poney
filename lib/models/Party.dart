@@ -1,6 +1,6 @@
 import 'User.dart';
 
-enum Themes {
+enum ThemeParty {
   happyHour,
   dinner,
 }
@@ -16,27 +16,49 @@ class AttendeeParty {
 }
 
 class Party {
-  String id;
-  String name;
+  String? id;
   User user;
-  Themes theme;
-  String picturePath;
-  List<AttendeeParty> attendeesParty;
+  String theme;
+  String? picturePath;
+  List<AttendeeParty>? attendeesParty;
   bool isValid;
   DateTime createdAt;
   DateTime partyDateTime;
-  String eventType;
 
-  Party(
+  Party({
     this.id,
-    this.name,
     this.picturePath,
-    this.attendeesParty, {
-    required this.partyDateTime,
+    this.attendeesParty,
     required this.user,
     required this.theme,
     this.isValid = false,
     required this.createdAt,
-    this.eventType = 'party',
+    required this.partyDateTime,
   });
+
+  factory Party.fromJson(Map<String, dynamic> json) {
+    return Party(
+      id: json['_id'] != null ? json['_id']! as String : "",
+      picturePath: json['picturePath'] != null ? json['picturePath']! as String : "",
+      attendeesParty: json['attendeesParty'] != null ? json['attendeesParty']! as List<AttendeeParty> : [],
+      user: json['user'] as User,
+      theme: json['theme'] as String,
+      isValid: json['isValid']  as bool,
+      createdAt: DateTime.parse(json['createdAt']! as String),
+      partyDateTime: DateTime.parse(json['partyDateTime']! as String),
+    );
+  }
+
+  Map<String, Object?> toJson() {
+    return {
+      '_id': id,
+      'picturePath': picturePath,
+      'attendeesParty': attendeesParty,
+      'user': user,
+      'theme': theme,
+      'isValid': isValid,
+      'createdAt': createdAt,
+      'partyDateTime': partyDateTime,
+    };
+  }
 }

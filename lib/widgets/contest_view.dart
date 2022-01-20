@@ -216,6 +216,9 @@ class _ContestViewState extends State<ContestView> {
       contestToUpdate.attendeesContest.add(newAttendee);
     });
 
+    print(
+        'contestToUpdate.attendeesContest : ${contestToUpdate.attendeesContest[0].level}');
+
     Future<Contest?> updatedContest =
         contestUseCase.updateContestById(contestToUpdate);
 

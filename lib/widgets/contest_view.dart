@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:my_little_poney/models/Contest.dart';
+import 'package:my_little_poney/helper/temporaryContest.dart';
+import 'package:http/http.dart' as http;
 
 class ContestView extends StatefulWidget {
   const ContestView({Key? key}) : super(key: key);
@@ -10,9 +12,13 @@ class ContestView extends StatefulWidget {
 }
 
 class _ContestViewState extends State<ContestView> {
+  String levelValue = Level.amateur.name;
+  late Contest contestToUpdate;
+
   @override
   Widget build(BuildContext context) {
     final arguments = ModalRoute.of(context)?.settings.arguments as Contest;
+    contestToUpdate = arguments;
 
     Widget titleSection = Container(
       padding: const EdgeInsets.all(32),
@@ -57,7 +63,7 @@ class _ContestViewState extends State<ContestView> {
     Widget buttonSection = Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        _buildButtonColumn(color, Icons.join_inner, 'Rejoindre'),
+        _buildButtonColumn(color, Icons.join_inner, 'Participer'),
       ],
     );
 
@@ -114,11 +120,101 @@ class _ContestViewState extends State<ContestView> {
               ),
             ),
             onPressed: () {
-              Navigator.pop(context);
+              _joinContestDialog(context);
             },
           ),
         ),
       ],
     );
+  }
+
+  Future<void> _joinContestDialog(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Voulez-vous participer au concours ?'),
+            content: Card(
+              elevation: 5,
+              margin: const EdgeInsets.all(20),
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    boutonBool(true),
+                    boutonBool(false),
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
+  Future<void> _selectLevel(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Choisissez un niveau ?'),
+            content: Card(
+              elevation: 5,
+              margin: const EdgeInsets.all(20),
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: DropdownButton<String>(
+                  value: levelValue,
+                  icon: const Icon(Icons.arrow_downward),
+                  elevation: 16,
+                  style: const TextStyle(color: Colors.deepPurple),
+                  underline: Container(
+                    height: 2,
+                    color: Colors.deepPurpleAccent,
+                  ),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      levelValue = newValue!;
+                    });
+                  },
+                  items:
+                      Level.values.map<DropdownMenuItem<String>>((Level value) {
+                    return DropdownMenuItem<String>(
+                      value: value.name,
+                      child: Text(value.name),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+            actions: [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(primary: Colors.green),
+                child: const Text('Ok'),
+                onPressed: () {
+                  _joinContest();
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+  ElevatedButton boutonBool(bool b) {
+    return ElevatedButton(
+      onPressed: (() => (b) ? _selectLevel(context) : Navigator.pop(context)),
+      child: Text((b) ? "Oui" : "Non"),
+    );
+  }
+
+  void _joinContest() async {
+    AttendeeContest newAttendee =
+        AttendeeContest(user: monUser, level: levelValue);
+
+    setState(() {
+      contestToUpdate.attendeesContest.add(newAttendee);
+    });
+
+    Navigator.pop(context);
   }
 }

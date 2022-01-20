@@ -31,6 +31,21 @@ late User userRiderDp = User(
   email: "antony@gmail.com",
 );
 
+late User monUser = User(
+  "id2",
+  "profilePicture",
+  20,
+  "FFELink",
+  "phoneNumber",
+  UserRole.rider,
+  [horse],
+  DateTime.now(),
+  Type.dp,
+  userName: "Brian",
+  password: "12345",
+  email: "b.lecarpentier@edu.itescia.fr",
+);
+
 late Contest contest = Contest(
   "id1",
   [],

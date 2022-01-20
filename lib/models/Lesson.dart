@@ -12,20 +12,20 @@ enum Discipline {
 }
 
 class Lesson {
-  String id;
+  String? id;
   String name;
   User user;
-  Ground ground;
+  String ground;
   DateTime lessonDateTime;
   DateTime createdAt;
   int duration;
-  Discipline discipline;
-  List<User> attendees;
+  String discipline;
+  List<User>? attendees;
   bool isValid;
 
-  Lesson(
+  Lesson({
     this.id,
-    this.attendees, {
+    this.attendees,
     required this.name,
     required this.user,
     required this.ground,
@@ -35,4 +35,35 @@ class Lesson {
     required this.discipline,
     this.isValid = false,
   });
+
+  factory Lesson.fromJson(Map<String, dynamic> json) {
+    return Lesson(
+      id: json['_id'] != null ? json['_id']! as String : "",
+      attendees:
+          json['attendees'] != null ? json['attendees']! as List<User> : [],
+      name: json['name'] as String,
+      user: json['user'] as User,
+      ground: json['ground'] as String,
+      lessonDateTime: DateTime.parse(json['lessonDateTime']! as String),
+      createdAt: DateTime.parse(json['createdAt']! as String),
+      duration: json['duration'] as int,
+      discipline: json['discipline'] as String,
+      isValid: json['isValid'] as bool,
+    );
+  }
+
+  Map<String, Object?> toJson() {
+    return {
+      '_id': id,
+      'attendees': attendees,
+      'name': name,
+      'user': user,
+      'ground': ground,
+      'lessonDateTime': lessonDateTime,
+      'createdAt': createdAt,
+      'duration': duration,
+      'discipline': discipline,
+      'isValid': isValid,
+    };
+  }
 }

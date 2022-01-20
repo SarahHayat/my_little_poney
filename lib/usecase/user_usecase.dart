@@ -12,6 +12,18 @@ class UserUseCase {
     api.fetchUserById(id).then((value) => value);
   }
 
+  Future<User?> createUser(user) async {
+    api.createUser(user).then((value) => value);
+  }
+
+  Future<User?> updateUserById(user) async {
+    api.updateUser(user).then((value) => value);
+  }
+
+  Future<User?> deleteUserById(id) async {
+    api.deleteUser(id).then((value) => value);
+  }
+
   Future<User?> loggin(String email,String password) async {
     api.loggin(email, password).then((value) => value).catchError((onError) => throw Exception('Failed to load user'));
   }

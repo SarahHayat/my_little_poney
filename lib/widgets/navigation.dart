@@ -1,29 +1,28 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:localstorage/localstorage.dart';
 import 'package:my_little_poney/widets/test.dart';
+import 'package:my_little_poney/widgets/contest.dart';
+import 'package:my_little_poney/widgets/list_event.dart';
+import 'package:my_little_poney/widgets/profile_page.dart';
 
 class Navigation extends StatefulWidget {
-  static const routeName = 'navigation';
   @override
   State<StatefulWidget> createState() => NavigationState();
 }
 
 class NavigationState extends State<Navigation> {
   int _selectedIndex = 0;
-  final LocalStorage storage = LocalStorage('poney_app');
 
   Widget getBody() {
     if (_selectedIndex == 0) {
       // return the first page
-      print(storage.getItem('user'));
-      return Test();
+      return const ContestListView(title: 'Concours');
     } else if (_selectedIndex == 1) {
       // return the second page
-      return Test();
+      return ProfilePage();
     } else {
       // return the third page
-      return Test();
+      return const ListEvents();
     }
   }
 
@@ -74,12 +73,12 @@ class NavigationState extends State<Navigation> {
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.cached),
-            label: 'Item 1',
+            icon: Icon(Icons.sports_score),
+            label: 'Concours',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.cached),
-            label: 'Item 2',
+            label: 'Profile',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.cached),

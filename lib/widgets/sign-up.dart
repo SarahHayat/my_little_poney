@@ -1,7 +1,15 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:my_little_poney/components/login-sigup-button.dart';
 import 'package:my_little_poney/constants/constants.dart';
+import 'package:my_little_poney/models/User.dart';
+import 'package:my_little_poney/usecase/user_usecase.dart';
+
+import 'login.dart';
+import 'navigation.dart';
 
 class SignupScreen extends StatefulWidget {
   @override
@@ -10,12 +18,16 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   final formkey = GlobalKey<FormState>();
+  final LocalStorage storage = LocalStorage('poney_app');
+  UserUseCase userUseCase = UserUseCase();
 
   String email = '';
   String userName = '';
   String password = '';
+  String urlPhoto = '';
+  String profilePicture =
+      "https://cdn.pixabay.com/photo/2016/03/23/04/01/woman-1274056_1280.jpg";
   bool isloading = false;
-
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +41,9 @@ class _SignupScreenState extends State<SignupScreen> {
             color: Colors.black,
             size: 30,
           ),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                  builder: (BuildContext context) => const LoginScreen())),
         ),
       ),
       body: isloading
@@ -62,38 +76,29 @@ class _SignupScreenState extends State<SignupScreen> {
                                     fontWeight: FontWeight.bold),
                               ),
                             ),
-                        Column(
-                          children: [
-                            Stack(
-                              alignment: Alignment.topCenter,
-                              children: const [
-                                Padding(
-                                  padding: EdgeInsets.only(top: 30),
-                                  child: CircleAvatar(
-                                    radius: 70,
-                                    backgroundColor: Colors.white,
-                                    backgroundImage: NetworkImage(
-                                        "https://cdn.pixabay.com/photo/2016/03/23/04/01/woman-1274056_1280.jpg"),
+                            Column(children: [
+                              Stack(
+                                alignment: Alignment.topCenter,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 30),
+                                    child: CircleAvatar(
+                                      radius: 70,
+                                      backgroundColor: Colors.white,
+                                      backgroundImage:
+                                          NetworkImage(profilePicture),
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 15),
-                            LoginSignupButton(
-                                title: 'Uploader photo',
-                                width: 200.0,
-                                ontapp: () {
-                                  // showDialog(context: context, builder: (BuildContext context) {
-                                  //   return const AlertDialog(
-                                  //     title: TextField(),
-                                  //     content: ElevatedButton(onPressed: onPressed, child: child)
-                                  //     ,
-                                  //   );
-                                  // });
-
-                                }
-                            ),
-                          ]),
+                                ],
+                              ),
+                              const SizedBox(height: 15),
+                              LoginSignupButton(
+                                  title: 'Uploader photo',
+                                  width: 200.0,
+                                  ontapp: () {
+                                    dialogue();
+                                  }),
+                            ]),
                             const SizedBox(height: 30),
                             TextFormField(
                               keyboardType: TextInputType.emailAddress,
@@ -151,12 +156,22 @@ class _SignupScreenState extends State<SignupScreen> {
                             ),
                             const SizedBox(height: 80),
                             LoginSignupButton(
-                              title: 'Enregistrer',
-                              ontapp: () async {
-
-
-                                }
-                            ),
+                                title: 'Enregistrer',
+                                ontapp: () async {
+                                  userUseCase
+                                      .createUser(User(
+                                          email: email,
+                                          password: password,
+                                          userName: userName,
+                                          profilePicture: profilePicture))
+                                      .then((user) {
+                                    storage.setItem('user', user.toJson());
+                                    Navigator.of(context).pushReplacement(
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                Navigation()));
+                                  }).catchError((onError) => errorDialogue());
+                                }),
                           ],
                         ),
                       ),
@@ -166,5 +181,49 @@ class _SignupScreenState extends State<SignupScreen> {
               ),
             ),
     );
+  }
+
+  Future<Null> dialogue() async {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            title: const Text('Url'),
+            contentPadding: const EdgeInsets.all(20.0),
+            children: [
+              Container(
+                height: 25.0,
+              ),
+              TextField(
+                onChanged: (value) {
+                  urlPhoto = value;
+                  print(urlPhoto);
+                },
+              ),
+              Container(
+                height: 25.0,
+              ),
+              LoginSignupButton(
+                  title: 'Envoyer',
+                  width: 100.0,
+                  ontapp: () {
+                    setState(() {
+                      profilePicture = urlPhoto;
+                    });
+                    Navigator.pop(context);
+                  })
+            ],
+          );
+        });
+  }
+
+  Future<Null> errorDialogue() async {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return const SimpleDialog(
+            children: [Center(child: Text('Erreur création de compte'))],
+          );
+        });
   }
 }

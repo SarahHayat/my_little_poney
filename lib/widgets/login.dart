@@ -5,7 +5,7 @@ import 'package:my_little_poney/components/login-sigup-button.dart';
 import 'package:my_little_poney/constants/constants.dart';
 import 'package:my_little_poney/models/User.dart';
 import 'package:my_little_poney/usecase/user_usecase.dart';
-import 'package:my_little_poney/widets/navigation.dart';
+import 'package:my_little_poney/widgets/navigation.dart';
 import 'package:my_little_poney/widets/test.dart';
 import 'package:my_little_poney/widgets/sign-up.dart';
 
@@ -97,25 +97,22 @@ class _LoginScreenState extends State<LoginScreen> {
                       LoginSignupButton(
                         title: 'Login',
                         ontapp: () async {
-                          userUseCase.api.loggin(email, password).then((user)
+                          userUseCase.loggin(email, password).then((user)
                           {
                             storage.setItem('user', user.toJson());
                             Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => Navigation()));
                           }).catchError((onError) {
-                            const AlertDialog();
+                            errorDialogue();
+
                           });
 
                         },
                       ),
                       const SizedBox(height: 30),
+
                       GestureDetector(
                         onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => SignupScreen()));
-                          // Navigator.of(context).push(
-                          //   MaterialPageRoute(
-                          //     builder: (context) => SignupScreen(),
-                          //   ),
-                          // );
+                          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => SignupScreen()));
                         },
                         child: Row(
                           children: const [
@@ -137,6 +134,33 @@ class _LoginScreenState extends State<LoginScreen> {
                             )
                           ],
                         ),
+                      ),
+                      const SizedBox(height: 30),
+                      GestureDetector(
+                        onTap: () {
+                          resetDialog();
+
+                        },
+                        child: Row(
+                          children: const [
+                            Text(
+                              "Mot de passe oublié ?",
+                              style: TextStyle(
+                                  fontSize: 20, color: Colors.black87),
+                            ),
+                            SizedBox(width: 10),
+                            Hero(
+                              tag: '1',
+                              child: Text(
+                                'Reset',
+                                style: TextStyle(
+                                    fontSize: 21,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black),
+                              ),
+                            )
+                          ],
+                        ),
                       )
                     ],
                   ),
@@ -146,6 +170,25 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Future<Null> resetDialog() async {
+    return showDialog(context: context, builder: (BuildContext context) {
+      return const SimpleDialog(
+        children: [Center(child: Text('Login incorrect'))],
+      );
+    }
+    );
+  }
+
+  Future<Null> errorDialogue() async {
+    return showDialog(context: context, builder: (BuildContext context) {
+      return const SimpleDialog(
+        title: Text('Reset mot de passe'),
+        children: [],
+      );
+    }
     );
   }
 }

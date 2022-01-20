@@ -1,12 +1,14 @@
-import 'dart:developer';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:my_little_poney/helper/datetime_extension.dart';
 import 'package:my_little_poney/helper/listview.dart';
 import 'package:my_little_poney/mock/mock.dart';
 import 'package:my_little_poney/models/Lesson.dart';
 import 'package:my_little_poney/models/User.dart';
+import 'package:my_little_poney/view/component/custom_datepicker.dart';
+import 'package:my_little_poney/view/component/daily_section_content.dart';
+import 'package:my_little_poney/view/component/lesson_tile.dart';
+
+import 'component/daily_section.dart';
 
 class PlanningLesson extends StatefulWidget {
   const PlanningLesson({Key? key}) : super(key: key);
@@ -29,6 +31,7 @@ class _PlanningLessonState extends State<PlanningLesson> {
     _filterLessonsOfWeek();
   }
 
+  /// Filter lessons depending on [selectedDate] week
   void _filterLessonsOfWeek(){
     DateTime mondayOfWeek = selectedDate.getWeekFirstDay();
     Map<DateTime, List<Lesson>> lessonList = {};
@@ -41,7 +44,6 @@ class _PlanningLessonState extends State<PlanningLesson> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     List<Widget> t = [];
@@ -53,12 +55,7 @@ class _PlanningLessonState extends State<PlanningLesson> {
         title: Text("Lesson planning week : ${selectedDate.getWeekFirstDay().getFrenchDate()}"),
         elevation: 10,
         centerTitle: true,
-        leading: ElevatedButton(
-          onPressed: (){
-            _selectDate(context);
-          },
-          child: Icon(Icons.calendar_today),
-        ),
+        leading: CustomDatePicker(initialDate: selectedDate, onSelected: _updateSelectedDate,),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -68,64 +65,32 @@ class _PlanningLessonState extends State<PlanningLesson> {
     );
   }
 
-  _selectDate(BuildContext context) async {
-    final DateTime? selected = await showDatePicker(
-      context: context,
-      initialDate: selectedDate,
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2026),
-    );
-    if (selected != null && selected != selectedDate) {
-      setState(() {
-        selectedDate = selected;
-        _filterLessonsOfWeek();
-      });
-    }
+  /// Used in CustomDatePicker to update [selectedDate] with [date] value.
+  /// Then filter lessons.
+  _updateSelectedDate(DateTime date){
+    setState(() {
+      selectedDate = date;
+    });
+    _filterLessonsOfWeek();
   }
 
-  _buildPlanning(DateTime date, List<Lesson> daylyLessons){
-    int nbLessons = daylyLessons.length;
-    //(nbLessons>0 ? Colors.white : Colors.grey[100])
-    return Expanded(
-        flex: 1,
-        child:Container(
-            child:TextButton(
-              child: _buildButtonDetails(date, daylyLessons),
-              //style: ElevatedButton.styleFrom(primary: (nbLessons>0 ? Colors.blue[300] : Colors.grey[600])),
-              onPressed: (){
-                if(nbLessons>0) {
-                  dialogue(date, daylyLessons);
-                }
-              },
-            )
-        )
+  /// Create a widget for the given date that will display the [date],
+  /// and allow to see the associated lessons in a dialog on click on
+  /// this section.
+  _buildPlanning(DateTime date, List<Lesson> dailyLessons){
+    int nbLessons = dailyLessons.length;
+    return DailySection(
+      date: date,
+      child: DailySectionContent(date: date, resume:"$nbLessons lesson${nbLessons>1 ? "s" : ""}" ,),
+      onPressed: (){
+        if(nbLessons>0) {
+          dialogue(date, dailyLessons);
+        }
+      },
     );
   }
 
-  Widget _buildButtonDetails(DateTime  date, List<Lesson> daylyLessons){
-    int nbLessons = daylyLessons.length;
-    return  Container(
-      alignment: Alignment.centerLeft,
-      child:Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children:[
-        Row(
-          children: [
-            Icon(
-                date.compareTo(DateTime.now().getOnlyDate())>=0 ? Icons.school_outlined : Icons.do_not_disturb_on,
-                color: date.getWeekDayColor(),
-            ),
-            Container(width: 10,),
-            Text("${date.getWeekDayName()}, ${date.day} ${date.getMonthName()}" ),
-          ],
-        ),
-        Text("$nbLessons lesson${nbLessons>1 ? "s" : ""}" ),
-      ]
-      ),
-    );
-  }
-
+  /// Display a dialog containing a listView of all leasons for the day
   Future<Null> dialogue(DateTime day, List<Lesson> dailyLesson) async{
     double width = MediaQuery.of(context).size.width *0.75;
     double height = MediaQuery.of(context).size.height *0.75;
@@ -139,7 +104,7 @@ class _PlanningLessonState extends State<PlanningLesson> {
               Container(
                 height: height,
                 width: width,
-                child: buildListView(dailyLesson, _buildRow),
+                child: ListViewSeparated(data: dailyLesson,buildListItem: _buildRow),
               )
             ],
           );
@@ -148,21 +113,7 @@ class _PlanningLessonState extends State<PlanningLesson> {
   }
 
   Widget _buildRow(Lesson lesson) {
-    return ListTile(
-      tileColor: (lesson.attendees.contains(currentUser) ? Colors.greenAccent : Colors.white),
-      title: Container(
-        child:Text( "${lesson.name} - ${lesson.discipline}" ),
-      ),
-      subtitle: Container(
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children:[
-              Text('duration: ${lesson.duration}'),
-            ]
-        ),
-      ),
-    );
+    return LessonTile(lesson: lesson,);
   }
 
   _getLessons(){
@@ -185,6 +136,8 @@ class _PlanningLessonState extends State<PlanningLesson> {
 
   }
 
+  ///@todo : delete this function.
+  ///  For Dev only, used to fake lesson planning.
   DateTime _fakeDate(int weekdayInt){
     int sundayDate = 16;
     return DateTime.parse("2022-01-${sundayDate + weekdayInt}");

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:my_little_poney/helper/int_extension.dart';
 
 extension DateTimeExtension on DateTime{
+  /// Returns day's name
   String getWeekDayName() {
     switch (this.weekday) {
       case 1:
@@ -21,6 +23,8 @@ extension DateTimeExtension on DateTime{
         return "monday";
     }
   }
+
+  /// Returns a color for week
   Color getWeekDayColor() {
     switch (this.weekday) {
       case 1:
@@ -42,6 +46,7 @@ extension DateTimeExtension on DateTime{
     }
   }
 
+  /// Returns month's name
   String getMonthName() {
     switch (this.month) {
       case 1:
@@ -73,6 +78,9 @@ extension DateTimeExtension on DateTime{
     }
   }
 
+  /// Returns monday date for this date.
+  ///
+  ///  by default, will return the date without hour
   DateTime getWeekFirstDay({removeTime:true}){
     if(this.weekday == DateTime.monday){
       DateTime date = this;
@@ -85,12 +93,23 @@ extension DateTimeExtension on DateTime{
     return date;
   }
 
+  /// Returns 'true' if this date and [comparedDate] are in the same week.
+  bool areDateSameWeek(DateTime comparedDate){
+    return this.getWeekFirstDay().getOnlyDate() == comparedDate.getWeekFirstDay().getOnlyDate();
+  }
+
+  /// Returns only the date of the DateTime
   DateTime getOnlyDate(){
     return DateUtils.dateOnly(this);
   }
 
+  /// Returns date only with 'd/m/Y' format
   String getFrenchDate(){
-    return "${this.day}/${this.month}/${this.year}";
+    return "${this.day.left0()}/${this.month.left0()}/${this.year}";
   }
 
+  /// Returns date and time with 'd/m/Y H:i' format
+  String getFrenchDateTime(){
+    return  "${getFrenchDate()} ${this.hour.left0()}:${this.minute.left0()}";
+  }
 }

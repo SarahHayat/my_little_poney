@@ -3,7 +3,11 @@ import 'package:my_little_poney/helper/listview.dart';
 import 'package:my_little_poney/mock/mock.dart';
 import 'package:my_little_poney/models/Horse.dart';
 import 'package:my_little_poney/models/User.dart';
-import 'package:my_little_poney/view/confirm_deletion_button.dart';
+import 'package:my_little_poney/view/component/confirm_deletion_button.dart';
+import 'package:my_little_poney/view/component/horse_tile.dart';
+
+import 'component/delete_button.dart';
+import 'component/yes_no_dialog.dart';
 
 //@todo : Icon Navigation for Contest : emoji_events_outlined or event_note_sharp;
 //  for party : festival, free_breakfast, liquor_sharp,localbar, night_life_sharp
@@ -22,7 +26,7 @@ class HorsesList extends StatefulWidget {
 
 class _HorsesListState extends State<HorsesList> {
   late List<Horse> horses ;
-  final User user = Mock.userManagerOwner;
+  final User currentUser = Mock.userManagerOwner;
 
   @override
   void initState() {
@@ -38,73 +42,37 @@ class _HorsesListState extends State<HorsesList> {
           elevation: 10,
           centerTitle: true,
         ),
-        body: buildListView(horses, _buildRow),
+        body: ListViewSeparated(data: horses,buildListItem: _buildRow),
     );
   }
 
+  /// Create a [HorseTile] containing his information.
+  /// A [DeleteButton] could be added to the right, that will display
+  /// a dialog to confirm deletion.
   Widget _buildRow(Horse horse) {
-    return ListTile(
-      title: Container(
-        child: Row(
-          children: [
-            Text( horse.name ),
-            horse.gender.getGenderIcon()
-          ],
-        )
-      ),
-      subtitle: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children:[
-            Text('age: ${horse.age}'),
-            Text('dress: ${horse.dress}'),
-            Text('race: ${horse.race.toShortString()}'),
-            Text('speciality: ${horse.speciality.toShortString()}'),
-          ]
-        ),
-      ),
-      trailing: _buildDeleteButton(horse),
-    );
-  }
-
-  _buildDeleteButton(Horse horse){
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [user.isManager()
-          ? ElevatedButton(
+    return HorseTile(
+      horse: horse,
+      trailing: DeleteButton(
+        display: currentUser.isManager(),
         onPressed: (){
           dialogue(horse);
         },
-        child: Icon(Icons.delete_forever, color: Colors.red,),
-        style: ElevatedButton.styleFrom(primary: Colors.white),
       )
-          : Container(width: 0,)
-    ]
     );
   }
 
+  /// Display a dialog to delete the [horse].
   Future<Null> dialogue(Horse horse) async{
-    //double taille = MediaQuery.of(context).size.width *0.75;
     return showDialog(
         context: context,
         builder: (BuildContext context){
-          return SimpleDialog(
-            title: Text("Delete this horse?"),
-            contentPadding: EdgeInsets.all(20.0),
+          return YesNoDialog(
+            title: "Delete this horse?",
             children: [
               Text("${horse.name} will be deleted forever."),
               Text("Are you sure you want to delete it?"),
-              Container(height: 10.0,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ConfirmDeletionButton(true, context, trueFunction: ()=>_removeHorse(horse),),
-                  ConfirmDeletionButton(false, context),
-                ],
-              ),
             ],
+            trueFunction: ()=>_removeHorse(horse),
           );
         }
     );
@@ -124,8 +92,6 @@ class _HorsesListState extends State<HorsesList> {
       horses.remove(horse);
     });
   }
-
-
 }
 
 

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:my_little_poney/helper/listview.dart';
 import 'package:my_little_poney/mock/mock.dart';
-import 'package:my_little_poney/models/Horse.dart';
 import 'package:my_little_poney/models/User.dart';
-import 'package:my_little_poney/view/confirm_deletion_button.dart';
+import 'package:my_little_poney/view/component/delete_button.dart';
+import 'package:my_little_poney/view/component/user_tile.dart';
+import 'package:my_little_poney/view/component/yes_no_dialog.dart';
 
 class UsersList extends StatefulWidget {
   const UsersList({Key? key}) : super(key: key);
@@ -31,74 +32,37 @@ class _UsersListState extends State<UsersList> {
         elevation: 10,
         centerTitle: true,
       ),
-      body: buildListView(users, _buildRow),
+      body: ListViewSeparated(data: users,buildListItem: _buildRow),
     );
   }
 
+  /// Create a [UserTile] containing his information.
+  /// A [DeleteButton] could be added to the right, that will display
+  /// a dialog to confirm deletion.
   Widget _buildRow(User user) {
-    return ListTile(
-      title: Container(
-          child: Row(
-            children: [
-              Text( user.userName ),
-              user.role.getRoleIcon()
-            ],
-          )
-      ),
-      subtitle: Container(
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children:[
-              Text('age: ${user.age}'),
-              Text('type: ${user.type.toShortString()}'),
-              Text('phone: ${user.phoneNumber}'),
-              Text('email: ${user.email}'),
-              Text('profil FFE: ${user.FFELink}'),
-            ]
-        ),
-      ),
-      trailing: _buildDeleteButton(user),
+    return UserTile(
+      user: user,
+      trailing: DeleteButton(
+        display: !user.isManager() && currentUser.isManager(),
+        onPressed: (){
+          dialogue(user);
+        },
+      )
     );
   }
 
-  _buildDeleteButton(User user){
-    return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [!user.isManager() && currentUser.isManager()
-            ? ElevatedButton(
-          onPressed: (){
-            dialogue(user);
-          },
-          child: Icon(Icons.delete_forever, color: Colors.red,),
-          style: ElevatedButton.styleFrom(primary: Colors.white),
-        )
-            : Container(width: 0,)
-        ]
-    );
-  }
-
+  /// Display a dialog to delete the [user].
   Future<Null> dialogue(User user) async{
-    //double taille = MediaQuery.of(context).size.width *0.75;
     return showDialog(
         context: context,
         builder: (BuildContext context){
-          return SimpleDialog(
-            title: Text("Delete this user?"),
-            contentPadding: EdgeInsets.all(20.0),
-            children: [
-              Text("${user.userName} will be deleted forever."),
-              Text("Are you sure you want to delete it?"),
-              Container(height: 10.0,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ConfirmDeletionButton(true, context, trueFunction: ()=>_removeUser(user),),
-                  ConfirmDeletionButton(false, context),
-                ],
-              ),
-            ],
+          return YesNoDialog(
+              title: "Delete this user?",
+              children: [
+                Text("${user.userName} will be deleted forever."),
+                Text("Are you sure you want to delete it?"),
+              ],
+            trueFunction: ()=>_removeUser(user),
           );
         }
     );
@@ -120,8 +84,6 @@ class _UsersListState extends State<UsersList> {
       users.remove(user);
     });
   }
-
-
 }
 
 

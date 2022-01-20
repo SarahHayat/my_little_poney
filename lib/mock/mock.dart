@@ -112,6 +112,7 @@ class Mock {
   * */
   static Party party = Party(
     user: userRiderDp,
+    name: "party tonight",
     id: "id1",
     picturePath: "picture path party",
     attendeesParty: [],

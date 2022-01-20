@@ -72,7 +72,6 @@ class LessonServiceApi {
       throw Exception('Failed to delete lesson.');
     }
   }
-
 }
 
 List<Lesson> parseLessons(String responseBody) {

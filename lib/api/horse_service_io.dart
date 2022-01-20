@@ -75,7 +75,6 @@ class HorseServiceApi {
       throw Exception('Failed to delete horse.');
     }
   }
-
 }
 
 List<Horse> parseHorses(String responseBody) {

@@ -72,12 +72,12 @@ class UserServiceApi {
       throw Exception('Failed to delete user.');
     }
   }
-}
 
-List<User> parseUsers(String responseBody) {
-  final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
+  List<User> parseUsers(String responseBody) {
+    final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
 
-  return parsed.map<User>((json) {
-    return User.fromJson(json);
-  }).toList();
+    return parsed.map<User>((json) {
+      return User.fromJson(json);
+    }).toList();
+  }
 }

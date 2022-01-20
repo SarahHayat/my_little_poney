@@ -54,7 +54,7 @@ class Lesson {
 
   Map<String, Object?> toJson() {
     return {
-      'id': id,
+      '_id': id,
       'attendees': attendees,
       'name': name,
       'user': user,

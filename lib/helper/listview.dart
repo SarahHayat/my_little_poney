@@ -1,10 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:flutter/material.dart';
-import 'package:my_little_poney/helper/datetime_extension.dart';
-import 'package:my_little_poney/models/Lesson.dart';
-
 class ListViewSeparated extends StatelessWidget {
   /// Creates a ListView with each elements separated by Divider().
   /// [data] is a List of Object.

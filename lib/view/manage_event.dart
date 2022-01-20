@@ -72,7 +72,7 @@ class _ManageEventState extends State<ManageEvent> {
       return Row(
         children: [
           ColumnList(title: "Lessons", icon: Icon(Icons.school_outlined), child: ListViewSeparated(data: displayedLessons, buildListItem: _buildItemLesson)),
-          ColumnList(title: "Partys", icon: Icon(Icons.emoji_events_outlined), child: ListViewSeparated(data: displayedParty, buildListItem: _buildItemParty)),
+          ColumnList(title: "Partys", icon: Icon(Icons.liquor_sharp), child: ListViewSeparated(data: displayedParty, buildListItem: _buildItemParty)),
         ]
       );
     }

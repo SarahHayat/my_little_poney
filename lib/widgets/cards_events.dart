@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:my_little_poney/models/Contest.dart';
+import 'package:my_little_poney/models/Lesson.dart';
+import 'package:my_little_poney/models/Party.dart';
 
 class CardsEvents extends Card {
 
-  static Card cardParty(int position, BuildContext context, List<dynamic> listEvents) {
+  static Card cardParty(int position, BuildContext context, List<Party> listEvents) {
     return Card(
       elevation: 2.0,
       child: Container(
@@ -29,7 +32,7 @@ class CardsEvents extends Card {
                           size: 20,
                         ),
                         Text(
-                          '${listEvents[position].eventType}',
+                          'Party',
                           style: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 12),
                         ),
@@ -73,7 +76,7 @@ class CardsEvents extends Card {
                               fontWeight: FontWeight.bold, fontSize: 24),
                           overflow: TextOverflow.ellipsis),
                       Text(
-                        'Créer par : ${listEvents[position].user.userName}',
+                        'Créer par : ${listEvents[position].user}',
                         style: const TextStyle(fontSize: 10),
                       ),
                     ],
@@ -95,7 +98,7 @@ class CardsEvents extends Card {
                         'Commentaires: ',
                         style: const TextStyle(fontSize: 10),
                       ),
-                      Text('${listEvents[position].attendeesParty.length != 0 ? listEvents[position].attendeesParty.length : 'Pas de commentaies'}', style: const TextStyle(fontSize: 14)),
+                      Text('${listEvents[position].attendeesParty}', style: const TextStyle(fontSize: 14)),
                     ],
                   )
                 ],
@@ -107,7 +110,7 @@ class CardsEvents extends Card {
     );
   }
 
-  static Card cardLesson(int position, BuildContext context, List<dynamic> listEvents) {
+  static Card cardLesson(int position, BuildContext context, List<Lesson> listEvents) {
     return Card(
       elevation: 2.0,
       child: Container(
@@ -134,7 +137,7 @@ class CardsEvents extends Card {
                           size: 20,
                         ),
                         Text(
-                          '${listEvents[position].eventType}',
+                          'Lesson',
                           style: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 12),
                         ),
@@ -183,7 +186,7 @@ class CardsEvents extends Card {
                               fontWeight: FontWeight.bold, fontSize: 24),
                           overflow: TextOverflow.ellipsis),
                       Text(
-                        'Créer par : ${listEvents[position].user.userName}',
+                        'Créer par : ${listEvents[position].user}',
                         style: const TextStyle(fontSize: 10),
                       ),
                     ],
@@ -217,7 +220,7 @@ class CardsEvents extends Card {
     );
   }
 
-  static Card cardContest(int position, BuildContext context, List<dynamic> listEvents) {
+  static Card cardContest(int position, BuildContext context, List<Contest> listEvents) {
     return Card(
       elevation: 2.0,
       child: Container(
@@ -244,7 +247,7 @@ class CardsEvents extends Card {
                           size: 20,
                         ),
                         Text(
-                          '${listEvents[position].eventType}',
+                          'Contest',
                           style: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 12),
                         ),
@@ -283,7 +286,7 @@ class CardsEvents extends Card {
                               fontWeight: FontWeight.bold, fontSize: 24),
                           overflow: TextOverflow.ellipsis),
                       Text(
-                        'Créer par : ${listEvents[position].user.userName}',
+                        'Créer par : ${listEvents[position].user}',
                         style: const TextStyle(fontSize: 10),
                       ),
                     ],

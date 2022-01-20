@@ -6,7 +6,7 @@ class ContestUseCase {
   ContestServiceApi api = ContestServiceApi();
 
   Future<List<Contest>?> getAllContests() async {
-    api.getAll().then((value) => value);
+    return api.getAll().then((value) => value);
   }
 
   Future<Contest?> fetchContestById(id) async {

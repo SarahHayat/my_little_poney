@@ -20,7 +20,7 @@ class AttendeeContest {
 
 class Contest {
   String? id;
-  User user;
+  String user;
   String name;
   String address;
   String picturePath;
@@ -47,7 +47,7 @@ class Contest {
       attendeesContest: json['attendeesContest'] != null
           ? json['attendeesContest']! as List<AttendeeContest>
           : [],
-      user: json['user'] as User,
+      user: json['user'] as String,
       name: json['name'] as String,
       address: json['address'] as String,
       picturePath:

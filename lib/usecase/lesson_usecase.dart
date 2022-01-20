@@ -5,7 +5,7 @@ class LessonUseCase {
   LessonServiceApi api = LessonServiceApi();
 
   Future<List<Lesson>?> getAllLessons() async {
-    api.getAll().then((value) => value);
+    return api.getAll().then((value) => value);
   }
 
   Future<Lesson?> fetchLessonById(id) async {

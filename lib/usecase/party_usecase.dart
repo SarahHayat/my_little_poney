@@ -5,7 +5,7 @@ class PartyUseCase {
   PartyServiceApi api = PartyServiceApi();
 
   Future<List<Party>?> getAllParties() async {
-    api.getAll().then((value) => value);
+    return api.getAll().then((value) => value);
   }
 
   Future<Party?> fetchPartyById(id) async {

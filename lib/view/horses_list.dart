@@ -1,8 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:my_little_poney/helper/listview.dart';
 import 'package:my_little_poney/mock/mock.dart';
 import 'package:my_little_poney/models/Horse.dart';
 import 'package:my_little_poney/models/User.dart';
+import 'package:my_little_poney/usecase/horse_usecase.dart';
 import 'package:my_little_poney/view/component/horse_tile.dart';
 
 import 'component/delete_button.dart';
@@ -24,7 +27,8 @@ class HorsesList extends StatefulWidget {
 }
 
 class _HorsesListState extends State<HorsesList> {
-  late List<Horse> horses ;
+  final HorseUseCase horseCase = HorseUseCase();
+  late Future<List<Horse>> horses ;
   final User currentUser = Mock.userManagerOwner;
 
   @override
@@ -41,7 +45,21 @@ class _HorsesListState extends State<HorsesList> {
           elevation: 10,
           centerTitle: true,
         ),
-        body: ListViewSeparated(data: horses,buildListItem: _buildRow),
+        body: FutureBuilder<List<Horse>>(
+          future: horses,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                List<Horse> data = snapshot.data!;
+                return ListViewSeparated(data: data,buildListItem: _buildRow);
+              } else if (snapshot.hasError) {
+                return Text("${snapshot.error}");
+              }
+              return const Center(
+                  child: CircularProgressIndicator()
+              );
+            },
+          )
+        ,
     );
   }
 
@@ -77,10 +95,12 @@ class _HorsesListState extends State<HorsesList> {
     );
   }
 
-  _getHorses(){
+  _getHorses() async {
     //@todo : use request here to get horses list from DB
+    Future<List<Horse>> resHorses =  horseCase.getAllHorses();
+    log(resHorses.toString());
     setState(() {
-      horses = [Mock.horse, Mock.horse2];
+      horses = resHorses;
     });
   }
 
@@ -88,7 +108,7 @@ class _HorsesListState extends State<HorsesList> {
     //@todo : add one more row to delete horse in DB with a request
     // all user related to this horse should removed it from their horses list
     setState(() {
-      horses.remove(horse);
+      //horses.remove(horse);
     });
   }
 }

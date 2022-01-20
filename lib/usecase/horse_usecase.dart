@@ -4,8 +4,8 @@ import 'package:my_little_poney/models/Horse.dart';
 class HorseUseCase {
   HorseServiceApi api = HorseServiceApi();
 
-  Future<List<Horse>?> getAllHorses() async {
-    api.getAll().then((value) => value);
+  Future<List<Horse>> getAllHorses() async {
+    return api.getAll().then((value) => value);
   }
 
   Future<Horse?> fetchHorseById(id) async {

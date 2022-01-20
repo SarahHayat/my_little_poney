@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:my_little_poney/helper/string_extension.dart';
 
@@ -90,8 +92,8 @@ class Horse {
   factory Horse.fromJson(Map<String, dynamic> json) {
     return Horse(
       id: json['_id'] != null ? json['_id']! as String : "",
-      dpUsers: json['dpUsers'] != null ? json['dpUsers']! as List<String>? : [],
-      owner: json['owner'] != null ? json['owner']! as User? : null,
+      dpUsers: json['dpUsers'] != null ? List<String>.from(json['dpUsers']) : [],
+      owner: null,// @todo : user should be string (id) or a complete user.  -> json['owner'] != null ? json['owner']! as User? : null,
       picturePath: json['picturePath'] != null ? json['picturePath']! as String : "",
       age: json['age'] as int,
       dress: json['dress'] as String,

@@ -1,14 +1,18 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:my_little_poney/models/Horse.dart';
 
+int statusOk = 200;
+
 class HorseServiceApi {
-  Future<List<Horse>?> getAll() async {
-    final response = await http
+  Future<List<Horse>> getAll() async {
+    final response = await http.Client()
         .get(Uri.parse('https://my-little-poney.herokuapp.com/horses'));
-    if (response.statusCode == 200) {
+    log(response.body.toString());
+    if (response.statusCode == statusOk) {
       return compute(parseHorses, response.body);
     } else {
       throw Exception('Failed to load horses');

@@ -8,11 +8,11 @@ import 'package:my_little_poney/models/Lesson.dart';
 class ListViewSeparated extends StatelessWidget {
   /// Creates a ListView with each elements separated by Divider().
   /// [data] is a List of Object.
-  /// [buildRow] is a Function using one o this object to render a Widget.
+  /// [buildListItem] is a Function using one o this object to render a Widget.
   /// [axis] is the listView axis (vertical by default)
-  const ListViewSeparated({Key? key, required this.data, required this.buildRow, this.axis:Axis.vertical}) : super(key: key);
+  const ListViewSeparated({Key? key, required this.data, required this.buildListItem, this.axis:Axis.vertical}) : super(key: key);
   final dynamic data;
-  final Function buildRow;
+  final Function buildListItem;
   final Axis axis;
 
   @override
@@ -25,7 +25,7 @@ class ListViewSeparated extends StatelessWidget {
         itemBuilder: (context, i) {
           if (i.isOdd) return const Divider();
           final index = i ~/ 2;
-          return buildRow(data[index]);
+          return buildListItem(data[index]);
         });
   }
 }

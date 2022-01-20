@@ -110,6 +110,6 @@ extension DateTimeExtension on DateTime{
 
   /// Returns date and time with 'd/m/Y H:i' format
   String getFrenchDateTime(){
-    return  "${getFrenchDate()} ${this.hour}:${this.minute}";
+    return  "${getFrenchDate()} ${this.hour.left0()}:${this.minute.left0()}";
   }
 }

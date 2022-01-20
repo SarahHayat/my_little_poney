@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:my_little_poney/helper/datetime_extension.dart';
 import 'package:my_little_poney/helper/listview.dart';
@@ -5,9 +7,11 @@ import 'package:my_little_poney/mock/mock.dart';
 import 'package:my_little_poney/models/Contest.dart';
 import 'package:my_little_poney/models/Lesson.dart';
 import 'package:my_little_poney/models/User.dart';
-import 'package:my_little_poney/view/confirm_deletion_button.dart';
-import 'package:my_little_poney/view/lesson_resume.dart';
-import 'package:my_little_poney/view/contest_resume.dart';
+import 'package:my_little_poney/view/component/column_list.dart';
+import 'package:my_little_poney/view/component/contest_tile.dart';
+import 'package:my_little_poney/view/component/custom_datepicker.dart';
+import 'package:my_little_poney/view/component/lesson_tile.dart';
+import 'package:my_little_poney/view/component/yes_no_dialog.dart';
 
 class ManageEvent extends StatefulWidget {
   const ManageEvent({Key? key}) : super(key: key);
@@ -34,6 +38,140 @@ class _ManageEventState extends State<ManageEvent> {
     _filterEvents();
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text("Lessons / Contest : ${selectedDate.getFrenchDate()}"),
+          elevation: 10,
+          centerTitle: true,
+          leading: CustomDatePicker(initialDate: selectedDate, onSelected: _updateSelectedDate,)
+        ),
+        body: _buildScaffoldBody()
+    );
+  }
+
+  /// Used in CustomDatePicker to update [selectedDate] with [date] value.
+  /// Then filter events.
+  _updateSelectedDate(DateTime date){
+    setState(() {
+      selectedDate = date;
+    });
+    _filterEvents();
+  }
+
+  /// Create the body of this screen.
+  /// If the current user is a manager, then he can see the panel.
+  /// Else, we display a message to unespected user
+  _buildScaffoldBody(){
+    if(currentUser.isManager()){
+      return Row(
+        children: [
+          ColumnList(title: "Lessons", icon: Icon(Icons.school_outlined), child: ListViewSeparated(data: displayedLessons, buildListItem: _buildItemLesson)),
+          ColumnList(title: "Contests", icon: Icon(Icons.emoji_events_outlined), child: ListViewSeparated(data: displayedContest, buildListItem: _buildItemContest)),
+        ]
+      );
+    }
+    else{
+      return const Center(
+        child : Text("This page is reserved to admin", textScaleFactor: 1.5,)
+      );
+    }
+  }
+
+  /// Create a Lesson item for a ListView
+  Widget _buildItemLesson(Lesson lesson) {
+    return LessonTile(
+      lesson: lesson,
+      onTap: (){
+        dialogueLesson(lesson);
+      }
+    );
+  }
+
+  /// Create a Contest item for a ListView
+  Widget _buildItemContest(Contest contest) {
+    return ContestTile(
+      contest: contest,
+      onTap: (){
+        dialogueContest(contest);
+      },
+    );
+  }
+
+  //region dialog
+  /// Display a [YesNoDialog] to validate or reject a lesson
+  Future<Null> dialogueLesson(Lesson lesson) async{
+    return showDialog(
+        context: context,
+        builder: (BuildContext context){
+          return YesNoDialog(
+            title: "Validate this lesson?",
+            children: [
+              Text("${lesson.name} will be validate."),
+            ],
+            trueFunction: ()=>_updateLesson(lesson, true),
+            falseFunction: ()=>_updateLesson(lesson, false),
+          );
+        }
+    );
+  }
+
+  /// Display a [YesNoDialog] to validate or reject a contest
+  Future<Null> dialogueContest(Contest contest) async{
+    return showDialog(
+        context: context,
+        builder: (BuildContext context){
+          return YesNoDialog(
+            title: "Validate this contest?",
+            children: [
+              Text("${contest.name} will be validate."),
+            ],
+            trueFunction: ()=>_updateContest(contest, true),
+            falseFunction: ()=>_updateContest(contest, false),
+          );
+        }
+    );
+  }
+  //endregion
+
+  //region api call & front setting
+  _updateLesson(Lesson lesson, bool isValid){
+    //@todo : add one more row to update data on this lesson in DB with a request
+    log("Update lesson ${lesson.name} $isValid");
+    setState(() {
+      //need a method to update lesson validate bool
+      //allLessons.remove(lesson);
+    });
+  }
+
+  _updateContest(Contest contest, bool isValid){
+    //@todo : add one more row to update data on this contest in DB with a request
+    log("Update contest ${contest.name} $isValid");
+    setState(() {
+      //need a method to update contest validate bool
+      //allLessons.remove(lesson);
+    });
+  }
+
+  _getLessons(){
+    //@todo : use request here to get lessons list from DB
+    //il faut qu'on ai une gestion par semaine
+    setState(() {
+      allLessons = [Mock.lesson, Mock.lesson,Mock.lesson, Mock.lesson, Mock.lesson];
+    });
+  }
+
+  _getContest(){
+    //@todo : use request here to get contest list from DB
+    //il faut qu'on ai une gestion par semaine
+    setState(() {
+      allContest = [Mock.contest, Mock.contest];
+    });
+  }
+  //endregion
+
+  /// Filter events depending on [selectedDate] week
   void _filterEvents(){
     DateTime date = selectedDate.getOnlyDate();
     List<Lesson> lessonList = [];
@@ -57,155 +195,4 @@ class _ManageEventState extends State<ManageEvent> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    List<Widget> t = [];
-    return Scaffold(
-        appBar: AppBar(
-          title: Text("Lessons / Contest : ${selectedDate.getFrenchDate()}"),
-          elevation: 10,
-          centerTitle: true,
-          leading: ElevatedButton(
-            onPressed: (){
-              _selectDate(context);
-            },
-            child: Icon(Icons.calendar_today),
-          ),
-        ),
-        body: _buildScaffoldBody()
-    );
-  }
-
-  _buildScaffoldBody(){
-    if(currentUser.isManager()){
-      return Row(
-        children: [
-
-          Expanded(flex:1, child:ListViewSeparated(data: displayedLessons, buildRow: _buildRowLesson)),
-          Expanded(flex:1, child: ListViewSeparated(data: displayedContest, buildRow: _buildRowContest)),
-        ]
-      );
-    }
-    else{
-      return Center(
-        child : Text("This page is reserved to admin", textScaleFactor: 1.5,)
-      );
-    }
-  }
-
-  _selectDate(BuildContext context) async {
-    final DateTime? selected = await showDatePicker(
-      context: context,
-      initialDate: selectedDate,
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2026),
-    );
-    if (selected != null && selected != selectedDate) {
-      setState(() {
-        selectedDate = selected;
-      });
-      _filterEvents();
-    }
-  }
-
-  Widget _buildRowLesson(Lesson lesson) {
-    return ListTile(
-      onTap: (){
-        dialogueLesson(lesson);
-      },
-      title: Container(
-        child:Text( "${lesson.name} - ${lesson.discipline}" ),
-      ),
-      subtitle: LessonResume(lesson: lesson,)
-    );
-  }
-
-  Widget _buildRowContest(Contest contest) {
-    return ListTile(
-      onTap: (){
-        dialogueContest(contest);
-      },
-      title: Container(
-        child:Text( "${contest.name} - ${contest.address}" ),
-      ),
-      subtitle: ContestResume(contest:contest)
-    );
-  }
-
-  Future<Null> dialogueLesson(Lesson lesson) async{
-    return showDialog(
-        context: context,
-        builder: (BuildContext context){
-          return SimpleDialog(
-            title: Text("Validate this lesson?"),
-            contentPadding: EdgeInsets.all(20.0),
-            children: [
-              Text("${lesson.name} will be validate."),
-              Container(height: 10.0,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ConfirmDeletionButton(true, context, trueFunction: ()=>_updateLesson(lesson, true),),
-                  ConfirmDeletionButton(false, context, falseFunction: ()=>_updateLesson(lesson, false),),
-                ],
-              ),
-            ],
-          );
-        }
-    );
-  }
-
-  Future<Null> dialogueContest(Contest contest) async{
-    return showDialog(
-        context: context,
-        builder: (BuildContext context){
-          return SimpleDialog(
-            title: Text("Validate this contest?"),
-            contentPadding: EdgeInsets.all(20.0),
-            children: [
-              Text("${contest.name} will be validate."),
-              Container(height: 10.0,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ConfirmDeletionButton(true, context, trueFunction: ()=>_updateContest(contest, true),),
-                  ConfirmDeletionButton(false, context, falseFunction: ()=>_updateContest(contest, false),),
-                ],
-              ),
-            ],
-          );
-        }
-    );
-  }
-
-  _updateLesson(Lesson lesson, bool isValid){
-    //@todo : add one more row to update data on this lesson in DB with a request
-    setState(() {
-      //need a method to update lesson validate bool
-      //allLessons.remove(lesson);
-    });
-  }
-
-  _updateContest(Contest contest, bool isValid){
-    //@todo : add one more row to update data on this contest in DB with a request
-    setState(() {
-      //need a method to update contest validate bool
-      //allLessons.remove(lesson);
-    });
-  }
-
-  _getLessons(){
-    //@todo : use request here to get lessons list from DB
-    //il faut qu'on ai une gestion par semaine
-    setState(() {
-      allLessons = [Mock.lesson, Mock.lesson,Mock.lesson, Mock.lesson, Mock.lesson];
-    });
-  }
-  _getContest(){
-    //@todo : use request here to get contest list from DB
-    //il faut qu'on ai une gestion par semaine
-    setState(() {
-      allContest = [Mock.contest, Mock.contest];
-    });
-  }
 }

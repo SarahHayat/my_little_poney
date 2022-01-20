@@ -28,7 +28,8 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const ManageEvent(),
+      //home: const ManageEvent(),
+      home: const HorsesList(),
     );
   }
 }

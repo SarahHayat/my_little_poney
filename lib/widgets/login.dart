@@ -150,7 +150,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             SizedBox(width: 10),
                             Hero(
-                              tag: '1',
+                              tag: '2',
                               child: Text(
                                 'Reset',
                                 style: TextStyle(

@@ -16,6 +16,20 @@ class AttendeeContest {
     required this.user,
     required this.level,
   });
+
+  factory AttendeeContest.fromJson(Map<String, dynamic> json) {
+    return AttendeeContest(
+      user: json['user'] != null ? json['user']! as String : "",
+      level: json['user'] != null ? json['user']! as String : "",
+    );
+  }
+
+  Map<String, Object?> toJson() {
+    return {
+      'user': user,
+      'level': level,
+    };
+  }
 }
 
 class Contest {

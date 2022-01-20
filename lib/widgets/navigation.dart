@@ -15,28 +15,21 @@ class Navigation extends StatefulWidget {
 
 class NavigationState extends State<Navigation> {
   int _selectedIndex = 0;
+  int _drawerSelectedIndex = 0;
+  List<Widget> drawerLinks = [
+    //const ContestListView(title: 'Concours'),
+    ProfilePage(),
+    const UsersList(),
+    const HorsesList(),
+    const ManageEvent(),
+    const PlanningLesson()
+  ];
 
   Widget getBody() {
-    if (_selectedIndex == 0) {
-      // return the first page
-      return const ContestListView(title: 'Concours');
-    } else if (_selectedIndex == 1) {
-      // return the second page
-      return ProfilePage();
-    } else if (_selectedIndex == 2) {
-      // return the second page
-      return const UsersList();
-    } else if (_selectedIndex == 3) {
-      // return the second page
-      return const HorsesList();
-    } else if (_selectedIndex == 4) {
-      // return the second page
-      return const ManageEvent();
-    } else if (_selectedIndex == 5) {
-      // return the second page
-      return const PlanningLesson();
-    } else {
-      // return the third page
+    if(drawerLinks.length>=_drawerSelectedIndex){
+      return drawerLinks[_drawerSelectedIndex];
+    }
+    else{
       return const ListEvents();
     }
   }
@@ -45,6 +38,20 @@ class NavigationState extends State<Navigation> {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  void _onDrawerTap(int index, BuildContext context){
+    setState(() {
+      _drawerSelectedIndex = index;
+    });
+    Navigator.pop(context);
+  }
+
+  _buildDrawerLinks(String title, Function onTap){
+    return ListTile(
+      title: Text(title),
+      onTap: ()=>onTap(),
+    );
   }
 
   @override
@@ -71,61 +78,11 @@ class NavigationState extends State<Navigation> {
                 child: Text('Pablo'),
               ),
             ),
-            ListTile(
-              // Maybe put profil here
-              title: const Text('Profile'),
-              onTap: () {
-                setState(() {
-                  // put the profile index
-                  _selectedIndex = 1;
-                });
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              // Maybe put profil here
-              title: const Text('Liste des utilisateurs'),
-              onTap: () {
-                setState(() {
-                  // put the profile index
-                  _selectedIndex = 2;
-                });
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              // Maybe put profil here
-              title: const Text('Liste des cheveaux'),
-              onTap: () {
-                setState(() {
-                  // put the profile index
-                  _selectedIndex = 3;
-                });
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              // Maybe put profil here
-              title: const Text('Gestion écurie'),
-              onTap: () {
-                setState(() {
-                  // put the profile index
-                  _selectedIndex = 4;
-                });
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              // Maybe put profil here
-              title: const Text('Planning des cours'),
-              onTap: () {
-                setState(() {
-                  // put the profile index
-                  _selectedIndex = 5;
-                });
-                Navigator.pop(context);
-              },
-            ),
+            _buildDrawerLinks("Profile", ()=> _onDrawerTap(1, context)),
+            _buildDrawerLinks("Liste des utilisateurs", ()=>_onDrawerTap(2, context)),
+            _buildDrawerLinks("Liste des cheveaux", ()=>_onDrawerTap(3, context)),
+            _buildDrawerLinks("Gestion écurie", ()=>_onDrawerTap(4, context)),
+            _buildDrawerLinks("Planning des cours", ()=>_onDrawerTap(5, context)),
           ],
         ),
       ),

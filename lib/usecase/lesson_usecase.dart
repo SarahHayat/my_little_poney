@@ -12,7 +12,7 @@ class LessonUseCase {
     api.fetchLessonById(id).then((value) => value);
   }
 
-  Future<Lesson?> createParty(lesson) async {
+  Future<Lesson?> creatLesson(lesson) async {
     api.createLesson(lesson).then((value) => value);
   }
 

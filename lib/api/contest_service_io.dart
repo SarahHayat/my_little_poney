@@ -55,7 +55,7 @@ Future<Contest> updateContest(Contest contest) async {
   if (response.statusCode == 200) {
     return Contest.fromJson(jsonDecode(response.body));
   } else {
-    throw Exception('Failed to update album.');
+    throw Exception('Failed to update party.');
   }
 }
 

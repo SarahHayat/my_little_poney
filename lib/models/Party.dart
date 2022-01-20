@@ -51,7 +51,7 @@ class Party {
 
   Map<String, Object?> toJson() {
     return {
-      'id': id,
+      '_id': id,
       'picturePath': picturePath,
       'attendeesParty': attendeesParty,
       'user': user,

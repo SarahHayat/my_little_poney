@@ -24,60 +24,59 @@ class UserServiceApi {
       throw Exception('Failed to load user');
     }
   }
-}
+  Future<User> createUser(User user) async {
+    final response = await http.post(
+      Uri.parse('https://my-little-poney.herokuapp.com/users'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: user.toJson(),
+    );
 
-Future<User> createUser(User user) async {
-  final response = await http.post(
-    Uri.parse('https://my-little-poney.herokuapp.com/users'),
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: user.toJson(),
-  );
-
-  if (response.statusCode == 201) {
-    // si on recupere le user crée
-    return User.fromJson(jsonDecode(response.body));
-  } else {
-    throw Exception('Failed to create user.');
+    if (response.statusCode == 201) {
+      // si on recupere le user crée
+      return User.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to create user.');
+    }
   }
-}
 
-Future<User> updateUser(User user) async {
-  final response = await http.put(
-    Uri.parse('https://my-little-poney.herokuapp.com/users/${user.id}'),
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: parrty.toJson(),
-  );
+  Future<User> updateUser(User user) async {
+    final response = await http.put(
+      Uri.parse('https://my-little-poney.herokuapp.com/users/${user.id}'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: user.toJson(),
+    );
 
-  if (response.statusCode == 200) {
-    return User.fromJson(jsonDecode(response.body));
-  } else {
-    throw Exception('Failed to update user.');
+    if (response.statusCode == 200) {
+      return User.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to update user.');
+    }
   }
-}
 
-Future<User> deleteUser(String id) async {
-  final http.Response response = await http.delete(
-    Uri.parse('https://my-little-poney.herokuapp.com/users/$id'),
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-  );
+  Future<User> deleteUser(String id) async {
+    final http.Response response = await http.delete(
+      Uri.parse('https://my-little-poney.herokuapp.com/users/$id'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
 
-  if (response.statusCode == 200) {
-    return User.fromJson(jsonDecode(response.body));
-  } else {
-    throw Exception('Failed to delete user.');
+    if (response.statusCode == 200) {
+      return User.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to delete user.');
+    }
   }
-}
 
-List<User> parseUsers(String responseBody) {
-  final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
+  List<User> parseUsers(String responseBody) {
+    final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
 
-  return parsed.map<User>((json) {
-    return User.fromJson(json);
-  }).toList();
+    return parsed.map<User>((json) {
+      return User.fromJson(json);
+    }).toList();
+  }
 }

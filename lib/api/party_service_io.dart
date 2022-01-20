@@ -24,60 +24,59 @@ class PartyServiceApi {
       throw Exception('Failed to load party');
     }
   }
-}
+  Future<Party> createParty(Party party) async {
+    final response = await http.post(
+      Uri.parse('https://my-little-poney.herokuapp.com/parties'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: party.toJson(),
+    );
 
-Future<Party> createParty(Party party) async {
-  final response = await http.post(
-    Uri.parse('https://my-little-poney.herokuapp.com/parties'),
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: party.toJson(),
-  );
-
-  if (response.statusCode == 201) {
-    // si on recupere la party crée
-    return Party.fromJson(jsonDecode(response.body));
-  } else {
-    throw Exception('Failed to create party.');
+    if (response.statusCode == 201) {
+      // si on recupere la party crée
+      return Party.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to create party.');
+    }
   }
-}
 
-Future<Party> updateParty(Party party) async {
-  final response = await http.put(
-    Uri.parse('https://my-little-poney.herokuapp.com/parties/${party.id}'),
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: parrty.toJson(),
-  );
+  Future<Party> updateParty(Party party) async {
+    final response = await http.put(
+      Uri.parse('https://my-little-poney.herokuapp.com/parties/${party.id}'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: party.toJson(),
+    );
 
-  if (response.statusCode == 200) {
-    return Party.fromJson(jsonDecode(response.body));
-  } else {
-    throw Exception('Failed to update party.');
+    if (response.statusCode == 200) {
+      return Party.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to update party.');
+    }
   }
-}
 
-Future<Party> deleteParty(String id) async {
-  final http.Response response = await http.delete(
-    Uri.parse('https://my-little-poney.herokuapp.com/parties/$id'),
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-  );
+  Future<Party> deleteParty(String id) async {
+    final http.Response response = await http.delete(
+      Uri.parse('https://my-little-poney.herokuapp.com/parties/$id'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
 
-  if (response.statusCode == 200) {
-    return Party.fromJson(jsonDecode(response.body));
-  } else {
-    throw Exception('Failed to delete party.');
+    if (response.statusCode == 200) {
+      return Party.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to delete party.');
+    }
   }
-}
 
-List<Party> parseParties(String responseBody) {
-  final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
+  List<Party> parseParties(String responseBody) {
+    final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
 
-  return parsed.map<Party>((json) {
-    return Party.fromJson(json);
-  }).toList();
+    return parsed.map<Party>((json) {
+      return Party.fromJson(json);
+    }).toList();
+  }
 }

@@ -39,9 +39,6 @@ class User {
     required this.email,
   });
 
-
-
-
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['_id'] != null ? json['_id']! as String : "",
@@ -53,7 +50,7 @@ class User {
       phoneNumber:
           json['phoneNumber'] != null ? json['phoneNumber']! as String : "",
       role: json['role'] != null ? json['role']! as String : "",
-      horses: json['horses']! as List<dynamic>,
+      horses: json['horses'] != null ? json['horses']! as List<dynamic> : [],
       createdAt: DateTime.parse(json['createdAt']! as String),
       type: json['type'] != null ? json['type'] as String : '',
       userName: json['userName']! as String,
@@ -66,7 +63,7 @@ class User {
     return {
       '_id': id,
       'profilePicture': profilePicture,
-      'age': age.toString(),
+      'age': age,
       'FFELink': ffeLink,
       'phoneNumber': phoneNumber,
       'role': role,

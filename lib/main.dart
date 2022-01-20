@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:my_little_poney/widgets/horse_dialog.dart';
-import 'package:my_little_poney/widgets/horses_page.dart';
-import 'package:my_little_poney/widgets/profile_page.dart';
-
-import 'models/Horse.dart';
-import 'package:my_little_poney/api/user_service_io.dart';
-import 'package:my_little_poney/usecase/user_usecase.dart';
-import 'package:my_little_poney/widets/navigation.dart';
+import 'package:my_little_poney/widgets/navigation.dart';
 import 'package:my_little_poney/widets/test.dart';
+import 'package:my_little_poney/widgets/contest_view.dart';
+import 'package:my_little_poney/widgets/horses_page.dart';
+import 'package:my_little_poney/widgets/list_event.dart';
+import 'package:my_little_poney/widgets/login.dart';
 
 import 'models/User.dart';
 
@@ -18,7 +15,6 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -26,12 +22,14 @@ class MyApp extends StatelessWidget {
       routes: {
         // put routes here
         Test.routeName: (context) => Test(),
+        ContestView.tag: (context) => const ContestView(),
         HorsesPage.routeName: (context) => HorsesPage(),
+        ListEvents.routeName: (context) => const ListEvents(),
       },
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: Navigation(),
+      home: const LoginScreen(),
     );
   }
 }

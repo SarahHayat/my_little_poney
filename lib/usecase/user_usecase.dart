@@ -5,7 +5,7 @@ class UserUseCase {
   UserServiceApi api = UserServiceApi();
 
   Future<List<User>?> getAllUser() async {
-    api.getAll().then((value) => value);
+    return api.getAll().then((value) => value);
   }
 
   Future<User> fetchUserById(id) async {
@@ -13,8 +13,8 @@ class UserUseCase {
     return result;
   }
 
-  Future<User?> createUser(user) async {
-    api.createUser(user).then((value) => value);
+  Future<User> createUser(User user) async {
+    return api.createUser(user).then((value) => value);
   }
 
   Future<User> updateUserById(user) async {
@@ -22,6 +22,10 @@ class UserUseCase {
   }
 
   Future<User?> deleteUserById(id) async {
-    api.deleteUser(id).then((value) => value);
+   return api.deleteUser(id).then((value) => value);
+  }
+
+  Future<User> loggin(String email,String password) async {
+    return api.loggin(email, password).then((value) => value).catchError((onError) => throw Exception('Failed to load user'));
   }
 }

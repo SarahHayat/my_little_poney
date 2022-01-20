@@ -18,7 +18,7 @@ class AttendeeParty {
 class Party {
   String? id;
   String name;
-  User user;
+  String user;
   String theme;
   String? picturePath;
   List<AttendeeParty>? attendeesParty;
@@ -44,9 +44,9 @@ class Party {
       name: json['name'] as String,
       picturePath: json['picturePath'] != null ? json['picturePath']! as String : "",
       attendeesParty: json['attendeesParty'] != null ? json['attendeesParty']! as List<AttendeeParty> : [],
-      user: json['user'] as User,
+      user: json['user'] as String,
       theme: json['theme'] as String,
-      isValid: json['isValid']  as bool,
+      isValid: json['isValid'] as bool,
       createdAt: DateTime.parse(json['createdAt']! as String),
       partyDateTime: DateTime.parse(json['partyDateTime']! as String),
     );

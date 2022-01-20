@@ -42,12 +42,12 @@ class HorseServiceApi {
   }
 
   Future<Horse> updateHorse(Horse horse) async {
-    final response = await http.put(
+    final response = await http.patch(
       Uri.parse('https://my-little-poney.herokuapp.com/horses/${horse.id}'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: horse.toJson(),
+      body: jsonEncode(horse.toJson()),
     );
 
     if (response.statusCode == 200) {

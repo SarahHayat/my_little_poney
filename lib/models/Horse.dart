@@ -37,11 +37,11 @@ class Horse {
   String race;
   String gender;
   String speciality;
-  User? owner;
+  String? owner;
   DateTime createdAt;
 
   // maybe for after
-  List<String>? dpUsers;
+  List<dynamic>? dpUsers;
 
   Horse({
     this.id,
@@ -60,8 +60,8 @@ class Horse {
   factory Horse.fromJson(Map<String, dynamic> json) {
     return Horse(
       id: json['_id'] != null ? json['_id']! as String : "",
-      dpUsers: json['dpUsers'] != null ? json['dpUsers']! as List<String>? : [],
-      owner: json['owner'] != null ? json['owner']! as User? : null,
+      dpUsers: json['dpUsers'] != null ? json['dpUsers']! as List<dynamic>? : [],
+      owner: json['owner'] != null ? json['owner']! as String? : null,
       picturePath: json['picturePath'] != null ? json['picturePath']! as String : "",
       age: json['age'] as int,
       dress: json['dress'] as String,
@@ -81,7 +81,7 @@ class Horse {
       'picturePath': picturePath,
       'age': age,
       'dress': dress,
-      'createdAt': createdAt,
+      'createdAt': createdAt.toString(),
       'name': name,
       'race': race,
       'speciality': speciality,

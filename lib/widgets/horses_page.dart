@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:localstorage/localstorage.dart';
 
 // import 'package:my_little_poney/mock/mock.dart';
 import 'package:my_little_poney/models/Horse.dart';
@@ -18,18 +19,20 @@ class HorsesPage extends StatefulWidget {
 }
 
 class HorsesPageState extends State<HorsesPage> {
+  final LocalStorage storage = LocalStorage('poney_app');
   HorseUseCase horseUseCase = HorseUseCase();
   UserUseCase userUseCase = UserUseCase();
 
   late List<Horse> horsesList;
   late User user;
-  String userId = "61e88761ffa82f1606d47565";
 
   bool horseLinkToUser = false;
   bool isMyHorse = false;
 
   @override
   void initState() {
+    user = User.fromJson(storage.getItem("user"));
+    print(' RELOAD ??');
     super.initState();
   }
 
@@ -37,27 +40,26 @@ class HorsesPageState extends State<HorsesPage> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Chevaux"),
-        ),
-        body: FutureBuilder<List<Horse>?>(
-          future: getAllHorses(),
-          builder: (BuildContext context, AsyncSnapshot<List<Horse>?> snapshot) {
-            print('snapchot before =${snapshot.data}');
-            if (snapshot.hasData) {
-              print('snapchot = $snapshot');
-              horsesList = snapshot.data!;
-              // user = snapshot.data['user'];
-              return getBody();
-            } else if (snapshot.hasError) {
-              return Text("${snapshot.error}");
-            }
-            return const Center(child: CircularProgressIndicator());
-          },
-        ),);
+      appBar: AppBar(
+        title: const Text("Chevaux"),
+      ),
+      body: FutureBuilder<List<Horse>?>(
+        future: getAllHorses(),
+        builder: (BuildContext context, AsyncSnapshot<List<Horse>?> snapshot) {
+          if (snapshot.hasData) {
+            horsesList = snapshot.data!;
+            // user = snapshot.data['user'];
+            return getBody();
+          } else if (snapshot.hasError) {
+            return Text("${snapshot.error}");
+          }
+          return const Center(child: CircularProgressIndicator());
+        },
+      ),
+    );
   }
 
-  Widget getBody(){
+  Widget getBody() {
     return Column(
       children: [
         Center(
@@ -72,11 +74,10 @@ class HorsesPageState extends State<HorsesPage> {
                   endActionPane: ActionPane(
                     motion: const ScrollMotion(),
                     children: [
-                      (user.type == UserType.dp)
+                      (user.type == UserType.dp.name)
                           ? getSlidableActionForDpUser(
-                          context, horsesList[index])
-                          : getSlidableActionForOwnerUser(
-                          horsesList[index]),
+                              context, horsesList[index])
+                          : getSlidableActionForOwnerUser(horsesList[index]),
                     ],
                   ),
                   child: GestureDetector(
@@ -89,26 +90,25 @@ class HorsesPageState extends State<HorsesPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Image.network(
-                            "https://cdn.radiofrance.fr/s3/cruiser-production/2021/03/e51f683c-1f29-4136-8e62-31baa8fbf95a/1280x680_origines-equides-cheval.jpg",
+                            horsesList[index].picturePath,
                             width: 150,
                           ),
                           Column(
-                            mainAxisAlignment:
-                            MainAxisAlignment.spaceEvenly,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             mainAxisSize: MainAxisSize.max,
                             children: [
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text('${horsesList[index].name}'),
-                                  (horsesList[index].gender == Gender.male)
+                                  (horsesList[index].gender == Gender.male.name)
                                       ? const Icon(Icons.male)
                                       : const Icon(Icons.female)
                                 ],
                               ),
                             ],
                           ),
-                          (user.type == UserType.dp)
+                          (user.type == UserType.dp.name)
                               ? isUserIsAssociateToHorse(horsesList[index])
                               : isUserIsOwnerOfHorse(horsesList[index]),
                         ],
@@ -122,9 +122,10 @@ class HorsesPageState extends State<HorsesPage> {
       ],
     );
   }
+
   isUserIsAssociateToHorse(Horse horse) {
     // the dp user has already one horse or the horse has already an owner
-    if (user.horses!.contains(horse)) {
+    if (user.horses!.contains(horse.id)) {
       return Icon(Icons.link);
     } else {
       return Icon(Icons.link_off);
@@ -132,9 +133,9 @@ class HorsesPageState extends State<HorsesPage> {
   }
 
   isUserIsOwnerOfHorse(Horse horse) {
-    if (horse.owner == null || horse.owner!.id != user.id) {
+    if (horse.owner == "" || horse.owner! != user.id) {
       return Container();
-    } else if (horse.owner!.id == user.id) {
+    } else if (horse.owner! == user.id) {
       return const Icon(Icons.attribution);
     }
   }
@@ -142,9 +143,12 @@ class HorsesPageState extends State<HorsesPage> {
   getSlidableActionForDpUser(BuildContext context, Horse horse) {
     if (user.horses!.contains(horse.id)) {
       return SlidableAction(
-        onPressed: (BuildContext) => setState(() {
-          user.horses!.remove(horse.id);
-        }),
+        onPressed: (BuildContext) {
+          setState(() {
+            user.horses!.remove(horse.id);
+          });
+          updateUser();
+        },
         backgroundColor: Color(0xFFFE4A49),
         foregroundColor: Colors.white,
         icon: Icons.link_off,
@@ -155,11 +159,14 @@ class HorsesPageState extends State<HorsesPage> {
   }
 
   getSlidableActionForOwnerUser(Horse horse) {
-    if (horse.owner != null && horse.owner!.id == user.id) {
+    if (horse.owner != "" && horse.owner! == user.id) {
       return SlidableAction(
-        onPressed: (BuildContext) => setState(() {
-          horse.owner = null;
-        }),
+        onPressed: (BuildContext) {
+          setState(() {
+            horse.owner = "";
+          });
+          updateHorse(horse);
+        },
         backgroundColor: Color(0xFFFE4A49),
         foregroundColor: Colors.white,
         icon: Icons.delete,
@@ -186,18 +193,14 @@ class HorsesPageState extends State<HorsesPage> {
     return await horseUseCase.getAllHorses();
   }
 
-  Future<List<Horse>?> getAllData()async {
-    // print('here');
-    // final resUser = await userUseCase.fetchUserById(userId);
-    // print('res user =$resUser');
-    final resHorse = await horseUseCase.getAllHorses();
-    // print('res horse =$resUser');
-    // final data ={
-    //   "user": resUser,
-    //   "horsesList": resHorse,
-    // };
-    // print(data);
-    print("res $resHorse");
-    return resHorse;
+  Future<Horse?> updateHorse(Horse horse) async {
+    final result = await horseUseCase.updateHorseById(horse);
+    return result;
+  }
+
+  Future<User> updateUser() async {
+    final result = await userUseCase.updateUserById(user);
+    storage.setItem("user", user.toJson());
+    return result;
   }
 }

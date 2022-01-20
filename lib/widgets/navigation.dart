@@ -58,11 +58,11 @@ class NavigationState extends State<Navigation> {
             ),
             ListTile(
               // Maybe put profil here
-              title: const Text('Item 1'),
+              title: const Text('Profile'),
               onTap: () {
                 setState(() {
                   // put the profile index
-                  _selectedIndex = 2;
+                  _selectedIndex = 1;
                 });
                 Navigator.pop(context);
               },

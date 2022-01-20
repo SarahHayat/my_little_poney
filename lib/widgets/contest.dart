@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:my_little_poney/api/contest_service_io.dart';
 import 'package:my_little_poney/helper/listview.dart';
 import 'package:my_little_poney/models/Contest.dart';
 import 'package:my_little_poney/helper/temporaryContest.dart';
 import 'contest_view.dart';
 import 'package:intl/intl.dart';
-import 'package:http/http.dart' as http;
+import 'package:my_little_poney/usecase/contest_usecase.dart';
 
 class ContestListView extends StatefulWidget {
   const ContestListView({Key? key, required this.title}) : super(key: key);
@@ -17,7 +18,10 @@ class ContestListView extends StatefulWidget {
 }
 
 class _ContestListState extends State<ContestListView> {
-  late List<Contest> contests = [contest, contest];
+  ContestUseCase contestUseCase = ContestUseCase();
+
+  late Future<List<Contest>?> contests;
+
   late Contest newContest;
 
   final TextEditingController nameController = TextEditingController();
@@ -28,7 +32,15 @@ class _ContestListState extends State<ContestListView> {
   @override
   void initState() {
     dateController.text = ""; //set the initial value of text field
+    getAllContestsFromDb();
     super.initState();
+  }
+
+  Future<List<Contest>?> getAllContestsFromDb() async {
+    contests = contestUseCase.getAllContests();
+    print('contests : ${contests}');
+
+    return contests;
   }
 
   @override
@@ -37,7 +49,18 @@ class _ContestListState extends State<ContestListView> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: buildListView(contests, _buildRow),
+      body: FutureBuilder<List<Contest>?>(
+          future: getAllContestsFromDb(),
+          builder: (context, snapshot) {
+            print('Snapshot : ${snapshot}');
+            if (snapshot.hasData) {
+              return buildListView(snapshot, _buildRow);
+            } else if (snapshot.hasError) {
+              return Center(child: Text(snapshot.error.toString()));
+            }
+
+            return const Center(child: CircularProgressIndicator());
+          }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _createContest(context);
@@ -63,7 +86,6 @@ class _ContestListState extends State<ContestListView> {
             Text('Adresse: ${contest.address}'),
             Text('Date: ${contest.contestDateTime}'),
             Text('Créée le : ${contest.createdAt}'),
-            Text('Par : ${contest.user.userName}'),
           ]),
     );
   }
@@ -159,9 +181,8 @@ class _ContestListState extends State<ContestListView> {
 
   createContest() {
     Contest newContestObject = Contest(
-      'idTest',
-      [],
-      user: userRiderDp,
+      user: userRiderDp.id.toString(),
+      attendeesContest: [],
       name: nameController.value.text,
       address: adressController.value.text,
       picturePath: pictureController.value.text,
@@ -169,8 +190,13 @@ class _ContestListState extends State<ContestListView> {
       createdAt: DateTime.now(),
     );
 
+    Future<Contest?> createdContest =
+        ContestServiceApi().createContest(newContestObject);
+
+    print('New contest : ${newContestObject.toJson()}');
+
     setState(() {
-      contests.add(newContestObject);
+      // contests?.add(newContestObject);
       newContest = newContestObject;
     });
   }

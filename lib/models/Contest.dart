@@ -1,5 +1,3 @@
-import 'User.dart';
-
 enum Level {
   amateur,
   club1,
@@ -10,7 +8,7 @@ enum Level {
 
 class AttendeeContest {
   String level;
-  User user;
+  String user;
 
   AttendeeContest({
     required this.user,
@@ -20,18 +18,18 @@ class AttendeeContest {
 
 class Contest {
   String? id;
-  User user;
+  String user;
   String name;
   String address;
   String picturePath;
   DateTime contestDateTime;
   DateTime createdAt;
-  List<AttendeeContest>? attendeesContest;
+  List<AttendeeContest> attendeesContest;
   bool isValid;
 
   Contest({
     this.id,
-    this.attendeesContest,
+    required this.attendeesContest,
     required this.user,
     required this.name,
     required this.address,
@@ -47,7 +45,7 @@ class Contest {
       attendeesContest: json['attendeesContest'] != null
           ? json['attendeesContest']! as List<AttendeeContest>
           : [],
-      user: json['user'] as User,
+      user: json['user'] as String,
       name: json['name'] as String,
       address: json['address'] as String,
       picturePath:

@@ -8,6 +8,7 @@ class ContestServiceApi {
   Future<List<Contest>?> getAll() async {
     final response = await http
         .get(Uri.parse('https://my-little-poney.herokuapp.com/contests'));
+
     if (response.statusCode == 200) {
       return compute(parseContests, response.body);
     } else {
@@ -24,6 +25,7 @@ class ContestServiceApi {
       throw Exception('Failed to load contest');
     }
   }
+
   Future<Contest> createContest(Contest contest) async {
     final response = await http.post(
       Uri.parse('https://my-little-poney.herokuapp.com/contests'),
@@ -32,6 +34,8 @@ class ContestServiceApi {
       },
       body: contest.toJson(),
     );
+
+    print('Response contest : $response');
 
     if (response.statusCode == 201) {
       // si on recupere le contest crée

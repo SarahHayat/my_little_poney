@@ -39,9 +39,6 @@ class User {
     required this.email,
   });
 
-
-
-
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['_id'] != null ? json['_id']! as String : "",

@@ -53,7 +53,7 @@ class _ContestViewState extends State<ContestView> {
             Icons.person,
             color: Colors.red[500],
           ),
-          Text(arguments.attendeesContest.length.toString()),
+          Text(contestToUpdate.attendeesContest.length.toString()),
         ],
       ),
     );
@@ -209,7 +209,7 @@ class _ContestViewState extends State<ContestView> {
 
   void _joinContest() async {
     AttendeeContest newAttendee =
-        AttendeeContest(user: monUser, level: levelValue);
+        AttendeeContest(user: monUser.id.toString(), level: levelValue);
 
     setState(() {
       contestToUpdate.attendeesContest.add(newAttendee);

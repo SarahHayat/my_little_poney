@@ -5,7 +5,7 @@ import 'package:my_little_poney/models/Party.dart';
 
 class CardsEvents extends Card {
 
-  static Card cardParty(int position, BuildContext context, List<Party> listEvents) {
+  static Card cardParty(int position, BuildContext context, Party listEvents) {
     return Card(
       elevation: 2.0,
       child: Container(
@@ -39,14 +39,14 @@ class CardsEvents extends Card {
                       ],
                     ),
                     Text(
-                      listEvents[position].isValid
+                      listEvents.isValid
                           ? 'Disponible'
                           : 'Indisponible',
                       style:
                       const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                     ),
                     Text(
-                      '${listEvents[position].theme}',
+                      '${listEvents.theme}',
                       style:
                       const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                     ),
@@ -71,12 +71,12 @@ class CardsEvents extends Card {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(listEvents[position].name,
+                      Text(listEvents.name,
                           style: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 24),
                           overflow: TextOverflow.ellipsis),
                       Text(
-                        'Créer par : ${listEvents[position].user}',
+                        'Créer par : ${listEvents.user}',
                         style: const TextStyle(fontSize: 10),
                       ),
                     ],
@@ -88,7 +88,7 @@ class CardsEvents extends Card {
                         'Date: ',
                         style: const TextStyle(fontSize: 10),
                       ),
-                      Text('${listEvents[position].partyDateTime}', style: const TextStyle(fontSize: 14)),
+                      Text('${listEvents.partyDateTime}', style: const TextStyle(fontSize: 14)),
                     ],
                   ),
                   Column(
@@ -98,7 +98,7 @@ class CardsEvents extends Card {
                         'Commentaires: ',
                         style: const TextStyle(fontSize: 10),
                       ),
-                      Text('${listEvents[position].attendeesParty}', style: const TextStyle(fontSize: 14)),
+                      Text('${listEvents.attendeesParty}', style: const TextStyle(fontSize: 14)),
                     ],
                   )
                 ],
@@ -110,7 +110,7 @@ class CardsEvents extends Card {
     );
   }
 
-  static Card cardLesson(int position, BuildContext context, List<Lesson> listEvents) {
+  static Card cardLesson(int position, BuildContext context, Lesson listEvents) {
     return Card(
       elevation: 2.0,
       child: Container(
@@ -144,19 +144,19 @@ class CardsEvents extends Card {
                       ],
                     ),
                     Text(
-                      listEvents[position].isValid
+                      listEvents.isValid
                           ? 'Disponible'
                           : 'Indisponible',
                       style:
                       const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                     ),
                     Text(
-                      '${listEvents[position].ground}',
+                      '${listEvents.ground}',
                       style:
                       const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                     ),
                     Text(
-                      '${listEvents[position].discipline}',
+                      '${listEvents.discipline}',
                       style:
                       const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                     ),
@@ -181,12 +181,12 @@ class CardsEvents extends Card {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(listEvents[position].name,
+                      Text(listEvents.name,
                           style: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 24),
                           overflow: TextOverflow.ellipsis),
                       Text(
-                        'Créer par : ${listEvents[position].user}',
+                        'Créer par : ${listEvents.user}',
                         style: const TextStyle(fontSize: 10),
                       ),
                     ],
@@ -198,7 +198,7 @@ class CardsEvents extends Card {
                         'Durée: ',
                         style: TextStyle(fontSize: 10),
                       ),
-                      Text(listEvents[position].duration == 60 ? '1 hour' : '30 minutes', style: const TextStyle(fontSize: 14),)
+                      Text(listEvents.duration == 60 ? '1 hour' : '30 minutes', style: const TextStyle(fontSize: 14),)
                     ],
                   ),
                   Column(
@@ -208,7 +208,7 @@ class CardsEvents extends Card {
                         'Date: ',
                         style: TextStyle(fontSize: 10),
                       ),
-                      Text('${listEvents[position].lessonDateTime}', style: const TextStyle(fontSize: 14)),
+                      Text('${listEvents.lessonDateTime}', style: const TextStyle(fontSize: 14)),
                     ],
                   )
                 ],
@@ -220,7 +220,7 @@ class CardsEvents extends Card {
     );
   }
 
-  static Card cardContest(int position, BuildContext context, List<Contest> listEvents) {
+  static Card cardContest(int position, BuildContext context, Contest listEvents) {
     return Card(
       elevation: 2.0,
       child: Container(
@@ -254,7 +254,7 @@ class CardsEvents extends Card {
                       ],
                     ),
                     Text(
-                      listEvents[position].isValid
+                      listEvents.isValid
                           ? 'Disponible'
                           : 'Indisponible',
                       style:
@@ -281,12 +281,12 @@ class CardsEvents extends Card {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(listEvents[position].name,
+                      Text(listEvents.name,
                           style: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 24),
                           overflow: TextOverflow.ellipsis),
                       Text(
-                        'Créer par : ${listEvents[position].user}',
+                        'Créer par : ${listEvents.user}',
                         style: const TextStyle(fontSize: 10),
                       ),
                     ],
@@ -298,7 +298,7 @@ class CardsEvents extends Card {
                         'Adresse: ',
                         style: TextStyle(fontSize: 10),
                       ),
-                      Text('${listEvents[position].address}', style: const TextStyle(fontSize: 14),)
+                      Text('${listEvents.address}', style: const TextStyle(fontSize: 14),)
                     ],
                   ),
                   Column(
@@ -308,7 +308,7 @@ class CardsEvents extends Card {
                         'Date: ',
                         style: TextStyle(fontSize: 10),
                       ),
-                      Text('${listEvents[position].contestDateTime}', style: const TextStyle(fontSize: 14)),
+                      Text('${listEvents.contestDateTime}', style: const TextStyle(fontSize: 14)),
                     ],
                   ),
                 ],

@@ -19,7 +19,7 @@ class ListEvents extends StatefulWidget {
 class MyListEvents extends State<ListEvents> {
   bool isDescending = false;
 
-  List<dynamic> listEvents = [];
+  late List<dynamic> listEvents;
   String dropdownValue = 'all';
 
   PartyUseCase partyUseCase = PartyUseCase();
@@ -28,18 +28,13 @@ class MyListEvents extends State<ListEvents> {
 
   _cardsEvents(int position, BuildContext context, List<dynamic> listEvents) {
     var eventPosition = listEvents[position];
-    print(listEvents.length);
-    // if (eventPosition.runtimeType == List<Contest>) {
-    //   return CardsEvents.cardContest(position, context, eventPosition);
-    // } else if (eventPosition.runtimeType == List<Lesson>) {
-    //   return CardsEvents.cardLesson(position, context, eventPosition);
-    // } else if (eventPosition.runtimeType == List<Party>) {
-    //   return CardsEvents.cardParty(position, context, eventPosition);
-    // }
-  }
-
-  Future<List<Party>?> _getListParties() async {
-    return await partyUseCase.getAllParties();
+    if (eventPosition.runtimeType == Contest) {
+      return CardsEvents.cardContest(position, context, eventPosition);
+    } else if (eventPosition.runtimeType == Lesson) {
+      return CardsEvents.cardLesson(position, context, eventPosition);
+    } else if (eventPosition.runtimeType == Party) {
+      return CardsEvents.cardParty(position, context, eventPosition);
+    }
   }
 
   Future<List<dynamic>?> _getAllData() async {
@@ -56,8 +51,7 @@ class MyListEvents extends State<ListEvents> {
         future: _getAllData(),
         builder: (BuildContext context, AsyncSnapshot<List<dynamic>?> snapshot) {
           if (snapshot.hasData) {
-            listEvents = snapshot.data!;
-            print(listEvents);
+            listEvents = snapshot.data!.expand((x) => x).toList();
             return Container(
               padding:
                   const EdgeInsets.only(top: 5, bottom: 5, right: 10, left: 10),
@@ -132,13 +126,13 @@ class MyListEvents extends State<ListEvents> {
     return ListView.builder(
         itemCount: listEvents.length,
         itemBuilder: (context, position) {
-          // if(listEvents.length > 1){
-          //   final sortedItems = listEvents..sort((a, b) => isDescending
-          //       ? b.name.compareTo(a.name)
-          //       : a.name.compareTo(b.name));
-          //   return Container(child: _cardsEvents(position, context, sortedItems));
-          // } else{
-          // }
+          if(listEvents.length > 1){
+            final sortedItems = listEvents..sort((a, b) => isDescending
+                ? b.name.compareTo(a.name)
+                : a.name.compareTo(b.name));
+            return Container(child: _cardsEvents(position, context, sortedItems));
+          } else{
+          }
           return Container(child: _cardsEvents(position, context, listEvents));
         });
   }

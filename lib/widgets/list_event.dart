@@ -16,106 +16,112 @@ class ListEvents extends StatefulWidget {
 class MyListEvents extends State<ListEvents> {
   bool isDescending = false;
 
-  static User userManagerOwner = User(
-    "id1",
-    "profilePicture",
-    20,
-    "FFELink",
-    "phoneNumber",
-    UserRole.manager,
-    [],
-    DateTime.now(),
-    Type.owner,
-    userName: "Antony",
-    password: "12345",
-    email: "antony@gmail.com",
-  );
+  // static User userManagerOwner = User(
+  //   "id1",
+  //   "profilePicture",
+  //   20,
+  //   "FFELink",
+  //   "phoneNumber",
+  //   UserRole.manager,
+  //   [],
+  //   DateTime.now(),
+  //   Type.owner,
+  //   userName: "Antony",
+  //   password: "12345",
+  //   email: "antony@gmail.com",
+  // );
+  //
+  // static Horse horse = Horse(
+  //   [],
+  //   "id1",
+  //   name: "Etoile d'argent",
+  //   age: 2,
+  //   picturePath: "picturePath",
+  //   dress: "dress",
+  //   race: HorseRace.appaloosa,
+  //   gender: Gender.other,
+  //   speciality: Speciality.endurance,
+  //   owner: userManagerOwner,
+  //   createdAt: DateTime.now(),
+  // );
+  //
+  // static User userRiderDp = User(
+  //   "id2",
+  //   "profilePicture",
+  //   20,
+  //   "FFELink",
+  //   "phoneNumber",
+  //   UserRole.rider,
+  //   [horse],
+  //   DateTime.now(),
+  //   Type.dp,
+  //   userName: "Jojo",
+  //   password: "12345",
+  //   email: "antony@gmail.com",
+  // );
+  //
+  // static Party party = Party(
+  //   "id1",
+  //   'd',
+  //   "picturePath",
+  //   [AttendeeParty("Des chips !", user: userManagerOwner)],
+  //   user: userRiderDp,
+  //   theme: Themes.happyHour,
+  //   createdAt: DateTime.now(),
+  //   partyDateTime: DateTime.now(),
+  // );
+  // static Party party1 = Party("id2", 'e', "picturePath",
+  //     [AttendeeParty("Des chips !", user: userManagerOwner)],
+  //     user: userRiderDp,
+  //     theme: Themes.happyHour,
+  //     createdAt: DateTime.now(),
+  //     partyDateTime: DateTime.now(),
+  //     isValid: true);
+  //
+  // static Lesson lesson = Lesson("id1", [],
+  //     name: "c",
+  //     user: userManagerOwner,
+  //     ground: Ground.carousel,
+  //     lessonDateTime: DateTime.now(),
+  //     createdAt: DateTime.now(),
+  //     duration: 30,
+  //     discipline: Discipline.endurance);
+  //
+  // static Contest contest = Contest(
+  //   "id1",
+  //   [
+  //     AttendeeContest(
+  //       user: userManagerOwner,
+  //       level: Level.amateur,
+  //     )
+  //   ],
+  //   user: userRiderDp,
+  //   name:
+  //       "azeagiuazyeiuazieakeyiazyueyuieayzeizayiaezuiueziauyeazeuiyazuieyazieyazuie eaz eaz eaz eaz e zae az e a e a ea e az eza e ",
+  //   address: "address",
+  //   picturePath: "picturePath",
+  //   contestDateTime: DateTime.now(),
+  //   createdAt: DateTime.now(),
+  // );
+  //
+  // static Contest contest1 = Contest(
+  //   "id2",
+  //   [],
+  //   user: userRiderDp,
+  //   name: "b",
+  //   address: "address",
+  //   picturePath: "picturePath",
+  //   contestDateTime: DateTime.now(),
+  //   createdAt: DateTime.now(),
+  // );
 
-  static Horse horse = Horse(
-    [],
-    "id1",
-    name: "Etoile d'argent",
-    age: 2,
-    picturePath: "picturePath",
-    dress: "dress",
-    race: HorseRace.appaloosa,
-    gender: Gender.other,
-    speciality: Speciality.endurance,
-    owner: userManagerOwner,
-    createdAt: DateTime.now(),
-  );
-
-  static User userRiderDp = User(
-    "id2",
-    "profilePicture",
-    20,
-    "FFELink",
-    "phoneNumber",
-    UserRole.rider,
-    [horse],
-    DateTime.now(),
-    Type.dp,
-    userName: "Jojo",
-    password: "12345",
-    email: "antony@gmail.com",
-  );
-
-  static Party party = Party(
-    "id1",
-    'd',
-    "picturePath",
-    [AttendeeParty("Des chips !", user: userManagerOwner)],
-    user: userRiderDp,
-    theme: Themes.happyHour,
-    createdAt: DateTime.now(),
-    partyDateTime: DateTime.now(),
-  );
-  static Party party1 = Party("id2", 'e', "picturePath",
-      [AttendeeParty("Des chips !", user: userManagerOwner)],
-      user: userRiderDp,
-      theme: Themes.happyHour,
-      createdAt: DateTime.now(),
-      partyDateTime: DateTime.now(),
-      isValid: true);
-
-  static Lesson lesson = Lesson("id1", [],
-      name: "c",
-      user: userManagerOwner,
-      ground: Ground.carousel,
-      lessonDateTime: DateTime.now(),
-      createdAt: DateTime.now(),
-      duration: 30,
-      discipline: Discipline.endurance);
-
-  static Contest contest = Contest(
-    "id1",
-    [
-      AttendeeContest(
-        user: userManagerOwner,
-        level: Level.amateur,
-      )
-    ],
-    user: userRiderDp,
-    name:
-        "azeagiuazyeiuazieakeyiazyueyuieayzeizayiaezuiueziauyeazeuiyazuieyazieyazuie eaz eaz eaz eaz e zae az e a e a ea e az eza e ",
-    address: "address",
-    picturePath: "picturePath",
-    contestDateTime: DateTime.now(),
-    createdAt: DateTime.now(),
-  );
-
-  static Contest contest1 = Contest(
-    "id2",
-    [],
-    user: userRiderDp,
-    name: "b",
-    address: "address",
-    picturePath: "picturePath",
-    contestDateTime: DateTime.now(),
-    createdAt: DateTime.now(),
-  );
-
-  List<dynamic> listEvents = [contest, lesson, party, party1, contest1];
+  List<dynamic> listEvents = [
+    // contest,
+    // lesson,
+    // party,
+    // party1,
+    // contest1
+  ];
   String dropdownValue = 'all';
 
   _cardsEvents(int position, BuildContext context, List<dynamic> listEvents) {

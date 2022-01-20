@@ -56,7 +56,8 @@ class _MyHomePageState extends State<MyHomePage> {
   UserUseCase userUseCase = UserUseCase();
   int _counter = 0;
 
-  late Future<List<User>?> futureUsers;
+  // late Future<List<User>?> futureUsers;
+  late Future<User?> futureUser;
 
   void _incrementCounter() {
     setState(() {
@@ -72,8 +73,9 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    futureUsers = userUseCase.getAllUser();
+    futureUser = userUseCase.fetchUserById('61e886829e6435822db10be7');
   }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done

@@ -7,4 +7,8 @@ class UserUseCase {
   Future<List<User>?> getAllUser() async {
     api.getAll().then((value) => value);
   }
+
+  Future<User?> fetchUserById(id) async {
+    api.fetchUserById(id).then((value) => value);
+  }
 }

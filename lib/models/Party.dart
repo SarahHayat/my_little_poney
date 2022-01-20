@@ -59,7 +59,7 @@ class Party {
 
   factory Party.fromJson(Map<String, dynamic> json) {
     return Party(
-      id: json['id'] != null ? json['id']! as String : "",
+      id: json['_id'] != null ? json['_id']! as String : "",
       picturePath: json['picturePath'] != null ? json['picturePath']! as String : "",
       attendeesParty: json['attendeesParty'] != null ? json['attendeesParty']! as List<AttendeeParty> : [],
       user: json['user'] as User,

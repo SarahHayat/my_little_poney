@@ -89,7 +89,7 @@ class Horse {
 
   factory Horse.fromJson(Map<String, dynamic> json) {
     return Horse(
-      id: json['id'] != null ? json['id']! as String : "",
+      id: json['_id'] != null ? json['_id']! as String : "",
       dpUsers: json['dpUsers'] != null ? json['dpUsers']! as List<String>? : [],
       owner: json['owner'] != null ? json['owner']! as User? : null,
       picturePath: json['picturePath'] != null ? json['picturePath']! as String : "",
@@ -105,7 +105,7 @@ class Horse {
 
   Map<String, Object?> toJson() {
     return {
-      'id': id,
+      '_id': id,
       'dpUsers': dpUsers,
       'owner': owner,
       'picturePath': picturePath,

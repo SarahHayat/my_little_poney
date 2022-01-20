@@ -43,21 +43,24 @@ class Contest {
 
   factory Contest.fromJson(Map<String, dynamic> json) {
     return Contest(
-      id: json['id'] != null ? json['id']! as String : "",
-      attendeesContest: json['attendeesContest'] != null ? json['attendeesContest']! as List<AttendeeContest> : [],
+      id: json['_id'] != null ? json['_id']! as String : "",
+      attendeesContest: json['attendeesContest'] != null
+          ? json['attendeesContest']! as List<AttendeeContest>
+          : [],
       user: json['user'] as User,
       name: json['name'] as String,
       address: json['address'] as String,
-      picturePath: json['picturePath'] != null ? json['picturePath']! as String : "",
+      picturePath:
+          json['picturePath'] != null ? json['picturePath']! as String : "",
       contestDateTime: DateTime.parse(json['contestDateTime']! as String),
       createdAt: DateTime.parse(json['createdAt']! as String),
-      isValid: json['isValid']  as bool,
+      isValid: json['isValid'] as bool,
     );
   }
 
   Map<String, Object?> toJson() {
     return {
-      'id': id,
+      '_id': id,
       'attendeesContest': attendeesContest,
       'user': user,
       'name': name,

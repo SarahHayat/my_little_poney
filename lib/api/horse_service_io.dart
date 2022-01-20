@@ -69,9 +69,6 @@ class HorseServiceApi {
       },
     );
 
-    log(response.statusCode.toString());
-    log(response.body.toString());
-
     if (response.statusCode == 200) {
       return Horse.fromJson(jsonDecode(response.body));
     } else {

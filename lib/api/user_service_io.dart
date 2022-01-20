@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:my_little_poney/models/User.dart';
 
 class UserServiceApi {
-  Future<List<User>?> getAll() async {
+  Future<List<User>> getAll() async {
     final response = await http
         .get(Uri.parse('https://my-little-poney.herokuapp.com/users'));
     if (response.statusCode == 200) {
@@ -58,7 +58,7 @@ class UserServiceApi {
     }
   }
 
-  Future<User> deleteUser(String id) async {
+  Future<User?> deleteUser(String id) async {
     final http.Response response = await http.delete(
       Uri.parse('https://my-little-poney.herokuapp.com/users/$id'),
       headers: <String, String>{

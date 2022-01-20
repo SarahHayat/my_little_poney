@@ -3,6 +3,7 @@ import 'package:my_little_poney/api/user_service_io.dart';
 import 'package:my_little_poney/usecase/user_usecase.dart';
 import 'package:my_little_poney/view/horses_list.dart';
 import 'package:my_little_poney/view/manage_event.dart';
+import 'package:my_little_poney/view/users_list.dart';
 import 'package:my_little_poney/widets/navigation.dart';
 import 'package:my_little_poney/widets/test.dart';
 
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home:HorsesList(),
+      home:UsersList(),
       //home: Navigation(),
     );
   }

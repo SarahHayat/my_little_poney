@@ -41,7 +41,6 @@ class _HorsesListState extends State<HorsesList> {
 
   @override
   Widget build(BuildContext context) {
-    horseCase.createHorse(Mock.horse);
     return Scaffold(
         appBar: AppBar(
           title: Text("Horses List"),
@@ -109,20 +108,7 @@ class _HorsesListState extends State<HorsesList> {
   }
 
   _removeHorse(Horse horse) async {
-    //@todo : add one more row to delete horse in DB with a request
-    // all user related to this horse should removed it from their horses list
-
-
-    //[log] Instance of 'Future<List<Horse>>'
-    // [ERROR:flutter/lib/ui/ui_dart_state.cc(209)] Unhandled Exception: Null check operator used on a null value
-    // #0      _HorsesListState._removeHorse (package:my_little_poney/view/horses_list.dart:120:21)
-    // <asynchronous suspension>
-    //
-    // [log] 200
-    // [log] {"_id":"61e8877effa82f1606d4756c","dpUsers":[],"createdAt":"2022-01-19T21:49:50.263Z",
-    // "owner":"61e88761ffa82f1606d47565","speciality":"endurance","gender":"male","race":"mustang",
-    // "dress":"dress","picturePath":"picturePath","age":2,"name":"étoile d'argent","__v":0}
-
+    // @todo :  all user related to this horse should removed it from their horses list (backend)
     Horse? removedHorse = await horseCase.deleteHorseById(horse.id);
     if(removedHorse !=null){
       setState(() {

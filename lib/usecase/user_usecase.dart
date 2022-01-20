@@ -4,8 +4,8 @@ import 'package:my_little_poney/models/User.dart';
 class UserUseCase {
   UserServiceApi api = UserServiceApi();
 
-  Future<List<User>?> getAllUser() async {
-    api.getAll().then((value) => value);
+  Future<List<User>> getAllUser() async {
+    return api.getAll().then((value) => value);
   }
 
   Future<User?> fetchUserById(id) async {
@@ -21,6 +21,6 @@ class UserUseCase {
   }
 
   Future<User?> deleteUserById(id) async {
-    api.deleteUser(id).then((value) => value);
+    return api.deleteUser(id).then((value) => value);
   }
 }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:my_little_poney/helper/list_extension.dart';
 import 'package:my_little_poney/helper/listview.dart';
 import 'package:my_little_poney/mock/mock.dart';
 import 'package:my_little_poney/models/User.dart';
+import 'package:my_little_poney/usecase/user_usecase.dart';
 import 'package:my_little_poney/view/component/delete_button.dart';
 import 'package:my_little_poney/view/component/user_tile.dart';
 import 'package:my_little_poney/view/component/yes_no_dialog.dart';
@@ -15,7 +17,9 @@ class UsersList extends StatefulWidget {
 }
 
 class _UsersListState extends State<UsersList> {
-  late List<User> users ;
+  final UserUseCase userCase = UserUseCase();
+  late Future<List<User>> users ;
+  final List<User> removedUsers = [];
   final User currentUser = Mock.userManagerOwner2;
 
   @override
@@ -32,7 +36,21 @@ class _UsersListState extends State<UsersList> {
         elevation: 10,
         centerTitle: true,
       ),
-      body: ListViewSeparated(data: users,buildListItem: _buildRow),
+        body: FutureBuilder<List<User>>(
+          future: users,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              List<User> data = snapshot.data!;
+              data.removeFromArray(removedUsers);
+              return ListViewSeparated(data: data,buildListItem: _buildRow);
+            } else if (snapshot.hasError) {
+              return Text("${snapshot.error}");
+            }
+            return const Center(
+                child: CircularProgressIndicator()
+            );
+          },
+        )
     );
   }
 
@@ -69,20 +87,23 @@ class _UsersListState extends State<UsersList> {
   }
 
   _getUsers(){
-    //@todo : use request here to get users list from DB
+    Future<List<User>> resUser = userCase.getAllUser();
     setState(() {
-      users = [Mock.userRiderDp2, Mock.userManagerOwner2];
+      users = resUser;
     });
   }
 
-  _removeUser(User user){
+  _removeUser(User user) async {
     //@todo : add one more row to delete user in DB with a request
     // + all horses related to this user should be removed if he is an owner
     // else, all horse related to this user should removed it from their user list
     // you can use user.isOwner() if needed for the request
-    setState(() {
-      users.remove(user);
-    });
+    User? removedUser = await userCase.deleteUserById(user.id);
+    if(removedUser !=null){
+      setState(() {
+        removedUsers.add(user);
+      });
+    }
   }
 }
 

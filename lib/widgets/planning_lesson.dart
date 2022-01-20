@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:my_little_poney/helper/datetime_extension.dart';
 import 'package:my_little_poney/helper/listview.dart';
@@ -7,6 +9,7 @@ import 'package:my_little_poney/models/User.dart';
 import 'package:my_little_poney/components/custom_datepicker.dart';
 import 'package:my_little_poney/components/daily_section_content.dart';
 import 'package:my_little_poney/components/lesson_tile.dart';
+import 'package:my_little_poney/usecase/lesson_usecase.dart';
 
 import '../components/daily_section.dart';
 
@@ -19,37 +22,45 @@ class PlanningLesson extends StatefulWidget {
 }
 
 class _PlanningLessonState extends State<PlanningLesson> {
+  final LessonUseCase lessonUseCase = LessonUseCase();
   final User currentUser = Mock.userManagerOwner2;
-  late Map<DateTime, List<Lesson>> allLessons ;
-  late Map<DateTime, List<Lesson>> displayedLessons ;
   DateTime selectedDate = DateTime.now();
+  late Future<List<Lesson>> lessons ;
 
   @override
   void initState() {
     super.initState();
-    _getLessons();
-    _filterLessonsOfWeek();
   }
 
   /// Filter lessons depending on [selectedDate] week
-  void _filterLessonsOfWeek(){
+  Map<DateTime, List<Lesson>> _filterLessonsOfWeek(Map<DateTime, List<Lesson>> mappedLesson){
     DateTime mondayOfWeek = selectedDate.getWeekFirstDay();
     Map<DateTime, List<Lesson>> lessonList = {};
     for(int i=0; i<DateTime.sunday; i++){
       DateTime weekDay = mondayOfWeek.add(Duration(days: i));
-      lessonList[weekDay] = allLessons.keys.contains(weekDay) ? allLessons[weekDay] as List<Lesson> : [];
+      lessonList[weekDay] = mappedLesson.keys.contains(weekDay) ? mappedLesson[weekDay] as List<Lesson> : [];
     }
-    setState(() {
-      displayedLessons = lessonList;
+    return lessonList;
+  }
+
+  _getDailyLessons(List<Lesson> data){
+    Map<DateTime, List<Lesson>> lessonsMap = {};
+    data.forEach((element) {
+      if(!lessonsMap.containsKey(element.lessonDateTime.getOnlyDate())){
+        lessonsMap[element.lessonDateTime.getOnlyDate()] = [];
+      }
+      lessonsMap[element.lessonDateTime.getOnlyDate()]?.add(element);
     });
+    Map<DateTime, List<Lesson>> dailyLessons = _filterLessonsOfWeek(lessonsMap);
+    List<Widget> t = [];
+    dailyLessons.forEach((key, value) {
+      t.add(_buildPlanning(key, value));
+    });
+    return t;
   }
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> t = [];
-    displayedLessons.forEach((key, value) {
-      t.add(_buildPlanning(key, value));
-    });
     return Scaffold(
       appBar: AppBar(
         title: Text("Lesson planning week : ${selectedDate.getWeekFirstDay().getFrenchDate()}"),
@@ -57,10 +68,23 @@ class _PlanningLessonState extends State<PlanningLesson> {
         centerTitle: true,
         leading: CustomDatePicker(initialDate: selectedDate, onSelected: _updateSelectedDate,),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: t,
+      body: FutureBuilder<List<Lesson>?>(
+      future: getAllLessons(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            List<Lesson> data = snapshot.data!;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: _getDailyLessons(data),
+            );
+          } else if (snapshot.hasError) {
+            return Text("${snapshot.error}");
+          }
+          return const Center(
+              child: CircularProgressIndicator()
+          );
+        },
       )
     );
   }
@@ -71,7 +95,6 @@ class _PlanningLessonState extends State<PlanningLesson> {
     setState(() {
       selectedDate = date;
     });
-    _filterLessonsOfWeek();
   }
 
   /// Create a widget for the given date that will display the [date],
@@ -116,30 +139,9 @@ class _PlanningLessonState extends State<PlanningLesson> {
     return LessonTile(lesson: lesson,);
   }
 
-  _getLessons(){
-    //@todo : use request here to get lessons list from DB
-    //il faut qu'on ai une gestion par semaine
-
-    setState(() {
-      allLessons = {
-        _fakeDate(DateTime.monday):[Mock.lesson, Mock.lesson],
-        _fakeDate(DateTime.tuesday):[Mock.lesson],
-        _fakeDate(DateTime.wednesday):[],
-        _fakeDate(DateTime.thursday):[Mock.lesson, Mock.lesson, Mock.lesson, Mock.lesson],
-        _fakeDate(DateTime.friday):[Mock.lesson],
-        _fakeDate(DateTime.saturday):[Mock.lesson],
-        _fakeDate(DateTime.sunday):[Mock.lesson],
-        _fakeDate(8):[Mock.lesson],
-        _fakeDate(9):[Mock.lesson, Mock.lesson, Mock.lesson, Mock.lesson],
-      };
-    });
-
-  }
-
-  ///@todo : delete this function.
-  ///  For Dev only, used to fake lesson planning.
-  DateTime _fakeDate(int weekdayInt){
-    int sundayDate = 16;
-    return DateTime.parse("2022-01-${sundayDate + weekdayInt}");
+  Future<List<Lesson>?> getAllLessons() async {
+    final result = await lessonUseCase.getAllLessons();
+    log(result.toString());
+    return result;
   }
 }

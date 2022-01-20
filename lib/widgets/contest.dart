@@ -38,7 +38,6 @@ class _ContestListState extends State<ContestListView> {
 
   Future<List<Contest>?> getAllContestsFromDb() async {
     contests = await contestUseCase.getAllContests();
-
     return contests;
   }
 

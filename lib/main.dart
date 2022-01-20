@@ -20,7 +20,8 @@ class MyApp extends StatelessWidget {
       title: 'My Little Poney',
       routes: {
         // put routes here
-        Test.routeName: (context) => Test()
+        Test.routeName: (context) => Test(),
+        Navigation.routeName: (context) => Navigation()
       },
       theme: ThemeData(
         primarySwatch: Colors.blue,

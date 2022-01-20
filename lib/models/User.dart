@@ -71,7 +71,7 @@ class User {
       'phoneNumber': phoneNumber,
       'role': role,
       'horses': horses,
-      'createdAt': createdAt,
+      'createdAt': createdAt.toString(),
       'type': type,
       'userName': userName,
       'password': password,

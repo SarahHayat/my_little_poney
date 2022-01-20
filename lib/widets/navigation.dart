@@ -1,18 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:my_little_poney/widets/test.dart';
 
 class Navigation extends StatefulWidget {
+  static const routeName = 'navigation';
   @override
   State<StatefulWidget> createState() => NavigationState();
 }
 
 class NavigationState extends State<Navigation> {
   int _selectedIndex = 0;
+  final LocalStorage storage = LocalStorage('poney_app');
 
   Widget getBody() {
     if (_selectedIndex == 0) {
       // return the first page
+      print(storage.getItem('user'));
       return Test();
     } else if (_selectedIndex == 1) {
       // return the second page

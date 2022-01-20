@@ -5,6 +5,9 @@ import 'package:my_little_poney/components/login-sigup-button.dart';
 import 'package:my_little_poney/constants/constants.dart';
 import 'package:my_little_poney/models/User.dart';
 import 'package:my_little_poney/usecase/user_usecase.dart';
+import 'package:my_little_poney/widets/navigation.dart';
+import 'package:my_little_poney/widets/test.dart';
+import 'package:my_little_poney/widgets/sign-up.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -45,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
-                        "Sign In",
+                        "Connexion",
                         style: TextStyle(
                             fontSize: 50,
                             color: Colors.black,
@@ -94,57 +97,20 @@ class _LoginScreenState extends State<LoginScreen> {
                       LoginSignupButton(
                         title: 'Login',
                         ontapp: () async {
-                          userUseCase.api.loggin(email, password).then((value)
+                          userUseCase.api.loggin(email, password).then((user)
                           {
-
-                            storage.setItem('user', value);
-                            // User user = storage.getItem('user');
-                            // print(user);
-
+                            storage.setItem('user', user.toJson());
+                            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => Navigation()));
+                          }).catchError((onError) {
+                            const AlertDialog();
                           });
 
-
-
-                          if (formkey.currentState!.validate()) {
-                            setState(() {
-                              isloading = true;
-                            });
-                            // try {
-                            //   // await _auth.signInWithEmailAndPassword(
-                            //   //     email: email, password: password);
-                            //
-                            //   // print(_auth.currentUser);
-                            //
-                            //   setState(() {
-                            //     isloading = false;
-                            //   });
-                            // } on FirebaseAuthException catch (e) {
-                            //   showDialog(
-                            //     context: context,
-                            //     builder: (ctx) => AlertDialog(
-                            //       title: const Text("Ops! Login Failed"),
-                            //       content: Text('${e.message}'),
-                            //       actions: [
-                            //         TextButton(
-                            //           onPressed: () {
-                            //             Navigator.of(ctx).pop();
-                            //           },
-                            //           child: const Text('Okay'),
-                            //         )
-                            //       ],
-                            //     ),
-                            //   );
-                            //   print(e);
-                            // }
-                            setState(() {
-                              isloading = false;
-                            });
-                          }
                         },
                       ),
                       const SizedBox(height: 30),
                       GestureDetector(
                         onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => SignupScreen()));
                           // Navigator.of(context).push(
                           //   MaterialPageRoute(
                           //     builder: (context) => SignupScreen(),
@@ -154,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Row(
                           children: const [
                             Text(
-                              "Don't have an Account ?",
+                              "Créer un compte ?",
                               style: TextStyle(
                                   fontSize: 20, color: Colors.black87),
                             ),
@@ -162,7 +128,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             Hero(
                               tag: '1',
                               child: Text(
-                                'Sign up',
+                                'Inscription',
                                 style: TextStyle(
                                     fontSize: 21,
                                     fontWeight: FontWeight.bold,

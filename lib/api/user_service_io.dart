@@ -14,13 +14,22 @@ class UserServiceApi {
       throw Exception('Failed to load activities');
     }
   }
+
+  Future<User> fetchUserById(id) async {
+    final response = await http
+        .get(Uri.parse('https://my-little-poney.herokuapp.com/users/$id'));
+    if (response.statusCode == 200) {
+      return User.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to load user');
+    }
+  }
 }
 
 List<User> parseUsers(String responseBody) {
   final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
 
   return parsed.map<User>((json) {
-    print('json = $json');
     return User.fromJson(json);
   }).toList();
 }

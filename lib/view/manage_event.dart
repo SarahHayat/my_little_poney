@@ -4,14 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:my_little_poney/helper/datetime_extension.dart';
 import 'package:my_little_poney/helper/listview.dart';
 import 'package:my_little_poney/mock/mock.dart';
-import 'package:my_little_poney/models/Contest.dart';
+import 'package:my_little_poney/models/Party.dart';
 import 'package:my_little_poney/models/Lesson.dart';
 import 'package:my_little_poney/models/User.dart';
 import 'package:my_little_poney/view/component/column_list.dart';
-import 'package:my_little_poney/view/component/contest_tile.dart';
+import 'package:my_little_poney/view/component/party_tile.dart';
 import 'package:my_little_poney/view/component/custom_datepicker.dart';
 import 'package:my_little_poney/view/component/lesson_tile.dart';
 import 'package:my_little_poney/view/component/yes_no_dialog.dart';
+
+import 'component/party_tile.dart';
 
 class ManageEvent extends StatefulWidget {
   const ManageEvent({Key? key}) : super(key: key);
@@ -21,10 +23,12 @@ class ManageEvent extends StatefulWidget {
   State<ManageEvent> createState() => _ManageEventState();
 }
 
+//@todo : in PartyModel : add a date (when the party will start)
+
 class _ManageEventState extends State<ManageEvent> {
   final User currentUser = Mock.userManagerOwner2;
-  late List<Contest> allContest ;
-  List<Contest> displayedContest = [];
+  late List<Party> allParty ;
+  List<Party> displayedParty = [];
   late List<Lesson> allLessons ;
   List<Lesson> displayedLessons = [];
 
@@ -34,7 +38,7 @@ class _ManageEventState extends State<ManageEvent> {
   void initState() {
     super.initState();
     _getLessons();
-    _getContest();
+    _getParty();
     _filterEvents();
   }
 
@@ -42,7 +46,7 @@ class _ManageEventState extends State<ManageEvent> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Lessons / Contest : ${selectedDate.getFrenchDate()}"),
+          title: Text("Lessons / Party : ${selectedDate.getFrenchDate()}"),
           elevation: 10,
           centerTitle: true,
           leading: CustomDatePicker(initialDate: selectedDate, onSelected: _updateSelectedDate,)
@@ -68,7 +72,7 @@ class _ManageEventState extends State<ManageEvent> {
       return Row(
         children: [
           ColumnList(title: "Lessons", icon: Icon(Icons.school_outlined), child: ListViewSeparated(data: displayedLessons, buildListItem: _buildItemLesson)),
-          ColumnList(title: "Contests", icon: Icon(Icons.emoji_events_outlined), child: ListViewSeparated(data: displayedContest, buildListItem: _buildItemContest)),
+          ColumnList(title: "Partys", icon: Icon(Icons.emoji_events_outlined), child: ListViewSeparated(data: displayedParty, buildListItem: _buildItemParty)),
         ]
       );
     }
@@ -89,12 +93,12 @@ class _ManageEventState extends State<ManageEvent> {
     );
   }
 
-  /// Create a Contest item for a ListView
-  Widget _buildItemContest(Contest contest) {
-    return ContestTile(
-      contest: contest,
+  /// Create a Party item for a ListView
+  Widget _buildItemParty(Party party) {
+    return PartyTile(
+      party: party,
       onTap: (){
-        dialogueContest(contest);
+        dialogueParty(party);
       },
     );
   }
@@ -117,18 +121,18 @@ class _ManageEventState extends State<ManageEvent> {
     );
   }
 
-  /// Display a [YesNoDialog] to validate or reject a contest
-  Future<Null> dialogueContest(Contest contest) async{
+  /// Display a [YesNoDialog] to validate or reject a party
+  Future<Null> dialogueParty(Party party) async{
     return showDialog(
         context: context,
         builder: (BuildContext context){
           return YesNoDialog(
-            title: "Validate this contest?",
+            title: "Validate this party?",
             children: [
-              Text("${contest.name} will be validate."),
+              Text("${party.theme.toShortString()} will be validate."),
             ],
-            trueFunction: ()=>_updateContest(contest, true),
-            falseFunction: ()=>_updateContest(contest, false),
+            trueFunction: ()=>_updateParty(party, true),
+            falseFunction: ()=>_updateParty(party, false),
           );
         }
     );
@@ -145,11 +149,11 @@ class _ManageEventState extends State<ManageEvent> {
     });
   }
 
-  _updateContest(Contest contest, bool isValid){
-    //@todo : add one more row to update data on this contest in DB with a request
-    log("Update contest ${contest.name} $isValid");
+  _updateParty(Party party, bool isValid){
+    //@todo : add one more row to update data on this party in DB with a request
+    log("Update party ${party.theme.toShortString()} $isValid");
     setState(() {
-      //need a method to update contest validate bool
+      //need a method to update party validate bool
       //allLessons.remove(lesson);
     });
   }
@@ -162,11 +166,11 @@ class _ManageEventState extends State<ManageEvent> {
     });
   }
 
-  _getContest(){
-    //@todo : use request here to get contest list from DB
+  _getParty(){
+    //@todo : use request here to get party list from DB
     //il faut qu'on ai une gestion par semaine
     setState(() {
-      allContest = [Mock.contest, Mock.contest];
+      allParty = [Mock.party, Mock.party];
     });
   }
   //endregion
@@ -175,23 +179,23 @@ class _ManageEventState extends State<ManageEvent> {
   void _filterEvents(){
     DateTime date = selectedDate.getOnlyDate();
     List<Lesson> lessonList = [];
-    List<Contest> contestList = [];
+    List<Party> partyList = [];
 
     // condition for same day => allLessons[i].lessonDateTime.getOnlyDate() == date
-    // condition for same week => allContest[i].contestDateTime.areDateSameWeek(date)
+    // condition for same week => allParty[i].partyDateTime.areDateSameWeek(date)
     for(int i=0; i<allLessons.length; i++){
       if(allLessons[i].lessonDateTime.areDateSameWeek(date)){
         lessonList.add(allLessons[i]);
       }
     }
-    for(int i=0; i<allContest.length; i++){
-      if(allContest[i].contestDateTime.areDateSameWeek(date)){
-        contestList.add(allContest[i]);
+    for(int i=0; i<allParty.length; i++){
+      if(allParty[i].createdAt.areDateSameWeek(date)){
+        partyList.add(allParty[i]);
       }
     }
     setState(() {
       displayedLessons = lessonList;
-      displayedContest = contestList;
+      displayedParty = partyList;
     });
   }
 

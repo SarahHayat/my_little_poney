@@ -13,7 +13,7 @@ class UserUseCase {
   }
 
   Future<User?> createUser(user) async {
-    api.createParty(user).then((value) => value);
+    api.createUser(user).then((value) => value);
   }
 
   Future<User?> updateUserById(user) async {

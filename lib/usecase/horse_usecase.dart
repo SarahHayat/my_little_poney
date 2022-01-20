@@ -1,4 +1,4 @@
-import 'package:my_little_poney/api/user_service_io.dart';
+import 'package:my_little_poney/api/horse_service_io.dart';
 import 'package:my_little_poney/models/Horse.dart';
 
 class HorseUseCase {
@@ -12,11 +12,11 @@ class HorseUseCase {
     api.fetchHorseById(id).then((value) => value);
   }
 
-  Future<Horse?> createHorse(party) async {
-    api.createHorse(party).then((value) => value);
+  Future<Horse?> createHorse(horse) async {
+    api.createHorse(horse).then((value) => value);
   }
 
-  Future<Horse?> updateHorseById(party) async {
+  Future<Horse?> updateHorseById(horse) async {
     api.updateHorse(horse).then((value) => value);
   }
 

@@ -1,4 +1,4 @@
-import 'package:my_little_poney/api/user_service_io.dart';
+import 'package:my_little_poney/api/lesson_service_io.dart';
 import 'package:my_little_poney/models/Lesson.dart';
 
 class LessonUseCase {

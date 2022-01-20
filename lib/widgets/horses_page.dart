@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:localstorage/localstorage.dart';
 
-// import 'package:my_little_poney/mock/mock.dart';
 import 'package:my_little_poney/models/Horse.dart';
 import 'package:my_little_poney/models/User.dart';
 import 'package:my_little_poney/usecase/horse_usecase.dart';
@@ -32,13 +31,11 @@ class HorsesPageState extends State<HorsesPage> {
   @override
   void initState() {
     user = User.fromJson(storage.getItem("user"));
-    print(' RELOAD ??');
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Chevaux"),
@@ -48,7 +45,6 @@ class HorsesPageState extends State<HorsesPage> {
         builder: (BuildContext context, AsyncSnapshot<List<Horse>?> snapshot) {
           if (snapshot.hasData) {
             horsesList = snapshot.data!;
-            // user = snapshot.data['user'];
             return getBody();
           } else if (snapshot.hasError) {
             return Text("${snapshot.error}");
@@ -122,12 +118,13 @@ class HorsesPageState extends State<HorsesPage> {
       ],
     );
   }
+
   isUserIsAssociateToHorse(Horse horse) {
     // the dp user has already one horse or the horse has already an owner
     if (user.horses!.contains(horse.id)) {
-      return Icon(Icons.link);
+      return const Icon(Icons.link);
     } else {
-      return Icon(Icons.link_off);
+      return const Icon(Icons.link_off);
     }
   }
 
@@ -168,8 +165,8 @@ class HorsesPageState extends State<HorsesPage> {
         },
         backgroundColor: Color(0xFFFE4A49),
         foregroundColor: Colors.white,
-        icon: Icons.delete,
-        label: 'stop proprio',
+        icon: Icons.close,
+        label: 'ne plus être proprio',
       );
     }
     return Container();

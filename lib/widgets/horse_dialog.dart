@@ -1,11 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:my_little_poney/models/Horse.dart';
 import 'package:my_little_poney/models/User.dart';
 import 'package:my_little_poney/usecase/horse_usecase.dart';
 import 'package:my_little_poney/usecase/user_usecase.dart';
-import 'package:my_little_poney/widgets/navigation.dart';
 
 class HorseDialog extends StatefulWidget {
   static const routeName = 'horseDialog';
@@ -65,7 +63,7 @@ class HorseDialogState extends State<HorseDialog> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(widget.horse.name),
-          (widget.horse.gender == Gender.male)
+          (widget.horse.gender == Gender.male.name)
               ? const Icon(Icons.male)
               : const Icon(Icons.female)
         ],
@@ -93,7 +91,6 @@ class HorseDialogState extends State<HorseDialog> {
     List<Widget> list = [
       Image.network(
         widget.horse.picturePath,
-        // height: 100,
         width: 200,
       ),
       TextFormField(
@@ -150,7 +147,7 @@ class HorseDialogState extends State<HorseDialog> {
               });
               updateHorse();
             },
-            child: Text('Enregistrer'),
+            child: const Text('Enregistrer'),
           ),
         ],
       )
@@ -160,8 +157,6 @@ class HorseDialogState extends State<HorseDialog> {
 
   buildDpButton() {
     // the dp user has already one horse or the horse has already an owner
-    print('user.horses!.length = ${user.horses!.length}');
-    print('widget.horse.owner = ${widget.horse.owner}');
     if (user.horses!.length == 1) {
       return Container();
     }
@@ -173,12 +168,11 @@ class HorseDialogState extends State<HorseDialog> {
         updateUser();
         Navigator.of(context).pop();
       },
-      child: Text("S'associer' à ${widget.horse.name}"),
+      child: Text("S'associer à ${widget.horse.name}"),
     );
   }
 
   buildOwnerButton() {
-    print('widget.horse.owner = ${widget.horse.owner}');
     // the horse has already an owner
     if (widget.horse.owner != "") {
       return Container();
@@ -217,7 +211,7 @@ class HorseDialogState extends State<HorseDialog> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        (horseRace != null)? Text("Race: "):Text('Spécialité: '),
+        (horseRace != null)? const Text("Race: "): const Text('Spécialité: '),
         DropdownButton<String>(
           value: dropdownValue,
           icon: const Icon(
@@ -254,7 +248,6 @@ class HorseDialogState extends State<HorseDialog> {
         groupValue: radioValueGender,
         onChanged: (value) {
           setState(() {
-            print('value radio button in set state = $value');
             radioValueGender = value as String;
           });
         },

@@ -17,12 +17,12 @@ class NavigationState extends State<Navigation> {
   int _drawerSelectedIndex = 0;
   List<Map<String, dynamic>> drawerLinks = [
     //const ContestListView(title: 'Concours'),
+    {"widget":ListEvents(), "title":"Liste des événements"},
     {"widget":ProfilePage(), "title":"Profile"},
     {"widget":UsersList(), "title":"Liste des utilisateurs"},
     {"widget":HorsesList(), "title":"Liste des cheveaux"},
     {"widget":ManageEvent(), "title":"Gestion écurie"},
     {"widget":PlanningLesson(), "title":"Planning des cours"},
-    {"widget":ListEvents(), "title":"Liste des événements"},
   ];
 
   Widget getBody() {

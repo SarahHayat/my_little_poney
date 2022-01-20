@@ -83,13 +83,13 @@ class _SignupScreenState extends State<SignupScreen> {
                                 title: 'Uploader photo',
                                 width: 200.0,
                                 ontapp: () {
-                                  showDialog(context: context, builder: (BuildContext context) {
-                                    return const AlertDialog(
-                                      title: TextField(),
-                                      content: ElevatedButton(onPressed: onPressed, child: child)
-                                      ,
-                                    );
-                                  });
+                                  // showDialog(context: context, builder: (BuildContext context) {
+                                  //   return const AlertDialog(
+                                  //     title: TextField(),
+                                  //     content: ElevatedButton(onPressed: onPressed, child: child)
+                                  //     ,
+                                  //   );
+                                  // });
 
                                 }
                             ),

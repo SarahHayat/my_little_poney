@@ -15,36 +15,47 @@ class Navigation extends StatefulWidget {
 
 class NavigationState extends State<Navigation> {
   int _selectedIndex = 0;
+  int _drawerSelectedIndex = 0;
+  List<Map<String, dynamic>> drawerLinks = [
+    //const ContestListView(title: 'Concours'),
+    {"widget":ProfilePage(), "title":"Profile"},
+    {"widget":UsersList(), "title":"Liste des utilisateurs"},
+    {"widget":HorsesList(), "title":"Liste des cheveaux"},
+    {"widget":ManageEvent(), "title":"Gestion écurie"},
+    {"widget":PlanningLesson(), "title":"Planning des cours"},
+    {"widget":ListEvents(), "title":"Liste des événements"},
+  ];
 
   Widget getBody() {
-    if (_selectedIndex == 0) {
-      // return the first page
-      return const ContestListView(title: 'Concours');
-    } else if (_selectedIndex == 1) {
-      // return the second page
-      return ProfilePage();
-    } else if (_selectedIndex == 2) {
-      // return the second page
-      return const UsersList();
-    } else if (_selectedIndex == 3) {
-      // return the second page
-      return const HorsesList();
-    } else if (_selectedIndex == 4) {
-      // return the second page
-      return const ManageEvent();
-    } else if (_selectedIndex == 5) {
-      // return the second page
-      return const PlanningLesson();
-    } else {
-      // return the third page
-      return const ListEvents();
+    return drawerLinks[_drawerSelectedIndex]["widget"];
+  }
+
+  List<Widget> getDrawerLinks(BuildContext context){
+    List<Widget> links = [];
+    for(int i=0; i<drawerLinks.length; i++) {
+      links.add(_buildDrawerLinks(drawerLinks[i]["title"], ()=> _onDrawerTap(i, context)));
     }
+    return links;
   }
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  void _onDrawerTap(int index, BuildContext context){
+    setState(() {
+      _drawerSelectedIndex = index;
+    });
+    Navigator.pop(context);
+  }
+
+  _buildDrawerLinks(String title, Function onTap){
+    return ListTile(
+      title: Text(title),
+      onTap: ()=>onTap(),
+    );
   }
 
   @override
@@ -71,62 +82,8 @@ class NavigationState extends State<Navigation> {
                 child: Text('Pablo'),
               ),
             ),
-            ListTile(
-              // Maybe put profil here
-              title: const Text('Profile'),
-              onTap: () {
-                setState(() {
-                  // put the profile index
-                  _selectedIndex = 1;
-                });
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              // Maybe put profil here
-              title: const Text('Liste des utilisateurs'),
-              onTap: () {
-                setState(() {
-                  // put the profile index
-                  _selectedIndex = 2;
-                });
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              // Maybe put profil here
-              title: const Text('Liste des cheveaux'),
-              onTap: () {
-                setState(() {
-                  // put the profile index
-                  _selectedIndex = 3;
-                });
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              // Maybe put profil here
-              title: const Text('Gestion écurie'),
-              onTap: () {
-                setState(() {
-                  // put the profile index
-                  _selectedIndex = 4;
-                });
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              // Maybe put profil here
-              title: const Text('Planning des cours'),
-              onTap: () {
-                setState(() {
-                  // put the profile index
-                  _selectedIndex = 5;
-                });
-                Navigator.pop(context);
-              },
-            ),
-          ],
+            ...getDrawerLinks(context)
+          ] ,
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(

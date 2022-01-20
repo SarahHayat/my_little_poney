@@ -10,12 +10,26 @@ enum Level {
 
 class AttendeeContest {
   String level;
-  User user;
+  String user;
 
   AttendeeContest({
     required this.user,
     required this.level,
   });
+
+  factory AttendeeContest.fromJson(Map<String, dynamic> json) {
+    return AttendeeContest(
+      user: json['user'] != null ? json['user']! as String : "",
+      level: json['user'] != null ? json['user']! as String : "",
+    );
+  }
+
+  Map<String, Object?> toJson() {
+    return {
+      'user': user,
+      'level': level,
+    };
+  }
 }
 
 class Contest {
@@ -25,19 +39,19 @@ class Contest {
   String address;
   String picturePath;
   DateTime contestDateTime;
-  DateTime createdAt;
-  List<AttendeeContest>? attendeesContest;
+  DateTime? createdAt;
+  List<AttendeeContest> attendeesContest;
   bool isValid;
 
   Contest({
     this.id,
-    this.attendeesContest,
+    required this.attendeesContest,
     required this.user,
     required this.name,
     required this.address,
     required this.picturePath,
     required this.contestDateTime,
-    required this.createdAt,
+    this.createdAt,
     this.isValid = false,
   });
 
@@ -66,8 +80,8 @@ class Contest {
       'name': name,
       'address': address,
       'picturePath': picturePath,
-      'contestDateTime': contestDateTime,
-      'createdAt': createdAt,
+      'contestDateTime': contestDateTime.toString(),
+      'createdAt': createdAt.toString(),
       'isValid': isValid
     };
   }

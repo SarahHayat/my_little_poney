@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:my_little_poney/models/User.dart';
 
 class UserServiceApi {
-  Future<List<User>?> getAll() async {
+  Future<List<User>> getAll() async {
     final response = await http
         .get(Uri.parse('https://my-little-poney.herokuapp.com/users'));
     if (response.statusCode == 200) {
@@ -24,30 +24,54 @@ class UserServiceApi {
       throw Exception('Failed to load user');
     }
   }
+
+  Future<User> loggin(String email,String password) async {
+    final response = await http.post(
+      Uri.parse('https://my-little-poney.herokuapp.com/users/login'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'email': email,
+        'password': password,
+      }),
+    );
+    if (response.statusCode == 201) {
+      print('hello');
+      User user = User.fromJson(jsonDecode(response.body));
+      print('yolo');
+      print(user.userName);
+      return user;
+    } else {
+      throw Exception('Failed to load user');
+    }
+  }
+
   Future<User> createUser(User user) async {
     final response = await http.post(
       Uri.parse('https://my-little-poney.herokuapp.com/users'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: user.toJson(),
+      body: jsonEncode(user.toJson()),
     );
 
-    if (response.statusCode == 201) {
+    if (jsonDecode(response.body)['userName'] != null) {
       // si on recupere le user crée
-      return User.fromJson(jsonDecode(response.body));
+      User user = User.fromJson(jsonDecode(response.body));
+      return user;
     } else {
-      throw Exception('Failed to create user.');
+      throw Exception('Failed to create io user.');
     }
   }
 
   Future<User> updateUser(User user) async {
-    final response = await http.put(
+    final response = await http.patch(
       Uri.parse('https://my-little-poney.herokuapp.com/users/${user.id}'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: user.toJson(),
+      body: jsonEncode(user.toJson()),
     );
 
     if (response.statusCode == 200) {

@@ -11,6 +11,7 @@ import 'package:my_little_poney/widgets/cards_events.dart';
 
 class ListEvents extends StatefulWidget {
   const ListEvents({Key? key}) : super(key: key);
+  static const String routeName = 'list_event';
 
   @override
   State<StatefulWidget> createState() => MyListEvents();

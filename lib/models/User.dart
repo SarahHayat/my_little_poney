@@ -1,13 +1,44 @@
-import 'package:my_little_poney/models/Horse.dart';
+import 'package:flutter/material.dart';
+import 'package:my_little_poney/helper/string_extension.dart';
 
 enum UserRole {
   rider,
   manager,
 }
+extension UserRoleExtension on UserRole {
+  Icon getRoleIcon() {
+    switch (this) {
+      case UserRole.manager:
+        return Icon(Icons.supervisor_account_rounded);
+      case UserRole.rider:
+        return Icon(Icons.account_circle_outlined);
+      default:
+        return Icon(Icons.account_circle_outlined);
+    }
+  }
+  String toShortString() {
+    return this.toString().enumValueToNormalCase();
+  }
+}
 
 enum UserType {
   dp,
   owner,
+}
+extension TypeExtension on UserType {
+  Icon getRoleIcon() {
+    switch (this) {
+      case UserType.dp:
+        return Icon(Icons.paid_outlined);
+      case UserType.owner:
+        return Icon(Icons.credit_card);
+      default:
+        return Icon(Icons.attach_money);
+    }
+  }
+  String toShortString() {
+    return this.toString().enumValueToNormalCase();
+  }
 }
 
 class User {
@@ -39,6 +70,13 @@ class User {
     required this.email,
   });
 
+  bool isManager(){
+    return this.role == UserRole.manager.toShortString();
+  }
+  bool isOwner(){
+    return this.type == UserType.owner.toShortString();
+  }
+
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['_id'] != null ? json['_id']! as String : "",
@@ -46,11 +84,11 @@ class User {
           ? json['profilePicture']! as String
           : "",
       age: json['age'] != null ? json['age']! as int : 0,
-      ffeLink: json['ffeLink'] != null ? json['ffeLink']! as String : "",
+      ffeLink: json['FFELink'] != null ? json['FFELink']! as String : "",
       phoneNumber:
           json['phoneNumber'] != null ? json['phoneNumber']! as String : "",
       role: json['role'] != null ? json['role']! as String : "",
-      horses: json['horses']! as List<dynamic>,
+      horses: json['horses'] != null ? json['horses']! as List<dynamic> : [],
       createdAt: DateTime.parse(json['createdAt']! as String),
       type: json['type'] != null ? json['type'] as String : '',
       userName: json['userName']! as String,
@@ -64,11 +102,11 @@ class User {
       '_id': id,
       'profilePicture': profilePicture,
       'age': age,
-      'ffeLink': ffeLink,
+      'FFELink': ffeLink,
       'phoneNumber': phoneNumber,
       'role': role,
       'horses': horses,
-      'createdAt': createdAt,
+      'createdAt': createdAt.toString(),
       'type': type,
       'userName': userName,
       'password': password,

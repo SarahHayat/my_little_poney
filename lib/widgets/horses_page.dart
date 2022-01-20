@@ -132,9 +132,9 @@ class HorsesPageState extends State<HorsesPage> {
   }
 
   isUserIsOwnerOfHorse(Horse horse) {
-    if (horse.owner == null || horse.owner!.id != user.id) {
+    if (horse.owner == null || horse.owner! != user.id) {
       return Container();
-    } else if (horse.owner!.id == user.id) {
+    } else if (horse.owner! == user.id) {
       return const Icon(Icons.attribution);
     }
   }
@@ -155,7 +155,7 @@ class HorsesPageState extends State<HorsesPage> {
   }
 
   getSlidableActionForOwnerUser(Horse horse) {
-    if (horse.owner != null && horse.owner!.id == user.id) {
+    if (horse.owner != null && horse.owner! == user.id) {
       return SlidableAction(
         onPressed: (BuildContext) => setState(() {
           horse.owner = null;

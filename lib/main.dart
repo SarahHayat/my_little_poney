@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_little_poney/widgets/navigation.dart';
-import 'package:my_little_poney/widets/test.dart';
 import 'package:my_little_poney/widgets/contest_view.dart';
 import 'package:my_little_poney/widgets/horses_page.dart';
 import 'package:my_little_poney/widgets/list_event.dart';
@@ -21,7 +19,6 @@ class MyApp extends StatelessWidget {
       title: 'My Little Poney',
       routes: {
         // put routes here
-        Test.routeName: (context) => Test(),
         ContestView.tag: (context) => const ContestView(),
         HorsesPage.routeName: (context) => HorsesPage(),
         ListEvents.routeName: (context) => const ListEvents(),

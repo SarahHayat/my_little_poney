@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:my_little_poney/widets/test.dart';
 import 'package:my_little_poney/widgets/contest.dart';
+import 'package:my_little_poney/widgets/horses_list.dart';
 import 'package:my_little_poney/widgets/list_event.dart';
+import 'package:my_little_poney/widgets/manage_event.dart';
+import 'package:my_little_poney/widgets/planning_lesson.dart';
 import 'package:my_little_poney/widgets/profile_page.dart';
+import 'package:my_little_poney/widgets/users_list.dart';
 
 class Navigation extends StatefulWidget {
   @override
@@ -20,6 +23,18 @@ class NavigationState extends State<Navigation> {
     } else if (_selectedIndex == 1) {
       // return the second page
       return ProfilePage();
+    } else if (_selectedIndex == 2) {
+      // return the second page
+      return const UsersList();
+    } else if (_selectedIndex == 3) {
+      // return the second page
+      return const HorsesList();
+    } else if (_selectedIndex == 4) {
+      // return the second page
+      return const ManageEvent();
+    } else if (_selectedIndex == 5) {
+      // return the second page
+      return const PlanningLesson();
     } else {
       // return the third page
       return const ListEvents();
@@ -58,11 +73,55 @@ class NavigationState extends State<Navigation> {
             ),
             ListTile(
               // Maybe put profil here
-              title: const Text('Item 1'),
+              title: const Text('Profile'),
+              onTap: () {
+                setState(() {
+                  // put the profile index
+                  _selectedIndex = 1;
+                });
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              // Maybe put profil here
+              title: const Text('Liste des utilisateurs'),
               onTap: () {
                 setState(() {
                   // put the profile index
                   _selectedIndex = 2;
+                });
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              // Maybe put profil here
+              title: const Text('Liste des cheveaux'),
+              onTap: () {
+                setState(() {
+                  // put the profile index
+                  _selectedIndex = 3;
+                });
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              // Maybe put profil here
+              title: const Text('Gestion écurie'),
+              onTap: () {
+                setState(() {
+                  // put the profile index
+                  _selectedIndex = 4;
+                });
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              // Maybe put profil here
+              title: const Text('Planning des cours'),
+              onTap: () {
+                setState(() {
+                  // put the profile index
+                  _selectedIndex = 5;
                 });
                 Navigator.pop(context);
               },

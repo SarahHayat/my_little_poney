@@ -25,7 +25,6 @@ class _PlanningLessonState extends State<PlanningLesson> {
   final LessonUseCase lessonUseCase = LessonUseCase();
   final User currentUser = Mock.userManagerOwner2;
   DateTime selectedDate = DateTime.now();
-  late Future<List<Lesson>> lessons ;
 
   @override
   void initState() {

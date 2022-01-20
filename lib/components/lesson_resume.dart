@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_little_poney/components/text_icon.dart';
 import 'package:my_little_poney/helper/datetime_extension.dart';
 import 'package:my_little_poney/models/Lesson.dart';
 
@@ -15,6 +16,7 @@ class LessonResume extends StatelessWidget {
           children:[
             Text('duration: ${lesson.duration}'),
             Text('date: ${lesson.lessonDateTime.getFrenchDateTime()}'),
+            TextIcon(title: "accepted: ", icon:Icon(lesson.isValid ? Icons.check : Icons.do_not_disturb_on) ),
           ]
       ),
     );

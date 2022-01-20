@@ -24,6 +24,7 @@ class PartyTile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children:[
               Text('host: ${party.user}'),
+              TextIcon(title: "accepted: ", icon:Icon(party.isValid ? Icons.check : Icons.do_not_disturb_on) ),
             ]
         ),
       ),

@@ -1,3 +1,5 @@
+import 'package:my_little_poney/helper/string_extension.dart';
+
 import 'User.dart';
 
 enum Ground {
@@ -9,6 +11,11 @@ enum Discipline {
   dressage,
   showJumping,
   endurance,
+}
+extension DisciplineExtension on Discipline {
+  String toShortString() {
+    return this.toString().enumValueToNormalCase();
+  }
 }
 
 class Lesson {

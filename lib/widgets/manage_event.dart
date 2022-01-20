@@ -12,6 +12,8 @@ import 'package:my_little_poney/components/column_list.dart';
 import 'package:my_little_poney/components/party_tile.dart';
 import 'package:my_little_poney/components/custom_datepicker.dart';
 import 'package:my_little_poney/components/lesson_tile.dart';
+import 'package:my_little_poney/usecase/lesson_usecase.dart';
+import 'package:my_little_poney/usecase/party_usecase.dart';
 
 import '../components/party_tile.dart';
 
@@ -23,23 +25,16 @@ class ManageEvent extends StatefulWidget {
   State<ManageEvent> createState() => _ManageEventState();
 }
 
-//@todo : in PartyModel : add a date (when the party will start)
-
 class _ManageEventState extends State<ManageEvent> {
+  final LessonUseCase lessonUseCase = LessonUseCase();
+  final PartyUseCase partyUseCase = PartyUseCase();
   final User currentUser = Mock.userManagerOwner2;
-  late List<Party> allParty ;
-  List<Party> displayedParty = [];
-  late List<Lesson> allLessons ;
-  List<Lesson> displayedLessons = [];
 
   DateTime selectedDate = DateTime.now();
 
   @override
   void initState() {
     super.initState();
-    _getLessons();
-    _getParty();
-    _filterEvents();
   }
 
   @override
@@ -61,7 +56,6 @@ class _ManageEventState extends State<ManageEvent> {
     setState(() {
       selectedDate = date;
     });
-    _filterEvents();
   }
 
   /// Create the body of this screen.
@@ -71,8 +65,44 @@ class _ManageEventState extends State<ManageEvent> {
     if(currentUser.isManager()){
       return Row(
         children: [
-          ColumnList(title: "Lessons", icon: Icon(Icons.school_outlined), child: ListViewSeparated(data: displayedLessons, buildListItem: _buildItemLesson)),
-          ColumnList(title: "Partys", icon: Icon(Icons.liquor_sharp), child: ListViewSeparated(data: displayedParty, buildListItem: _buildItemParty)),
+          FutureBuilder<List<Lesson>?>(
+            future: getAllLessons(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                List<Lesson> data = snapshot.data!;
+                List<Lesson> displayedLessons = _filterLessons(data);
+                return ColumnList(
+                    title: "Lessons",
+                    icon: Icon(Icons.school_outlined),
+                    child: ListViewSeparated(data: displayedLessons, buildListItem: _buildItemLesson)
+                );
+              } else if (snapshot.hasError) {
+                return Text("${snapshot.error}");
+              }
+              return const Center(
+                  child: CircularProgressIndicator()
+              );
+            },
+          ),
+          FutureBuilder<List<Party>?>(
+            future: getAllParties(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                List<Party> data = snapshot.data!;
+                List<Party> displayedParties = _filterParty(data);
+                return ColumnList(
+                    title: "Partys",
+                    icon: Icon(Icons.liquor_sharp),
+                    child: ListViewSeparated(data: displayedParties, buildListItem: _buildItemParty)
+                );
+              } else if (snapshot.hasError) {
+                return Text("${snapshot.error}");
+              }
+              return const Center(
+                  child: CircularProgressIndicator()
+              );
+            },
+          ),
         ]
       );
     }
@@ -158,45 +188,39 @@ class _ManageEventState extends State<ManageEvent> {
     });
   }
 
-  _getLessons(){
-    //@todo : use request here to get lessons list from DB
-    //il faut qu'on ai une gestion par semaine
-    setState(() {
-      allLessons = [Mock.lesson, Mock.lesson,Mock.lesson, Mock.lesson, Mock.lesson];
-    });
+  Future<List<Lesson>?> getAllLessons() async {
+    return await lessonUseCase.getAllLessons();
   }
 
-  _getParty(){
-    //@todo : use request here to get party list from DB
-    //il faut qu'on ai une gestion par semaine
-    setState(() {
-      allParty = [Mock.party, Mock.party];
-    });
+  Future<List<Party>?> getAllParties() async {
+    return await partyUseCase.getAllParties();
   }
   //endregion
 
-  /// Filter events depending on [selectedDate] week
-  void _filterEvents(){
+  List<Lesson> _filterLessons(List<Lesson> allLessons){
     DateTime date = selectedDate.getOnlyDate();
     List<Lesson> lessonList = [];
-    List<Party> partyList = [];
-
-    // condition for same day => allLessons[i].lessonDateTime.getOnlyDate() == date
-    // condition for same week => allParty[i].partyDateTime.areDateSameWeek(date)
     for(int i=0; i<allLessons.length; i++){
       if(allLessons[i].lessonDateTime.areDateSameWeek(date)){
         lessonList.add(allLessons[i]);
       }
     }
+    return lessonList;
+  }
+
+  /// Filter events depending on [selectedDate] week
+  /// condition for same day => allLessons[i].lessonDateTime.getOnlyDate() == date
+  /// condition for same week => allParty[i].partyDateTime.areDateSameWeek(date)
+  List<Party> _filterParty(List<Party> allParty){
+    DateTime date = selectedDate.getOnlyDate();
+    List<Party> partyList = [];
+
     for(int i=0; i<allParty.length; i++){
       if(allParty[i].partyDateTime.areDateSameWeek(date)){
         partyList.add(allParty[i]);
       }
     }
-    setState(() {
-      displayedLessons = lessonList;
-      displayedParty = partyList;
-    });
+    return partyList;
   }
 
 }

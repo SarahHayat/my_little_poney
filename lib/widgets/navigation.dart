@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:my_little_poney/widets/test.dart';
-import 'package:my_little_poney/widgets/contest.dart';
+import 'package:my_little_poney/widgets/horses_list.dart';
 import 'package:my_little_poney/widgets/list_event.dart';
+import 'package:my_little_poney/widgets/manage_event.dart';
+import 'package:my_little_poney/widgets/planning_lesson.dart';
 import 'package:my_little_poney/widgets/profile_page.dart';
+import 'package:my_little_poney/widgets/users_list.dart';
 
 class Navigation extends StatefulWidget {
   @override
@@ -12,24 +14,47 @@ class Navigation extends StatefulWidget {
 
 class NavigationState extends State<Navigation> {
   int _selectedIndex = 0;
+  int _drawerSelectedIndex = 0;
+  List<Map<String, dynamic>> drawerLinks = [
+    //const ContestListView(title: 'Concours'),
+    {"widget":ProfilePage(), "title":"Profile"},
+    {"widget":UsersList(), "title":"Liste des utilisateurs"},
+    {"widget":HorsesList(), "title":"Liste des cheveaux"},
+    {"widget":ManageEvent(), "title":"Gestion écurie"},
+    {"widget":PlanningLesson(), "title":"Planning des cours"},
+    {"widget":ListEvents(), "title":"Liste des événements"},
+  ];
 
   Widget getBody() {
-    if (_selectedIndex == 0) {
-      // return the first page
-      return const ContestListView(title: 'Concours');
-    } else if (_selectedIndex == 1) {
-      // return the second page
-      return ProfilePage();
-    } else {
-      // return the third page
-      return const ListEvents();
+    return drawerLinks[_drawerSelectedIndex]["widget"];
+  }
+
+  List<Widget> getDrawerLinks(BuildContext context){
+    List<Widget> links = [];
+    for(int i=0; i<drawerLinks.length; i++) {
+      links.add(_buildDrawerLinks(drawerLinks[i]["title"], ()=> _onDrawerTap(i, context)));
     }
+    return links;
   }
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  void _onDrawerTap(int index, BuildContext context){
+    setState(() {
+      _drawerSelectedIndex = index;
+    });
+    Navigator.pop(context);
+  }
+
+  _buildDrawerLinks(String title, Function onTap){
+    return ListTile(
+      title: Text(title),
+      onTap: ()=>onTap(),
+    );
   }
 
   @override
@@ -56,18 +81,8 @@ class NavigationState extends State<Navigation> {
                 child: Text('Pablo'),
               ),
             ),
-            ListTile(
-              // Maybe put profil here
-              title: const Text('Profile'),
-              onTap: () {
-                setState(() {
-                  // put the profile index
-                  _selectedIndex = 1;
-                });
-                Navigator.pop(context);
-              },
-            ),
-          ],
+            ...getDrawerLinks(context)
+          ] ,
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(

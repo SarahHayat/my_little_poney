@@ -122,7 +122,6 @@ class HorsesPageState extends State<HorsesPage> {
       ],
     );
   }
-
   isUserIsAssociateToHorse(Horse horse) {
     // the dp user has already one horse or the horse has already an owner
     if (user.horses!.contains(horse.id)) {

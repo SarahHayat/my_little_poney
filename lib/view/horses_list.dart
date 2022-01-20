@@ -3,7 +3,6 @@ import 'package:my_little_poney/helper/listview.dart';
 import 'package:my_little_poney/mock/mock.dart';
 import 'package:my_little_poney/models/Horse.dart';
 import 'package:my_little_poney/models/User.dart';
-import 'package:my_little_poney/view/component/confirm_deletion_button.dart';
 import 'package:my_little_poney/view/component/horse_tile.dart';
 
 import 'component/delete_button.dart';

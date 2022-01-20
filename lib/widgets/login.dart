@@ -175,8 +175,34 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<Null> resetDialog() async {
     return showDialog(context: context, builder: (BuildContext context) {
-      return const SimpleDialog(
-        children: [Center(child: Text('Login incorrect'))],
+      return SimpleDialog(
+        title: const Center(child: Text('Reset mot de passe')),
+        children: [
+          Container(
+            height: 25.0,
+          ),
+          TextField(
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'Email',
+            ),
+            onChanged: (value) {
+
+            },
+          ),
+          Container(
+            height: 25.0,
+          ),
+          TextField(
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: 'Prénom',
+            ),
+            onChanged: (value) {
+
+            },
+          ),
+        ],
       );
     }
     );
@@ -185,8 +211,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<Null> errorDialogue() async {
     return showDialog(context: context, builder: (BuildContext context) {
       return const SimpleDialog(
-        title: Text('Reset mot de passe'),
-        children: [],
+        children: [Center(child: Text('Login incorrect'))],
       );
     }
     );

@@ -4,6 +4,12 @@ import 'package:my_little_poney/widgets/horses_page.dart';
 import 'package:my_little_poney/widgets/profile_page.dart';
 
 import 'models/Horse.dart';
+import 'package:my_little_poney/api/user_service_io.dart';
+import 'package:my_little_poney/usecase/user_usecase.dart';
+import 'package:my_little_poney/widets/navigation.dart';
+import 'package:my_little_poney/widets/test.dart';
+
+import 'models/User.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,17 +18,21 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Flutter Demo',
-        routes: {
-          HorsesPage.routeName: (context) => HorsesPage(),
-        },
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        home: ProfilePage());
+      title: 'My Little Poney',
+      routes: {
+        // put routes here
+        Test.routeName: (context) => Test(),
+        HorsesPage.routeName: (context) => HorsesPage(),
+      },
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: Navigation(),
+    );
   }
 }
 
@@ -68,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
-      ),
+      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }

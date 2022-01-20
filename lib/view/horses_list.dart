@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:my_little_poney/helper/list_extension.dart';
 import 'package:my_little_poney/helper/listview.dart';
 import 'package:my_little_poney/mock/mock.dart';
 import 'package:my_little_poney/models/Horse.dart';
@@ -29,6 +30,7 @@ class HorsesList extends StatefulWidget {
 class _HorsesListState extends State<HorsesList> {
   final HorseUseCase horseCase = HorseUseCase();
   late Future<List<Horse>> horses ;
+  final List<Horse> removedHorses = [];
   final User currentUser = Mock.userManagerOwner;
 
   @override
@@ -39,6 +41,7 @@ class _HorsesListState extends State<HorsesList> {
 
   @override
   Widget build(BuildContext context) {
+    horseCase.createHorse(Mock.horse);
     return Scaffold(
         appBar: AppBar(
           title: Text("Horses List"),
@@ -50,6 +53,7 @@ class _HorsesListState extends State<HorsesList> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 List<Horse> data = snapshot.data!;
+                data.removeFromArray(removedHorses);
                 return ListViewSeparated(data: data,buildListItem: _buildRow);
               } else if (snapshot.hasError) {
                 return Text("${snapshot.error}");
@@ -95,8 +99,8 @@ class _HorsesListState extends State<HorsesList> {
     );
   }
 
+  /// Set [horses] to the new
   _getHorses() async {
-    //@todo : use request here to get horses list from DB
     Future<List<Horse>> resHorses =  horseCase.getAllHorses();
     log(resHorses.toString());
     setState(() {
@@ -104,12 +108,27 @@ class _HorsesListState extends State<HorsesList> {
     });
   }
 
-  _removeHorse(Horse horse){
+  _removeHorse(Horse horse) async {
     //@todo : add one more row to delete horse in DB with a request
     // all user related to this horse should removed it from their horses list
-    setState(() {
-      //horses.remove(horse);
-    });
+
+
+    //[log] Instance of 'Future<List<Horse>>'
+    // [ERROR:flutter/lib/ui/ui_dart_state.cc(209)] Unhandled Exception: Null check operator used on a null value
+    // #0      _HorsesListState._removeHorse (package:my_little_poney/view/horses_list.dart:120:21)
+    // <asynchronous suspension>
+    //
+    // [log] 200
+    // [log] {"_id":"61e8877effa82f1606d4756c","dpUsers":[],"createdAt":"2022-01-19T21:49:50.263Z",
+    // "owner":"61e88761ffa82f1606d47565","speciality":"endurance","gender":"male","race":"mustang",
+    // "dress":"dress","picturePath":"picturePath","age":2,"name":"étoile d'argent","__v":0}
+
+    Horse? removedHorse = await horseCase.deleteHorseById(horse.id);
+    if(removedHorse !=null){
+      setState(() {
+        removedHorses.add(horse);
+      });
+    }
   }
 }
 

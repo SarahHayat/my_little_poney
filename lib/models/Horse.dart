@@ -108,12 +108,12 @@ class Horse {
   Map<String, Object?> toJson() {
     return {
       '_id': id,
-      'dpUsers': dpUsers,
-      'owner': owner,
+      'dpUsers': dpUsers.toString(),
+      'owner': "61e886829e6435822db10be7",//@todo : replace with real [owner],
       'picturePath': picturePath,
-      'age': age,
+      'age': age.toString(),
       'dress': dress,
-      'createdAt': createdAt,
+      'createdAt': createdAt.toString(),
       'name': name,
       'race': race,
       'speciality': speciality,

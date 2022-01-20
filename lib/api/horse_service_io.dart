@@ -9,9 +9,8 @@ int statusOk = 200;
 
 class HorseServiceApi {
   Future<List<Horse>> getAll() async {
-    final response = await http.Client()
+    final response = await http
         .get(Uri.parse('https://my-little-poney.herokuapp.com/horses'));
-    log(response.body.toString());
     if (response.statusCode == statusOk) {
       return compute(parseHorses, response.body);
     } else {
@@ -62,13 +61,16 @@ class HorseServiceApi {
     }
   }
 
-  Future<Horse> deleteHorse(String id) async {
+  Future<Horse?> deleteHorse(String id) async {
     final http.Response response = await http.delete(
       Uri.parse('https://my-little-poney.herokuapp.com/horses/$id'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
     );
+
+    log(response.statusCode.toString());
+    log(response.body.toString());
 
     if (response.statusCode == 200) {
       return Horse.fromJson(jsonDecode(response.body));

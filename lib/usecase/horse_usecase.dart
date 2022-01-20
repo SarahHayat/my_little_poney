@@ -21,6 +21,6 @@ class HorseUseCase {
   }
 
   Future<Horse?> deleteHorseById(id) async {
-    api.deleteHorse(id).then((value) => value);
+    return api.deleteHorse(id).then((value) => value);
   }
 }

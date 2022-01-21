@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:my_little_poney/models/Contest.dart';
 import 'package:my_little_poney/models/Lesson.dart';
 import 'package:my_little_poney/models/Party.dart';
@@ -49,7 +50,7 @@ class MyListEvents extends State<ListEvents> {
       return cardsEvents.cardLesson(position, context, eventPosition);
     } else if (eventPosition.runtimeType == Party && _yesterday(eventPosition.createdAt)) {
       return cardsEvents.cardParty(position, context, eventPosition);
-    } else if (eventPosition.runtimeType == User) {
+    } else if (eventPosition.runtimeType == User && _yesterday(eventPosition.createdAt)) {
       return cardsEvents.cardUsers(position, context, eventPosition);
     }
   }

@@ -11,6 +11,7 @@ import 'package:my_little_poney/usecase/user_usecase.dart';
 class CardsEvents extends Card {
   UserUseCase userCase = UserUseCase();
   late Future<User> user;
+
   Future<User> _getUserByid(String? id) async {
     user = userCase.fetchUserById(id);
     return user;
@@ -19,8 +20,6 @@ class CardsEvents extends Card {
   _dateTimeFormat(DateTime dateTime){
     return DateFormat('yyyy-MM-dd - HH:mm').format(dateTime);
   }
-
-
 
   RichText _remainingTime(DateTime dateTime){
     String timeRemain = dateTime.difference(DateTime.now()).toString().split('.')[0];
@@ -241,10 +240,6 @@ class CardsEvents extends Card {
                           const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                         ),
                         Text(
-                          '${_remainingTime(listEvents.createdAt)}',
-                          style: const TextStyle(fontSize: 10),
-                        ),
-                        Text(
                           listEvents.ground,
                           style:
                           const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
@@ -283,6 +278,7 @@ class CardsEvents extends Card {
                             'Créer par : $userLesson',
                             style: const TextStyle(fontSize: 10),
                           ),
+                          _remainingTime(listEvents.createdAt),
                         ],
                       ),
                       Column(
@@ -396,6 +392,7 @@ class CardsEvents extends Card {
                             'Créer par : $userContest',
                             style: const TextStyle(fontSize: 10),
                           ),
+                          _remainingTime(listEvents.createdAt!),
                         ],
                       ),
                       Column(
@@ -502,8 +499,11 @@ class CardsEvents extends Card {
                         child: CircleAvatar(
                           radius: 35,
                           backgroundColor: Colors.white,
-                          // backgroundImage: NetworkImage(listEvents.profilePicture!),
-                        ),
+                          backgroundImage: NetworkImage(listEvents.profilePicture!),
+                          onBackgroundImageError: (error, stack){
+                            error.toString();
+                          },
+                        )
                       ),
                     ],
                   ),

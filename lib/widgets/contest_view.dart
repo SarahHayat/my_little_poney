@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:my_little_poney/components/delete_button.dart';
+import 'package:my_little_poney/components/user_tile.dart';
 import 'package:my_little_poney/models/Contest.dart';
 import 'package:my_little_poney/models/User.dart';
 import 'package:my_little_poney/usecase/contest_usecase.dart';
@@ -19,32 +21,31 @@ class _ContestViewState extends State<ContestView> {
   UserUseCase userUseCase = UserUseCase();
   late Contest contestToUpdate;
   final LocalStorage storage = LocalStorage('poney_app');
-  late User user;
+  late User currentUser;
   bool isSignIn = false;
-  late Future<List<User>> users ;
+  late List<User> resUsers;
 
   @override
   void initState() {
     super.initState();
-    user = User.fromJson(storage.getItem('user'));
+    currentUser = User.fromJson(storage.getItem('user'));
+
   }
 
-  // _getUsers() async {
-  //   Future<List<User>> resHorses =  horseCase.getAllHorses();
-  //   log(resHorses.toString());
-  //   setState(() {
-  //     horses = resHorses;
-  //   });
-  // }
+  Future<List<User>> _getUsers(List<dynamic> attendeesContest) async {
+    List<String> ids = [];
+    for (dynamic element in attendeesContest) {
+       ids.add(element['user']);
+    }
+
+    Future<List<User>> res =  userUseCase.fetchUsersByIds(ids);
+    return await res;
+  }
 
   @override
   Widget build(BuildContext context) {
     final arguments = ModalRoute.of(context)?.settings.arguments as Contest;
     contestToUpdate = arguments;
-
-
-
-
 
     Widget titleSection = Container(
       padding: const EdgeInsets.all(32),
@@ -118,7 +119,7 @@ class _ContestViewState extends State<ContestView> {
             onPressed: () => Navigator.of(context).pop(),
           ),
         ),
-        body: ListView(
+        body: Column(
           children: [
             Image.asset(
               'img/contest.jpg',
@@ -129,6 +130,30 @@ class _ContestViewState extends State<ContestView> {
             titleSection,
             buttonSection,
             textSection,
+            FutureBuilder<List<User>>(
+                future: _getUsers(contestToUpdate.attendeesContest),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    resUsers = snapshot.data!;
+                    return ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemCount: resUsers.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Image.network(resUsers[index].profilePicture!, width: 150,),
+                                Text(resUsers[index].userName)
+                              ],
+                            );
+                      },);
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text(snapshot.error.toString()));
+                  }
+                  return const Center(child: CircularProgressIndicator());
+                }),
           ],
         ),
       ),
@@ -213,15 +238,27 @@ class _ContestViewState extends State<ContestView> {
         });
   }
 
+  Widget _buildRow(User user) {
+    return UserTile(
+        user: user,
+        trailing: DeleteButton(
+          display: !user.isManager() && currentUser.isManager(),
+          onPressed: (){
+            dialogue(user);
+          },
+        )
+    );
+  }
+
   void _joinContest() async {
 
     AttendeeContest newAttendee =
-        AttendeeContest(user: user.id!, level: levelValue);
+        AttendeeContest(user: currentUser.id!, level: levelValue);
 
 
 
     for(dynamic element in contestToUpdate.attendeesContest) {
-      if(element['user'] == user.id) {
+      if(element['user'] == currentUser.id) {
         isSignIn = true;
         break;
       }

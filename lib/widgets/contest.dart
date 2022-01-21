@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_little_poney/helper/listview.dart';
 import 'package:my_little_poney/models/Contest.dart';
 import 'package:my_little_poney/helper/temporaryContest.dart';
+import 'package:my_little_poney/models/User.dart';
 import 'contest_view.dart';
 import 'package:intl/intl.dart';
 import 'package:my_little_poney/usecase/contest_usecase.dart';
@@ -30,9 +31,9 @@ class _ContestListState extends State<ContestListView> {
 
   @override
   void initState() {
+    super.initState();
     dateController.text = ""; //set the initial value of text field
     getAllContestsFromDb();
-    super.initState();
   }
 
   Future<List<Contest>?> getAllContestsFromDb() async {
@@ -54,7 +55,6 @@ class _ContestListState extends State<ContestListView> {
             } else if (snapshot.hasError) {
               return Center(child: Text(snapshot.error.toString()));
             }
-
             return const Center(child: CircularProgressIndicator());
           }),
       floatingActionButton: FloatingActionButton(

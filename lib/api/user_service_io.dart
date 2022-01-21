@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -36,9 +37,33 @@ class UserServiceApi {
         'password': password,
       }),
     );
+
     if (jsonDecode(response.body)['userName'] != null) {
       User user = User.fromJson(jsonDecode(response.body));
       return user;
+    } else {
+      jsonDecode(response.body);
+      throw Exception('Failed to load user');
+    }
+  }
+
+  Future<List<User>> fetchUsersByIds(List<String> ids) async {
+    final response = await http.post(
+      Uri.parse('https://my-little-poney.herokuapp.com/users/ids'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, List<String>>{
+        'ids': ids,
+      }),
+    );
+    print(jsonDecode(response.body));
+    if (response.statusCode == 201) {
+      List<User> users = [];
+      for (dynamic element in jsonDecode(response.body)) {
+        users.add(User.fromJson(element));
+      }
+      return users;
     } else {
       throw Exception('Failed to load user');
     }

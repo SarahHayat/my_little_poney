@@ -22,6 +22,7 @@ class _ContestViewState extends State<ContestView> {
   final LocalStorage storage = LocalStorage('poney_app');
   late User user;
   bool isSignIn = false;
+  late Future<List<User>> users ;
 
   @override
   void initState() {

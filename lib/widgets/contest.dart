@@ -50,7 +50,7 @@ class _ContestListState extends State<ContestListView> {
           future: getAllContestsFromDb(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return buildListView(snapshot.data, _buildRow);
+              return ListViewSeparated(data: snapshot.data,buildListItem: _buildRow);
             } else if (snapshot.hasError) {
               return Center(child: Text(snapshot.error.toString()));
             }
@@ -176,15 +176,14 @@ class _ContestListState extends State<ContestListView> {
   }
 
   createContest() {
-
     Contest newContestObject = Contest(
-        user: userRiderDp.id.toString(),
-        attendeesContest: [],
-        name: nameController.value.text,
-        address: adressController.value.text,
-        picturePath: pictureController.value.text,
-        contestDateTime: DateTime.parse(dateController.text));
-
+      user: userRiderDp.id.toString(),
+      attendeesContest: [],
+      name: nameController.value.text,
+      address: adressController.value.text,
+      picturePath: pictureController.value.text,
+      contestDateTime: DateTime.parse(dateController.text)
+    );
 
     Future<Contest?> createdContest =
         contestUseCase.createContest(newContestObject);

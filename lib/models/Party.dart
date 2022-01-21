@@ -34,6 +34,13 @@ class AttendeeParty {
     this.comment, {
     required this.user,
   });
+
+  Map<String, Object?> toJson() {
+    return {
+      'comment': comment,
+      'user': user,
+    };
+  }
 }
 
 class Party {

@@ -18,19 +18,31 @@ class Navigation extends StatefulWidget {
 class NavigationState extends State<Navigation> {
   int _selectedIndex = 0;
   int _drawerSelectedIndex = 0;
+  bool _isLastTappedDrawer = true;
+
   List<Map<String, dynamic>> drawerLinks = [
     //const ContestListView(title: 'Concours'),
     {"widget":ListEvents(), "title":"Liste des événements"},
-    {"widget":ContestListView(title: 'Liste des concours',), "title":"Liste des concours"},
     {"widget":ProfilePage(), "title":"Profile"},
     {"widget":UsersList(), "title":"Liste des utilisateurs"},
     {"widget":HorsesList(), "title":"Liste des cheveaux"},
     {"widget":ManageEvent(), "title":"Gestion écurie"},
     {"widget":PlanningLesson(), "title":"Planning des cours"},
   ];
+  List<Map<String, dynamic>> bottomBarLinks = [
+    //const ContestListView(title: 'Concours'),
+    {"widget":ContestListView(title: 'Concours'), "title":"Concours", "icon":Icon(Icons.sports_score)},
+    {"widget":ProfilePage(), "title":"Profile", "icon":Icon(Icons.account_circle_outlined)},
+    {"widget":ProfilePage(), "title":"Item3", "icon":Icon(Icons.cached)},
+  ];
 
   Widget getBody() {
-    return drawerLinks[_drawerSelectedIndex]["widget"];
+    if(_isLastTappedDrawer){
+      return drawerLinks[_drawerSelectedIndex]["widget"];
+    }
+    else{
+      return bottomBarLinks[_selectedIndex]["widget"];
+    }
   }
 
   List<Widget> getDrawerLinks(BuildContext context){
@@ -40,16 +52,25 @@ class NavigationState extends State<Navigation> {
     }
     return links;
   }
+  List<BottomNavigationBarItem> getBottomBarLinks(){
+    List<BottomNavigationBarItem> links = [];
+    for(int i=0; i<bottomBarLinks.length; i++) {
+      links.add(_buildBottomBarButton(i));
+    }
+    return links;
+  }
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+      _isLastTappedDrawer = false;
     });
   }
 
   void _onDrawerTap(int index, BuildContext context){
     setState(() {
       _drawerSelectedIndex = index;
+      _isLastTappedDrawer = true;
     });
     Navigator.pop(context);
   }
@@ -58,6 +79,12 @@ class NavigationState extends State<Navigation> {
     return ListTile(
       title: Text(title),
       onTap: ()=>onTap(),
+    );
+  }
+  BottomNavigationBarItem _buildBottomBarButton(int index){
+    return BottomNavigationBarItem(
+      icon: bottomBarLinks[index]["icon"],
+      label: bottomBarLinks[index]["title"],
     );
   }
 
@@ -90,20 +117,7 @@ class NavigationState extends State<Navigation> {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.sports_score),
-            label: 'Concours',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.cached),
-            label: 'Profile',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.cached),
-            label: 'Item 3',
-          ),
-        ],
+        items: getBottomBarLinks(),
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.blueAccent,
         onTap: _onItemTapped,

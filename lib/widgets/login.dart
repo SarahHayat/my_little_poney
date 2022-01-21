@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:my_little_poney/components/login-sigup-button.dart';
+import 'package:my_little_poney/components/message-dialog.dart';
 import 'package:my_little_poney/constants/constants.dart';
+import 'package:my_little_poney/models/User.dart';
 import 'package:my_little_poney/usecase/user_usecase.dart';
 import 'package:my_little_poney/widgets/navigation.dart';
+import 'package:my_little_poney/widgets/reset-password.dart';
 import 'package:my_little_poney/widgets/sign-up.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -18,9 +21,12 @@ class _LoginScreenState extends State<LoginScreen> {
   final formkey = GlobalKey<FormState>();
   final LocalStorage storage = LocalStorage('poney_app');
   String email = '';
+  String userName = '';
   String password = '';
   bool isloading = false;
+  bool isReset = false;
   UserUseCase userUseCase = UserUseCase();
+  late User userReset;
 
   @override
   Widget build(BuildContext context) {
@@ -58,11 +64,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         onChanged: (value) {
                           email = value;
                         },
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "Please enter Email";
-                          }
-                        },
                         textAlign: TextAlign.center,
                         decoration: kTextFieldDecoration.copyWith(
                           hintText: 'Email',
@@ -75,11 +76,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       const SizedBox(height: 30),
                       TextFormField(
                         obscureText: true,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return "Please enter Password";
-                          }
-                        },
                         onChanged: (value) {
                           password = value;
                         },
@@ -95,19 +91,25 @@ class _LoginScreenState extends State<LoginScreen> {
                       LoginSignupButton(
                         title: 'Login',
                         ontapp: () async {
+                          setState(() {
+                            isloading = true;
+                          });
                           userUseCase.loggin(email, password).then((user)
                           {
+                            setState(() {
+                              isloading = false;
+                            });
                             storage.setItem('user', user.toJson());
                             Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => Navigation()));
                           }).catchError((onError) {
-                            errorDialogue();
-
+                            setState(() {
+                              isloading = false;
+                            });
+                            dialogue('Login incorrect');
                           });
-
                         },
                       ),
                       const SizedBox(height: 30),
-
                       GestureDetector(
                         onTap: () {
                           Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => SignupScreen()));
@@ -136,8 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       const SizedBox(height: 30),
                       GestureDetector(
                         onTap: () {
-                          resetDialog();
-
+                          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => const ResetScreen()));
                         },
                         child: Row(
                           children: const [
@@ -171,22 +172,14 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Future<Null> resetDialog() async {
-    return showDialog(context: context, builder: (BuildContext context) {
-      return const SimpleDialog(
-        children: [Center(child: Text('Login incorrect'))],
-      );
-    }
-    );
-  }
-
-  Future<Null> errorDialogue() async {
-    return showDialog(context: context, builder: (BuildContext context) {
-      return const SimpleDialog(
-        title: Text('Reset mot de passe'),
-        children: [],
-      );
-    }
+  Future<void> dialogue(String message) async{
+    return showDialog(
+        context: context,
+        builder: (BuildContext context){
+          return MessageDialog(
+            title: message
+          );
+        }
     );
   }
 }

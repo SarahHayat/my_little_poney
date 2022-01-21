@@ -24,6 +24,7 @@ class ContestServiceApi {
       throw Exception('Failed to load contest');
     }
   }
+
   Future<Contest> createContest(Contest contest) async {
     final response = await http.post(
       Uri.parse('https://my-little-poney.herokuapp.com/contests'),
@@ -32,8 +33,7 @@ class ContestServiceApi {
       },
       body: jsonEncode(contest.toJson()),
     );
-
-    if (response.statusCode == 201) {
+    if (jsonDecode(response.body)['picturePath'] != null) {
       // si on recupere le contest crée
       return Contest.fromJson(jsonDecode(response.body));
     } else {
@@ -42,6 +42,7 @@ class ContestServiceApi {
   }
 
   Future<Contest> updateContest(Contest contest) async {
+
     final response = await http.patch(
       Uri.parse('https://my-little-poney.herokuapp.com/contests/${contest.id}'),
       headers: <String, String>{
@@ -49,8 +50,8 @@ class ContestServiceApi {
       },
       body: jsonEncode(contest.toJson()),
     );
-
-    if (response.statusCode == 200) {
+    print(jsonDecode(response.body));
+    if (jsonDecode(response.body)['picturePath'] != null) {
       return Contest.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Failed to update party.');

@@ -3,6 +3,7 @@ import 'package:my_little_poney/widgets/contest_view.dart';
 import 'package:my_little_poney/widgets/horses_page.dart';
 import 'package:my_little_poney/widgets/list_event.dart';
 import 'package:my_little_poney/widgets/login.dart';
+import 'package:my_little_poney/widgets/reset-password.dart';
 
 import 'models/User.dart';
 
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
         ContestView.tag: (context) => const ContestView(),
         HorsesPage.routeName: (context) => HorsesPage(),
         ListEvents.routeName: (context) => const ListEvents(),
+        ResetScreen.routeName: (context) => const ResetScreen(),
       },
       theme: ThemeData(
         primarySwatch: Colors.blue,

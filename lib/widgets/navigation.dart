@@ -1,12 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:my_little_poney/widgets/contest.dart';
+import 'package:my_little_poney/widgets/contest_view.dart';
 import 'package:my_little_poney/widgets/horses_list.dart';
 import 'package:my_little_poney/widgets/list_event.dart';
 import 'package:my_little_poney/widgets/manage_event.dart';
 import 'package:my_little_poney/widgets/planning_lesson.dart';
 import 'package:my_little_poney/widgets/profile_page.dart';
 import 'package:my_little_poney/widgets/users_list.dart';
+
+import 'contest.dart';
 
 class Navigation extends StatefulWidget {
   @override
@@ -15,36 +17,75 @@ class Navigation extends StatefulWidget {
 
 class NavigationState extends State<Navigation> {
   int _selectedIndex = 0;
+  int _drawerSelectedIndex = 0;
+  bool _isLastTappedDrawer = true;
+
+  List<Map<String, dynamic>> drawerLinks = [
+    //const ContestListView(title: 'Concours'),
+    {"widget":ListEvents(), "title":"Liste des événements"},
+    {"widget":ProfilePage(), "title":"Profile"},
+    {"widget":UsersList(), "title":"Liste des utilisateurs"},
+    {"widget":HorsesList(), "title":"Liste des cheveaux"},
+    {"widget":ManageEvent(), "title":"Gestion écurie"},
+    {"widget":PlanningLesson(), "title":"Planning des cours"},
+  ];
+  List<Map<String, dynamic>> bottomBarLinks = [
+    //const ContestListView(title: 'Concours'),
+    {"widget":ContestListView(title: 'Concours'), "title":"Concours", "icon":Icon(Icons.sports_score)},
+    {"widget":ProfilePage(), "title":"Profile", "icon":Icon(Icons.account_circle_outlined)},
+    {"widget":ProfilePage(), "title":"Item3", "icon":Icon(Icons.cached)},
+  ];
 
   Widget getBody() {
-    if (_selectedIndex == 0) {
-      // return the first page
-      return const ContestListView(title: 'Concours');
-    } else if (_selectedIndex == 1) {
-      // return the second page
-      return ProfilePage();
-    } else if (_selectedIndex == 2) {
-      // return the second page
-      return const UsersList();
-    } else if (_selectedIndex == 3) {
-      // return the second page
-      return const HorsesList();
-    } else if (_selectedIndex == 4) {
-      // return the second page
-      return const ManageEvent();
-    } else if (_selectedIndex == 5) {
-      // return the second page
-      return const PlanningLesson();
-    } else {
-      // return the third page
-      return const ListEvents();
+    if(_isLastTappedDrawer){
+      return drawerLinks[_drawerSelectedIndex]["widget"];
     }
+    else{
+      return bottomBarLinks[_selectedIndex]["widget"];
+    }
+  }
+
+  List<Widget> getDrawerLinks(BuildContext context){
+    List<Widget> links = [];
+    for(int i=0; i<drawerLinks.length; i++) {
+      links.add(_buildDrawerLinks(drawerLinks[i]["title"], ()=> _onDrawerTap(i, context)));
+    }
+    return links;
+  }
+  List<BottomNavigationBarItem> getBottomBarLinks(){
+    List<BottomNavigationBarItem> links = [];
+    for(int i=0; i<bottomBarLinks.length; i++) {
+      links.add(_buildBottomBarButton(i));
+    }
+    return links;
   }
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+      _isLastTappedDrawer = false;
     });
+  }
+
+  void _onDrawerTap(int index, BuildContext context){
+    setState(() {
+      _drawerSelectedIndex = index;
+      _isLastTappedDrawer = true;
+    });
+    Navigator.pop(context);
+  }
+
+  _buildDrawerLinks(String title, Function onTap){
+    return ListTile(
+      title: Text(title),
+      onTap: ()=>onTap(),
+    );
+  }
+  BottomNavigationBarItem _buildBottomBarButton(int index){
+    return BottomNavigationBarItem(
+      icon: bottomBarLinks[index]["icon"],
+      label: bottomBarLinks[index]["title"],
+    );
   }
 
   @override
@@ -71,79 +112,12 @@ class NavigationState extends State<Navigation> {
                 child: Text('Pablo'),
               ),
             ),
-            ListTile(
-              // Maybe put profil here
-              title: const Text('Profile'),
-              onTap: () {
-                setState(() {
-                  // put the profile index
-                  _selectedIndex = 1;
-                });
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              // Maybe put profil here
-              title: const Text('Liste des utilisateurs'),
-              onTap: () {
-                setState(() {
-                  // put the profile index
-                  _selectedIndex = 2;
-                });
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              // Maybe put profil here
-              title: const Text('Liste des cheveaux'),
-              onTap: () {
-                setState(() {
-                  // put the profile index
-                  _selectedIndex = 3;
-                });
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              // Maybe put profil here
-              title: const Text('Gestion écurie'),
-              onTap: () {
-                setState(() {
-                  // put the profile index
-                  _selectedIndex = 4;
-                });
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              // Maybe put profil here
-              title: const Text('Planning des cours'),
-              onTap: () {
-                setState(() {
-                  // put the profile index
-                  _selectedIndex = 5;
-                });
-                Navigator.pop(context);
-              },
-            ),
-          ],
+            ...getDrawerLinks(context)
+          ] ,
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.sports_score),
-            label: 'Concours',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.cached),
-            label: 'Profile',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.cached),
-            label: 'Item 3',
-          ),
-        ],
+        items: getBottomBarLinks(),
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.blueAccent,
         onTap: _onItemTapped,

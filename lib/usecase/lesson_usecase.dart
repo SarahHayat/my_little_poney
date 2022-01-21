@@ -17,7 +17,7 @@ class LessonUseCase {
   }
 
   Future<Lesson?> updateLessonById(lesson) async {
-    api.updateLesson(lesson).then((value) => value);
+    return api.updateLesson(lesson).then((value) => value);
   }
 
   Future<Lesson?> deleteLessonById(id) async {

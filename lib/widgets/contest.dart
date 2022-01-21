@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_little_poney/api/contest_service_io.dart';
 import 'package:my_little_poney/helper/listview.dart';
 import 'package:my_little_poney/models/Contest.dart';
 import 'package:my_little_poney/helper/temporaryContest.dart';
@@ -38,7 +37,6 @@ class _ContestListState extends State<ContestListView> {
 
   Future<List<Contest>?> getAllContestsFromDb() async {
     contests = await contestUseCase.getAllContests();
-
     return contests;
   }
 
@@ -52,7 +50,7 @@ class _ContestListState extends State<ContestListView> {
           future: getAllContestsFromDb(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return buildListView(snapshot.data, _buildRow);
+              return ListViewSeparated(data: snapshot.data,buildListItem: _buildRow);
             } else if (snapshot.hasError) {
               return Center(child: Text(snapshot.error.toString()));
             }

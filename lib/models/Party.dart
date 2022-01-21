@@ -34,6 +34,13 @@ class AttendeeParty {
     this.comment, {
     required this.user,
   });
+
+  Map<String, Object?> toJson() {
+    return {
+      'comment': comment,
+      'user': user,
+    };
+  }
 }
 
 class Party {
@@ -82,8 +89,8 @@ class Party {
       'user': user,
       'theme': theme,
       'isValid': isValid,
-      'createdAt': createdAt,
-      'partyDateTime': partyDateTime,
+      'createdAt': createdAt.toString(),
+      'partyDateTime': partyDateTime.toString(),
     };
   }
 }

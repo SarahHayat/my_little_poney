@@ -61,9 +61,9 @@ class Contest {
       attendeesContest: json['attendees'] != null
           ? json['attendees']! as List<dynamic>
           : [],
-      user: json['user'] as String,
-      name: json['name'] as String,
-      address: json['address'] as String,
+      user: json['user'] != null ? json['user'] as String : "",
+      name: json['name'] != null ? json['name'] as String : "",
+      address: json['address'] != null ? json['name'] as String : "",
       picturePath:
           json['picturePath'] != null ? json['picturePath']! as String : "",
       contestDateTime: DateTime.parse(json['contestDateTime']! as String),
@@ -75,7 +75,7 @@ class Contest {
   Map<String, Object?> toJson() {
     return {
       '_id': id,
-      'attendees': attendeesContest,
+      'attendees': attendeesContest != null ? attendeesContest as List<dynamic> : [] as List<dynamic>,
       'user': user,
       'name': name,
       'address': address,

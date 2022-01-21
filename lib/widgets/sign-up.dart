@@ -1,9 +1,8 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:my_little_poney/components/login-sigup-button.dart';
+import 'package:my_little_poney/components/message-dialog.dart';
 import 'package:my_little_poney/constants/constants.dart';
 import 'package:my_little_poney/models/User.dart';
 import 'package:my_little_poney/usecase/user_usecase.dart';
@@ -96,7 +95,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                   title: 'Uploader photo',
                                   width: 200.0,
                                   ontapp: () {
-                                    dialogue();
+                                    dialogueSignUp();
                                   }),
                             ]),
                             const SizedBox(height: 30),
@@ -105,9 +104,6 @@ class _SignupScreenState extends State<SignupScreen> {
                               onChanged: (value) {
                                 email = value.toString().trim();
                               },
-                              validator: (value) => (value!.isEmpty)
-                                  ? "S'il vous plait entrez votre email !"
-                                  : null,
                               textAlign: TextAlign.center,
                               decoration: kTextFieldDecoration.copyWith(
                                 hintText: "Entrez votre email",
@@ -123,9 +119,6 @@ class _SignupScreenState extends State<SignupScreen> {
                               onChanged: (value) {
                                 userName = value.toString().trim();
                               },
-                              validator: (value) => (value!.isEmpty)
-                                  ? "S'il vous plait entrez votre prénom !"
-                                  : null,
                               textAlign: TextAlign.center,
                               decoration: kTextFieldDecoration.copyWith(
                                 hintText: 'Entrez votre prénom',
@@ -138,11 +131,6 @@ class _SignupScreenState extends State<SignupScreen> {
                             const SizedBox(height: 30),
                             TextFormField(
                               obscureText: true,
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return "S'il vous plait entrez votre mot de passe";
-                                }
-                              },
                               onChanged: (value) {
                                 password = value;
                               },
@@ -158,6 +146,9 @@ class _SignupScreenState extends State<SignupScreen> {
                             LoginSignupButton(
                                 title: 'Enregistrer',
                                 ontapp: () async {
+                                  setState(() {
+                                    isloading = true;
+                                  });
                                   userUseCase
                                       .createUser(User(
                                           email: email,
@@ -165,12 +156,20 @@ class _SignupScreenState extends State<SignupScreen> {
                                           userName: userName,
                                           profilePicture: profilePicture))
                                       .then((user) {
+                                    setState(() {
+                                      isloading = false;
+                                    });
                                     storage.setItem('user', user.toJson());
                                     Navigator.of(context).pushReplacement(
                                         MaterialPageRoute(
                                             builder: (BuildContext context) =>
                                                 Navigation()));
-                                  }).catchError((onError) => errorDialogue());
+                                  }).catchError((onError) {
+                                    setState(() {
+                                      isloading = false;
+                                    });
+                                    dialogue('Erreur création de compte');
+                                  });
                                 }),
                           ],
                         ),
@@ -183,7 +182,7 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-  Future<Null> dialogue() async {
+  Future<Null> dialogueSignUp() async {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -197,7 +196,6 @@ class _SignupScreenState extends State<SignupScreen> {
               TextField(
                 onChanged: (value) {
                   urlPhoto = value;
-                  print(urlPhoto);
                 },
               ),
               Container(
@@ -217,13 +215,11 @@ class _SignupScreenState extends State<SignupScreen> {
         });
   }
 
-  Future<Null> errorDialogue() async {
+  Future<void> dialogue(String message) async {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
-          return const SimpleDialog(
-            children: [Center(child: Text('Erreur création de compte'))],
-          );
+          return MessageDialog(title: message);
         });
   }
 }

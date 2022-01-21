@@ -16,7 +16,7 @@ class LessonTile extends StatelessWidget {
         title: Container(
           child:Text( "${lesson.name} - ${lesson.discipline}" ),
         ),
-        subtitle: LessonResume(lesson: lesson,)
+        subtitle: LessonResume(lesson: lesson,),
     );
   }
 }

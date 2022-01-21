@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -41,19 +42,19 @@ class PartyServiceApi {
     }
   }
 
-  Future<Party> updateParty(Party party) async {
-    final response = await http.put(
+  Future<Party?> updateParty(Party party) async {
+    final response = await http.patch(
       Uri.parse('https://my-little-poney.herokuapp.com/parties/${party.id}'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: party.toJson(),
+      body: jsonEncode(party.toJson()),
     );
 
     if (response.statusCode == 200) {
       return Party.fromJson(jsonDecode(response.body));
     } else {
-      throw Exception('Failed to update party.');
+      throw Exception('Failed to update party ${party.id}. code error : ${response.statusCode}');
     }
   }
 

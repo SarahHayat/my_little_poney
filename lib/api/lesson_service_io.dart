@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
@@ -41,13 +42,13 @@ class LessonServiceApi {
     }
   }
 
-  Future<Lesson> updateLesson(Lesson lesson) async {
-    final response = await http.put(
+  Future<Lesson?> updateLesson(Lesson lesson) async {
+    final response = await http.patch(
       Uri.parse('https://my-little-poney.herokuapp.com/lessons/${lesson.id}'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: lesson.toJson(),
+      body: jsonEncode(lesson.toJson()),
     );
 
     if (response.statusCode == 200) {

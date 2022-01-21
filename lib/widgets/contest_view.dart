@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:my_little_poney/helper/temporaryContest.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:my_little_poney/models/Contest.dart';
+import 'package:my_little_poney/helper/temporaryContest.dart';
+import 'package:my_little_poney/models/User.dart';
 import 'package:my_little_poney/usecase/contest_usecase.dart';
+import 'package:my_little_poney/usecase/user_usecase.dart';
 
 class ContestView extends StatefulWidget {
   const ContestView({Key? key}) : super(key: key);
@@ -14,12 +17,28 @@ class ContestView extends StatefulWidget {
 class _ContestViewState extends State<ContestView> {
   String levelValue = Level.amateur.name;
   ContestUseCase contestUseCase = ContestUseCase();
+  UserUseCase userUseCase = UserUseCase();
   late Contest contestToUpdate;
+  final LocalStorage storage = LocalStorage('poney_app');
+  late User user;
+  bool isSignIn = false;
+  late Future<List<User>> users ;
+
+  @override
+  void initState() {
+    super.initState();
+    user = User.fromJson(storage.getItem('user'));
+  }
+
 
   @override
   Widget build(BuildContext context) {
     final arguments = ModalRoute.of(context)?.settings.arguments as Contest;
     contestToUpdate = arguments;
+
+
+
+
 
     Widget titleSection = Container(
       padding: const EdgeInsets.all(32),
@@ -64,7 +83,7 @@ class _ContestViewState extends State<ContestView> {
     Widget buttonSection = Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        _buildButtonColumn(color, Icons.add_task, 'Participer'),
+        _buildButtonColumn(color, Icons.group_add, 'Participer'),
       ],
     );
 
@@ -79,9 +98,19 @@ class _ContestViewState extends State<ContestView> {
       ),
     );
 
-    return  Scaffold(
+    return MaterialApp(
+      title: 'Concours d\'équitation',
+      home: Scaffold(
         appBar: AppBar(
           title: const Text('Concours d\'équitation'),
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back_ios,
+              size: 30,
+            ),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
         ),
         body: ListView(
           children: [
@@ -96,7 +125,8 @@ class _ContestViewState extends State<ContestView> {
             textSection,
           ],
         ),
-      );
+      ),
+    );
   }
 
   Column _buildButtonColumn(Color color, IconData icon, String label) {
@@ -118,7 +148,7 @@ class _ContestViewState extends State<ContestView> {
               ),
             ),
             onPressed: () {
-              _joinContestDialog(context);
+              _selectLevel(context);
             },
           ),
         ),
@@ -126,98 +156,76 @@ class _ContestViewState extends State<ContestView> {
     );
   }
 
-  Future<void> _joinContestDialog(BuildContext context) async {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text('Voulez-vous participer au concours ?'),
-            content: Card(
-              elevation: 5,
-              margin: const EdgeInsets.all(20),
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    boutonBool(true),
-                    boutonBool(false),
-                  ],
-                ),
-              ),
-            ),
-          );
-        });
-  }
-
   Future<void> _selectLevel(BuildContext context) async {
     return showDialog(
         context: context,
         builder: (context) {
-          return AlertDialog(
-            title: const Text('Choisissez un niveau ?'),
-            content: Card(
-              elevation: 5,
-              margin: const EdgeInsets.all(20),
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: DropdownButton<String>(
-                  value: levelValue,
-                  icon: const Icon(Icons.arrow_downward),
-                  elevation: 16,
-                  style: const TextStyle(color: Colors.deepPurple),
-                  underline: Container(
-                    height: 2,
-                    color: Colors.deepPurpleAccent,
+          return StatefulBuilder(builder: (context, setState) {
+            return AlertDialog(
+              title: const Text('Choisissez un niveau ?'),
+              content: Card(
+                elevation: 5,
+                margin: const EdgeInsets.all(20),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: DropdownButton<String>(
+                    value: levelValue,
+                    icon: const Icon(Icons.arrow_downward),
+                    elevation: 16,
+                    style: const TextStyle(color: Colors.deepPurple),
+                    underline: Container(
+                      height: 2,
+                      color: Colors.deepPurpleAccent,
+                    ),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        levelValue = newValue!;
+                      });
+                    },
+                    items:
+                    Level.values.map<DropdownMenuItem<String>>((Level value) {
+                      return DropdownMenuItem<String>(
+                        value: value.name,
+                        child: Text(value.name),
+                      );
+                    }).toList(),
                   ),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      levelValue = newValue!;
-                    });
-                  },
-                  items:
-                      Level.values.map<DropdownMenuItem<String>>((Level value) {
-                    return DropdownMenuItem<String>(
-                      value: value.name,
-                      child: Text(value.name),
-                    );
-                  }).toList(),
                 ),
               ),
-            ),
-            actions: [
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(primary: Colors.green),
-                child: const Text('Ok'),
-                onPressed: () {
-                  _joinContest();
-                },
-              ),
-            ],
-          );
+              actions: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(primary: Colors.green),
+                  child: const Text('Ok'),
+                  onPressed: () {
+                    _joinContest();
+                  },
+                ),
+              ],
+            );
+          });
+
         });
   }
 
-  ElevatedButton boutonBool(bool b) {
-    return ElevatedButton(
-      onPressed: (() => (b) ? _selectLevel(context) : Navigator.pop(context)),
-      child: Text((b) ? "Oui" : "Non"),
-    );
-  }
-
   void _joinContest() async {
+
     AttendeeContest newAttendee =
-        AttendeeContest(user: monUser.id.toString(), level: levelValue);
+        AttendeeContest(user: user.id!, level: levelValue);
 
-    setState(() {
-      contestToUpdate.attendeesContest.add(newAttendee);
-    });
 
-    print(
-        'contestToUpdate.attendeesContest : ${contestToUpdate.attendeesContest[0].level}');
+    for(dynamic element in contestToUpdate.attendeesContest) {
+      if(element['user'] == user.id) {
+        isSignIn = true;
+        break;
+      }
+    }
 
-    Future<Contest?> updatedContest =
+    if (!isSignIn) {
+      setState(() {
+        contestToUpdate.attendeesContest.add(newAttendee);
         contestUseCase.updateContestById(contestToUpdate);
+      });
+    }
 
     Navigator.pop(context);
   }

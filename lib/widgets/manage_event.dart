@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:my_little_poney/components/background_image.dart';
 import 'package:my_little_poney/components/yes_no_dialog.dart';
 import 'package:my_little_poney/helper/datetime_extension.dart';
 import 'package:my_little_poney/helper/listview.dart';
@@ -12,6 +13,8 @@ import 'package:my_little_poney/components/column_list.dart';
 import 'package:my_little_poney/components/party_tile.dart';
 import 'package:my_little_poney/components/custom_datepicker.dart';
 import 'package:my_little_poney/components/lesson_tile.dart';
+import 'package:my_little_poney/usecase/lesson_usecase.dart';
+import 'package:my_little_poney/usecase/party_usecase.dart';
 
 import '../components/party_tile.dart';
 
@@ -23,30 +26,24 @@ class ManageEvent extends StatefulWidget {
   State<ManageEvent> createState() => _ManageEventState();
 }
 
-//@todo : in PartyModel : add a date (when the party will start)
-
 class _ManageEventState extends State<ManageEvent> {
+  final LessonUseCase lessonUseCase = LessonUseCase();
+  final PartyUseCase partyUseCase = PartyUseCase();
   final User currentUser = Mock.userManagerOwner2;
-  late List<Party> allParty ;
-  List<Party> displayedParty = [];
-  late List<Lesson> allLessons ;
-  List<Lesson> displayedLessons = [];
-
+  late bool isUpdated;
   DateTime selectedDate = DateTime.now();
 
   @override
   void initState() {
     super.initState();
-    _getLessons();
-    _getParty();
-    _filterEvents();
+    isUpdated = false;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Lessons / Party : ${selectedDate.getFrenchDate()}"),
+          title: Text("Lessons / Parties : ${selectedDate.getFrenchDate()}"),
           elevation: 10,
           centerTitle: true,
           leading: CustomDatePicker(initialDate: selectedDate, onSelected: _updateSelectedDate,)
@@ -61,7 +58,6 @@ class _ManageEventState extends State<ManageEvent> {
     setState(() {
       selectedDate = date;
     });
-    _filterEvents();
   }
 
   /// Create the body of this screen.
@@ -69,10 +65,57 @@ class _ManageEventState extends State<ManageEvent> {
   /// Else, we display a message to unespected user
   _buildScaffoldBody(){
     if(currentUser.isManager()){
+      if(isUpdated){
+        setState(() {
+          isUpdated = false;
+        });
+      }
       return Row(
         children: [
-          ColumnList(title: "Lessons", icon: Icon(Icons.school_outlined), child: ListViewSeparated(data: displayedLessons, buildListItem: _buildItemLesson)),
-          ColumnList(title: "Partys", icon: Icon(Icons.liquor_sharp), child: ListViewSeparated(data: displayedParty, buildListItem: _buildItemParty)),
+          ColumnList(
+            title: "Lessons",
+            icon: Icon(Icons.school_outlined),
+            child: Container(
+              decoration: BackgroundImageDecoration("https://www.ouestfrance-emploi.com/sites/default/files/styles/610-largeur/public/fiches_metiers/229_133260290.jpg?itok=2Kh18dtD"),
+              child: FutureBuilder<List<Lesson>?>(
+                future: getAllLessons(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    List<Lesson> data = snapshot.data!;
+                    List<Lesson> displayedLessons = _filterLessons(data);
+                    return  ListViewSeparated(data: displayedLessons, buildListItem: _buildItemLesson);
+                  } else if (snapshot.hasError) {
+                    return Text("${snapshot.error}");
+                  }
+                  return const Center(
+                      child: CircularProgressIndicator()
+                  );
+                },
+              ),
+            ),
+          ),
+          ColumnList(
+            title: "Parties",
+            icon: Icon(Icons.liquor_sharp),
+            child:Container(
+              decoration: BackgroundImageDecoration("https://94.citoyens.com/wp-content/blogs.dir/2/files/2020/04/stocklib-dmitry-moiseenko-fete-apero-verres.jpg"),
+              child: FutureBuilder<List<Party>?>(
+                future: getAllParties(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    List<Party> data = snapshot.data!;
+                    List<Party> displayedParties = _filterParty(data);
+                    return ListViewSeparated(data: displayedParties, buildListItem: _buildItemParty);
+                  } else if (snapshot.hasError) {
+                    return Text("${snapshot.error}");
+                  }
+                  return const Center(
+                      child: CircularProgressIndicator()
+                  );
+                },
+              ),
+            ),
+          )
         ]
       );
     }
@@ -140,63 +183,68 @@ class _ManageEventState extends State<ManageEvent> {
   //endregion
 
   //region api call & front setting
-  _updateLesson(Lesson lesson, bool isValid){
+  _updateLesson(Lesson lesson, bool isValid) async {
     //@todo : add one more row to update data on this lesson in DB with a request
     log("Update lesson ${lesson.name} $isValid");
-    setState(() {
-      //need a method to update lesson validate bool
-      //allLessons.remove(lesson);
-    });
+    lesson.isValid = isValid;
+    Lesson? removedParty = await lessonUseCase.updateLessonById(lesson);
+
+    if(removedParty !=null){
+      setState(() {
+        isUpdated = true;
+      });
+    }
   }
 
-  _updateParty(Party party, bool isValid){
-    //@todo : add one more row to update data on this party in DB with a request
+  _updateParty(Party party, bool isValid) async{
     log("Update party ${party.theme} $isValid");
-    setState(() {
-      //need a method to update party validate bool
-      //allLessons.remove(lesson);
-    });
+    party.isValid = isValid;
+    Party? removedParty = await partyUseCase.updatePartyById(party);
+
+    if(removedParty !=null){
+      setState(() {
+        isUpdated = true;
+      });
+    }
   }
 
-  _getLessons(){
-    //@todo : use request here to get lessons list from DB
-    //il faut qu'on ai une gestion par semaine
-    setState(() {
-      allLessons = [Mock.lesson, Mock.lesson,Mock.lesson, Mock.lesson, Mock.lesson];
-    });
+  /// Return Future [Lesson] list from DB, used in FutureBuilder
+  Future<List<Lesson>?> getAllLessons() async {
+    log("get all lessons");
+    return await lessonUseCase.getAllLessons();
   }
 
-  _getParty(){
-    //@todo : use request here to get party list from DB
-    //il faut qu'on ai une gestion par semaine
-    setState(() {
-      allParty = [Mock.party, Mock.party];
-    });
+  /// Return Future [Party] list from DB, used in FutureBuilder
+  Future<List<Party>?> getAllParties() async {
+    return await partyUseCase.getAllParties();
   }
   //endregion
 
-  /// Filter events depending on [selectedDate] week
-  void _filterEvents(){
+  /// Filter [allLessons] depending on [selectedDate] week
+  List<Lesson> _filterLessons(List<Lesson> allLessons){
     DateTime date = selectedDate.getOnlyDate();
     List<Lesson> lessonList = [];
-    List<Party> partyList = [];
-
-    // condition for same day => allLessons[i].lessonDateTime.getOnlyDate() == date
-    // condition for same week => allParty[i].partyDateTime.areDateSameWeek(date)
     for(int i=0; i<allLessons.length; i++){
       if(allLessons[i].lessonDateTime.areDateSameWeek(date)){
         lessonList.add(allLessons[i]);
       }
     }
+    return lessonList;
+  }
+
+  /// Filter [allParty] depending on [selectedDate] week
+  /// condition for same day => allLessons[i].lessonDateTime.getOnlyDate() == date
+  /// condition for same week => allParty[i].partyDateTime.areDateSameWeek(date)
+  List<Party> _filterParty(List<Party> allParty){
+    DateTime date = selectedDate.getOnlyDate();
+    List<Party> partyList = [];
+
     for(int i=0; i<allParty.length; i++){
       if(allParty[i].partyDateTime.areDateSameWeek(date)){
         partyList.add(allParty[i]);
       }
     }
-    setState(() {
-      displayedLessons = lessonList;
-      displayedParty = partyList;
-    });
+    return partyList;
   }
 
 }

@@ -93,7 +93,7 @@ class Horse {
     return Horse(
       id: json['_id'] != null ? json['_id']! as String : "",
       dpUsers: json['dpUsers'] != null ? json['dpUsers']! as List<dynamic>? : [],
-      owner: json['owner'] != null ? json['owner']! as String : null,
+      owner: json['owner'] != null ? json['owner']! as String : "",
       picturePath: json['picturePath'] != null ? json['picturePath']! as String : "",
       age: json['age'] as int,
       dress: json['dress'] as String,

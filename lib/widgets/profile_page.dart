@@ -1,7 +1,10 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:localstorage/localstorage.dart';
 
 // import 'package:my_little_poney/mock/mock.dart';
 import 'package:my_little_poney/models/User.dart';
@@ -14,6 +17,8 @@ class ProfilePage extends StatefulWidget {
 }
 
 class ProfilPageState extends State<ProfilePage> {
+
+  final LocalStorage storage = LocalStorage('poney_app');
   UserUseCase userUseCase = UserUseCase();
 
   late User user;
@@ -23,16 +28,26 @@ class ProfilPageState extends State<ProfilePage> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController ffeProfileController = TextEditingController();
+  TextEditingController ageController = TextEditingController();
+  TextEditingController photoController = TextEditingController();
 
-  // late String dropdownValueRole;
-  // late String dropdownValueType;
-  String dropdownValueRole = UserRole.values.first.name;
-  String dropdownValueType = UserType.values.first.name;
+  late String dropdownValueRole;
+  late String dropdownValueType;
 
   bool inEditForm = false;
 
   @override
   void initState() {
+    user = User.fromJson(storage.getItem("user"));
+
+    emailController.text = user.email;
+    usernameController.text = user.userName;
+    phoneNumberController.text = (user.phoneNumber != "") ? user.phoneNumber! : "";
+    ffeProfileController.text = (user.ffeLink != "") ? user.ffeLink!:  "";
+    ageController.text = (user.age != 0) ? user.age.toString() : "";
+    photoController.text = (user.profilePicture != "") ? user.profilePicture! : "https://cdn.pixabay.com/photo/2020/10/29/03/22/dog-5695088__340.png";
+    dropdownValueRole = (user.role != "") ? user.role!:  UserRole.values.first.name;
+    dropdownValueType = (user.type != "") ? user.type!:  UserType.values.first.name;
     super.initState();
   }
 
@@ -43,6 +58,8 @@ class ProfilPageState extends State<ProfilePage> {
     usernameController.dispose();
     phoneNumberController.dispose();
     ffeProfileController.dispose();
+    ageController.dispose();
+    photoController.dispose();
   }
 
   @override
@@ -54,25 +71,10 @@ class ProfilPageState extends State<ProfilePage> {
           onTap: () {
             Navigator.of(context).pushNamed(HorsesPage.routeName);
           },
-          child: Icon(Icons.bedroom_baby),
+          child: const Icon(Icons.bedroom_baby),
         ),
       ),
-      body: FutureBuilder<User>(
-        future: getUser(userId),
-        builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
-          if (snapshot.hasData) {
-            user = snapshot.data!;
-            emailController.text = user.email;
-            usernameController.text = user.userName;
-            phoneNumberController.text = user.phoneNumber ?? "";
-            ffeProfileController.text = user.ffeLink ?? "";
-            return buildBody();
-          } else if (snapshot.hasError) {
-            return Text("${snapshot.error}");
-          }
-          return const Center(child: CircularProgressIndicator());
-        },
-      ),
+      body: buildBody(),
       floatingActionButton: FloatingActionButton(
         child: (inEditForm) ? const Icon(Icons.close) : const Icon(Icons.edit),
         onPressed: () {
@@ -89,18 +91,12 @@ class ProfilPageState extends State<ProfilePage> {
         Stack(
           alignment: Alignment.topCenter,
           children: [
-            Container(
-              height: size.height * 0.13,
-              width: size.width,
-              color: Colors.blue,
-            ),
-            const Padding(
-              padding: EdgeInsets.only(top: 60),
+            Padding(
+              padding: EdgeInsets.only(top: 20),
               child: CircleAvatar(
                 radius: 50,
                 backgroundColor: Colors.white,
-                backgroundImage: NetworkImage(
-                    "https://cdn.pixabay.com/photo/2016/03/23/04/01/woman-1274056_1280.jpg"),
+                backgroundImage: NetworkImage(user.profilePicture!),
               ),
             ),
           ],
@@ -150,6 +146,11 @@ class ProfilPageState extends State<ProfilePage> {
               ),
               Row(
                 children: [
+                  Text("Age : ${user.age}"),
+                ],
+              ),
+              Row(
+                children: [
                   Text("Profil FFE : ${user.ffeLink!}"),
                 ],
               ),
@@ -182,6 +183,12 @@ class ProfilPageState extends State<ProfilePage> {
             children: [
               TextFormField(
                 decoration: const InputDecoration(
+                    labelText: 'Photo url',
+                    labelStyle: TextStyle(color: Colors.black)),
+                controller: photoController,
+              ),
+              TextFormField(
+                decoration: const InputDecoration(
                     labelText: 'Email',
                     labelStyle: TextStyle(color: Colors.black)),
                 controller: emailController,
@@ -197,6 +204,12 @@ class ProfilPageState extends State<ProfilePage> {
                     labelText: 'Téléphone',
                     labelStyle: TextStyle(color: Colors.black)),
                 controller: phoneNumberController,
+              ),
+              TextFormField(
+                decoration: const InputDecoration(
+                    labelText: 'Age',
+                    labelStyle: TextStyle(color: Colors.black)),
+                controller: ageController,
               ),
               TextFormField(
                 decoration: const InputDecoration(
@@ -294,24 +307,16 @@ class ProfilPageState extends State<ProfilePage> {
     user.email = emailController.value.text;
     user.userName = usernameController.value.text;
     user.phoneNumber = phoneNumberController.value.text;
-    print('feee value  = ${ffeProfileController.value.text}');
-
+    user.age = ageController.value.text == "" ? 0 : int.parse(ageController.value.text);
+    user.profilePicture = photoController.value.text;
     user.ffeLink = ffeProfileController.value.text;
-    print('drop value role = $dropdownValueRole');
     user.role = dropdownValueRole;
-    print('drop value type = $dropdownValueType');
     user.type = dropdownValueType;
   }
 
-  Future<User> getUser(userId) async {
-    return await userUseCase.fetchUserById(userId);
-  }
-
   Future<User> updateUser() async {
-    print('user role = ${user.role}');
-    print('user type = ${user.type}');
-    print('user ffe = ${user.ffeLink}');
-
-    return await userUseCase.updateUserById(user);
+    final result = await userUseCase.updateUserById(user);
+    storage.setItem("user", user.toJson());
+    return result;
   }
 }

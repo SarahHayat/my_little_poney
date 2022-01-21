@@ -4,6 +4,7 @@ import 'package:my_little_poney/models/Horse.dart';
 import 'package:my_little_poney/models/User.dart';
 import 'package:my_little_poney/usecase/horse_usecase.dart';
 import 'package:my_little_poney/usecase/user_usecase.dart';
+import 'package:my_little_poney/widgets/horses_page.dart';
 
 class HorseDialog extends StatefulWidget {
   static const routeName = 'horseDialog';
@@ -185,6 +186,7 @@ class HorseDialogState extends State<HorseDialog> {
           canEditHorse = true;
         });
         updateHorse();
+        Navigator.pop(context);
       },
       child: Text("devenir propriétaire de ${widget.horse.name}"),
     );

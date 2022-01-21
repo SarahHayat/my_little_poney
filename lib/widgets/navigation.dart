@@ -8,6 +8,8 @@ import 'package:my_little_poney/widgets/planning_lesson.dart';
 import 'package:my_little_poney/widgets/profile_page.dart';
 import 'package:my_little_poney/widgets/users_list.dart';
 
+import 'contest.dart';
+
 class Navigation extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => NavigationState();
@@ -19,7 +21,7 @@ class NavigationState extends State<Navigation> {
   List<Map<String, dynamic>> drawerLinks = [
     //const ContestListView(title: 'Concours'),
     {"widget":ListEvents(), "title":"Liste des événements"},
-    {"widget":ContestView(), "title":"Liste des concours"},
+    {"widget":ContestListView(title: 'Liste des concours',), "title":"Liste des concours"},
     {"widget":ProfilePage(), "title":"Profile"},
     {"widget":UsersList(), "title":"Liste des utilisateurs"},
     {"widget":HorsesList(), "title":"Liste des cheveaux"},

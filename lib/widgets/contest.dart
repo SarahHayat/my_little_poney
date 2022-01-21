@@ -176,6 +176,7 @@ class _ContestListState extends State<ContestListView> {
   }
 
   createContest() {
+
     Contest newContestObject = Contest(
         user: userRiderDp.id.toString(),
         attendeesContest: [],
@@ -183,6 +184,7 @@ class _ContestListState extends State<ContestListView> {
         address: adressController.value.text,
         picturePath: pictureController.value.text,
         contestDateTime: DateTime.parse(dateController.text));
+
 
     Future<Contest?> createdContest =
         contestUseCase.createContest(newContestObject);

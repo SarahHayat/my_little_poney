@@ -6,7 +6,7 @@ import 'package:my_little_poney/models/User.dart';
 
 class Mock {
   static User userManagerOwner = User(
-    id:"id1",
+    id:"61ea46093c72e55c7232e24b",
     profilePicture: "profilePicture",
     age:20,
     ffeLink: "FFELink",
@@ -21,7 +21,7 @@ class Mock {
   );
 
   static User userManagerOwner2 = User(
-    id:"id2",
+    id:"61ea46093c72e55c7232e24b",
     profilePicture: "profilePicture",
     age:34,
     ffeLink: "FFELink",
@@ -36,7 +36,7 @@ class Mock {
   );
 
   static User userRiderDp = User(
-    id:"id3",
+    id:"61ea46093c72e55c7232e24b",
     profilePicture: "profilePicture",
     age:34,
     ffeLink: "FFELink brian",
@@ -51,7 +51,7 @@ class Mock {
   );
 
   static User userRiderDp2 = User(
-    id:"id3",
+    id:"61ea46093c72e55c7232e24b",
     profilePicture: "profilePicture",
     age:34,
     ffeLink: "FFELink brian",
@@ -136,7 +136,7 @@ class Mock {
   );
 
   static Contest contest = Contest(
-    id: "id1",
+    id: "61ea46093c72e55c7232e24b",
     attendeesContest: [],
     user: 'userRiderDp',
     name: "competition",

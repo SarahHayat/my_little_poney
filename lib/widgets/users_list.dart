@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_little_poney/components/background_image.dart';
 import 'package:my_little_poney/components/yes_no_dialog.dart';
 import 'package:my_little_poney/helper/list_extension.dart';
 import 'package:my_little_poney/helper/listview.dart';
@@ -37,21 +38,24 @@ class _UsersListState extends State<UsersList> {
         elevation: 10,
         centerTitle: true,
       ),
-        body: FutureBuilder<List<User>>(
-          future: users,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              List<User> data = snapshot.data!;
-              data.removeFromArray(removedUsers);
-              return ListViewSeparated(data: data,buildListItem: _buildRow);
-            } else if (snapshot.hasError) {
-              return Text("${snapshot.error}");
-            }
-            return const Center(
-                child: CircularProgressIndicator()
-            );
-          },
-        )
+        body: Container(
+          decoration: BackgroundImageDecoration("https://images.sudouest.fr/2014/09/19/57ebc40466a4bd6726a540d5/golden/1200x750/de-gauche-a-droite.jpg"),
+          child: FutureBuilder<List<User>>(
+            future: users,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                List<User> data = snapshot.data!;
+                data.removeFromArray(removedUsers);
+                return ListViewSeparated(data: data,buildListItem: _buildRow);
+              } else if (snapshot.hasError) {
+                return Text("${snapshot.error}");
+              }
+              return const Center(
+                  child: CircularProgressIndicator()
+              );
+            },
+          )
+        ),
     );
   }
 

@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:my_little_poney/components/background_image.dart';
 import 'package:my_little_poney/components/yes_no_dialog.dart';
 import 'package:my_little_poney/helper/datetime_extension.dart';
 import 'package:my_little_poney/helper/listview.dart';
@@ -68,40 +69,45 @@ class _ManageEventState extends State<ManageEvent> {
           ColumnList(
             title: "Lessons",
             icon: Icon(Icons.school_outlined),
-            child: FutureBuilder<List<Lesson>?>(
-              future: getAllLessons(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  List<Lesson> data = snapshot.data!;
-                  List<Lesson> displayedLessons = _filterLessons(data);
-                  return  ListViewSeparated(data: displayedLessons, buildListItem: _buildItemLesson);
-                } else if (snapshot.hasError) {
-                  return Text("${snapshot.error}");
-                }
-                return const Center(
-                    child: CircularProgressIndicator()
-                );
-              },
+            child: Container(
+              decoration: BackgroundImageDecoration("https://www.ouestfrance-emploi.com/sites/default/files/styles/610-largeur/public/fiches_metiers/229_133260290.jpg?itok=2Kh18dtD"),
+              child: FutureBuilder<List<Lesson>?>(
+                future: getAllLessons(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    List<Lesson> data = snapshot.data!;
+                    List<Lesson> displayedLessons = _filterLessons(data);
+                    return  ListViewSeparated(data: displayedLessons, buildListItem: _buildItemLesson);
+                  } else if (snapshot.hasError) {
+                    return Text("${snapshot.error}");
+                  }
+                  return const Center(
+                      child: CircularProgressIndicator()
+                  );
+                },
+              ),
             ),
           ),
           ColumnList(
             title: "Parties",
             icon: Icon(Icons.liquor_sharp),
-            child:
-            FutureBuilder<List<Party>?>(
-              future: getAllParties(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  List<Party> data = snapshot.data!;
-                  List<Party> displayedParties = _filterParty(data);
-                  return ListViewSeparated(data: displayedParties, buildListItem: _buildItemParty);
-                } else if (snapshot.hasError) {
-                  return Text("${snapshot.error}");
-                }
-                return const Center(
-                    child: CircularProgressIndicator()
-                );
-              },
+            child:Container(
+              decoration: BackgroundImageDecoration("https://94.citoyens.com/wp-content/blogs.dir/2/files/2020/04/stocklib-dmitry-moiseenko-fete-apero-verres.jpg"),
+              child: FutureBuilder<List<Party>?>(
+                future: getAllParties(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    List<Party> data = snapshot.data!;
+                    List<Party> displayedParties = _filterParty(data);
+                    return ListViewSeparated(data: displayedParties, buildListItem: _buildItemParty);
+                  } else if (snapshot.hasError) {
+                    return Text("${snapshot.error}");
+                  }
+                  return const Center(
+                      child: CircularProgressIndicator()
+                  );
+                },
+              ),
             ),
           )
         ]

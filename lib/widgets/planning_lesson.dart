@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:my_little_poney/components/background_image.dart';
 import 'package:my_little_poney/helper/datetime_extension.dart';
 import 'package:my_little_poney/helper/listview.dart';
 import 'package:my_little_poney/mock/mock.dart';
@@ -126,6 +127,7 @@ class _PlanningLessonState extends State<PlanningLesson> {
               Container(
                 height: height,
                 width: width,
+                decoration: BackgroundImageDecoration("https://www.ouestfrance-emploi.com/sites/default/files/styles/610-largeur/public/fiches_metiers/229_133260290.jpg?itok=2Kh18dtD"),
                 child: ListViewSeparated(data: dailyLesson,buildListItem: _buildRow),
               )
             ],

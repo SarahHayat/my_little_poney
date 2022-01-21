@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:my_little_poney/components/background_image.dart';
 import 'package:my_little_poney/components/yes_no_dialog.dart';
 import 'package:my_little_poney/helper/list_extension.dart';
 import 'package:my_little_poney/helper/listview.dart';
@@ -48,7 +49,9 @@ class _HorsesListState extends State<HorsesList> {
           elevation: 10,
           centerTitle: true,
         ),
-        body: FutureBuilder<List<Horse>>(
+        body: Container(
+          decoration: BackgroundImageDecoration("https://luxcedia.fr/wp-content/uploads/2014/03/etable_chevaux_61991914.jpg"),
+          child:FutureBuilder<List<Horse>>(
           future: horses,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
@@ -62,8 +65,8 @@ class _HorsesListState extends State<HorsesList> {
                   child: CircularProgressIndicator()
               );
             },
-          )
-        ,
+          ),
+        ),
     );
   }
 

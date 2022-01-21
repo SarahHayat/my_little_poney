@@ -101,11 +101,9 @@ class _ContestViewState extends State<ContestView> {
       ),
     );
 
-    return MaterialApp(
-      title: 'Concours d\'équitation',
-      home: Scaffold(
+    return Scaffold(
         appBar: AppBar(
-          title: const Text('Concours d\'équitation'),
+          title: Text(arguments.name),
           elevation: 0,
           leading: IconButton(
             icon: const Icon(
@@ -162,8 +160,7 @@ class _ContestViewState extends State<ContestView> {
                 }),
           ],
         ),
-      ),
-    );
+      );
   }
 
   Column _buildButtonColumn(Color color, IconData icon, String label) {

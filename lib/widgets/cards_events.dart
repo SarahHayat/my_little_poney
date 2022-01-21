@@ -78,7 +78,7 @@ class CardsEvents extends Card {
       builder: (context, snapshot){
         if(snapshot.hasData){
           userParty = snapshot.data?.userName;
-          Map<String, dynamic> mapAttendees = listEvents.attendeesParty?[0];
+          Map<String, dynamic> mapAttendees = listEvents.attendeesParty[0];
           userComment = mapAttendees['comment'];
         }else{
           userParty = '...loading';
@@ -156,7 +156,7 @@ class CardsEvents extends Card {
                             'Créer par : $userParty',
                             style: const TextStyle(fontSize: 10),
                           ),
-                          _remainingTime(listEvents.createdAt),
+                          _remainingTime(listEvents.createdAt!),
                         ],
                       ),
                       Column(
@@ -176,7 +176,7 @@ class CardsEvents extends Card {
                             'Commentaires: ',
                             style: TextStyle(fontSize: 10),
                           ),
-                          Text('${listEvents.attendeesParty?.length != 0 ? listEvents.attendeesParty?.length : 'Pas de commentaires'}', style: const TextStyle(fontSize: 14)),
+                          Text('${listEvents.attendeesParty.length != 0 ? listEvents.attendeesParty.length : 'Pas de commentaires'}', style: const TextStyle(fontSize: 14)),
                         ],
                       )
                     ],

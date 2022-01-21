@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:localstorage/localstorage.dart';
+import 'package:my_little_poney/models/User.dart';
 import 'package:my_little_poney/widgets/contest_view.dart';
+import 'package:my_little_poney/widgets/party.dart';
 import 'package:my_little_poney/widgets/lesson.dart';
 import 'package:my_little_poney/widgets/lesson_view.dart';
 import 'package:my_little_poney/widgets/horses_list.dart';
@@ -21,6 +24,14 @@ class NavigationState extends State<Navigation> {
   int _selectedIndex = 0;
   int _drawerSelectedIndex = 0;
   bool _isLastTappedDrawer = true;
+  late User user;
+  LocalStorage storage = LocalStorage('poney_app');
+
+  @override
+  void initState() {
+    super.initState();
+    user = User.fromJson(storage.getItem('user'));
+  }
 
   List<Map<String, dynamic>> drawerLinks = [
     {"widget": ListEvents(), "title": "Liste des événements"},
@@ -34,6 +45,7 @@ class NavigationState extends State<Navigation> {
       "title": "Liste des concours"
     },
     {"widget": LessonListView(title: 'Cours'), "title": "Liste des cours"},
+    {"widget": PartyListView(title: 'Soirées'), "title": "Liste des soirés"}
   ];
   List<Map<String, dynamic>> bottomBarLinks = [
     {
@@ -42,37 +54,36 @@ class NavigationState extends State<Navigation> {
       "icon": Icon(Icons.sports_score)
     },
     {
-      "widget": ProfilePage(),
-      "title": "Profile",
-      "icon": Icon(Icons.account_circle_outlined)
-    },
-    {
       "widget": LessonListView(title: 'Cours'),
       "title": "Cours",
       "icon": Icon(Icons.play_lesson)
     },
+    {
+      "widget": PartyListView(title: 'Soirées'),
+      "title": "Soirées",
+      "icon": Icon(Icons.party_mode)
+    },
   ];
 
   Widget getBody() {
-    if (_isLastTappedDrawer) {
+    if(_isLastTappedDrawer){
       return drawerLinks[_drawerSelectedIndex]["widget"];
-    } else {
+    }
+    else{
       return bottomBarLinks[_selectedIndex]["widget"];
     }
   }
 
-  List<Widget> getDrawerLinks(BuildContext context) {
+  List<Widget> getDrawerLinks(BuildContext context){
     List<Widget> links = [];
-    for (int i = 0; i < drawerLinks.length; i++) {
-      links.add(_buildDrawerLinks(
-          drawerLinks[i]["title"], () => _onDrawerTap(i, context)));
+    for(int i=0; i<drawerLinks.length; i++) {
+      links.add(_buildDrawerLinks(drawerLinks[i]["title"], ()=> _onDrawerTap(i, context)));
     }
     return links;
   }
-
-  List<BottomNavigationBarItem> getBottomBarLinks() {
+  List<BottomNavigationBarItem> getBottomBarLinks(){
     List<BottomNavigationBarItem> links = [];
-    for (int i = 0; i < bottomBarLinks.length; i++) {
+    for(int i=0; i<bottomBarLinks.length; i++) {
       links.add(_buildBottomBarButton(i));
     }
     return links;
@@ -85,7 +96,7 @@ class NavigationState extends State<Navigation> {
     });
   }
 
-  void _onDrawerTap(int index, BuildContext context) {
+  void _onDrawerTap(int index, BuildContext context){
     setState(() {
       _drawerSelectedIndex = index;
       _isLastTappedDrawer = true;
@@ -93,14 +104,13 @@ class NavigationState extends State<Navigation> {
     Navigator.pop(context);
   }
 
-  _buildDrawerLinks(String title, Function onTap) {
+  _buildDrawerLinks(String title, Function onTap){
     return ListTile(
       title: Text(title),
-      onTap: () => onTap(),
+      onTap: ()=>onTap(),
     );
   }
-
-  BottomNavigationBarItem _buildBottomBarButton(int index) {
+  BottomNavigationBarItem _buildBottomBarButton(int index){
     return BottomNavigationBarItem(
       icon: bottomBarLinks[index]["icon"],
       label: bottomBarLinks[index]["title"],
@@ -119,20 +129,27 @@ class NavigationState extends State<Navigation> {
           // Important: Remove any padding from the ListView.
           padding: EdgeInsets.zero,
           children: [
-            const DrawerHeader(
+             DrawerHeader(
               decoration: BoxDecoration(
                 image: DecorationImage(
                     image: NetworkImage(
-                        "https://cdn.pixabay.com/photo/2021/09/27/11/01/man-6660387__480.jpg")),
+                        user.profilePicture!)),
                 color: Colors.blue,
               ),
               child: Align(
                 alignment: Alignment.bottomRight,
-                child: Text('Pablo'),
+                child: Text(
+                  user.userName,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    fontSize: 30.0
+                  ),
+                ),
               ),
             ),
             ...getDrawerLinks(context)
-          ],
+          ] ,
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(

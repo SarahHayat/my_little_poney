@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
-import 'package:my_little_poney/models/Lesson.dart';
+import 'package:my_little_poney/models/Party.dart';
 import 'package:my_little_poney/models/User.dart';
-import 'package:my_little_poney/usecase/lesson_usecase.dart';
+import 'package:my_little_poney/usecase/party_usecase.dart';
 import 'package:my_little_poney/usecase/user_usecase.dart';
 
-class LessonView extends StatefulWidget {
-  const LessonView({Key? key}) : super(key: key);
-  static const tag = "lesson_view";
+class PartyView extends StatefulWidget {
+  const PartyView({Key? key}) : super(key: key);
+  static const tag = "party_view";
 
   @override
-  State<LessonView> createState() => _LessonViewState();
+  State<PartyView> createState() => _PartyViewState();
 }
 
-class _LessonViewState extends State<LessonView> {
-  LessonUseCase lessonUseCase = LessonUseCase();
+class _PartyViewState extends State<PartyView> {
+  PartyUseCase partyUseCase = PartyUseCase();
   UserUseCase userUseCase = UserUseCase();
-  late Lesson lessonToUpdate;
+  late Party partyToUpdate;
   final LocalStorage storage = LocalStorage('poney_app');
   late User user;
   bool isSignIn = false;
@@ -30,8 +30,8 @@ class _LessonViewState extends State<LessonView> {
 
   @override
   Widget build(BuildContext context) {
-    final arguments = ModalRoute.of(context)?.settings.arguments as Lesson;
-    lessonToUpdate = arguments;
+    final arguments = ModalRoute.of(context)?.settings.arguments as Party;
+    partyToUpdate = arguments;
 
     Widget titleSection = Container(
       padding: const EdgeInsets.all(32),
@@ -53,7 +53,7 @@ class _LessonViewState extends State<LessonView> {
                   ),
                 ),
                 Text(
-                  '${arguments.ground}, ${arguments.discipline}',
+                  '${arguments.theme}',
                   style: TextStyle(
                     color: Colors.grey[500],
                   ),
@@ -66,7 +66,7 @@ class _LessonViewState extends State<LessonView> {
             Icons.person,
             color: Colors.red[500],
           ),
-          Text(lessonToUpdate.attendees.length.toString()),
+          Text(partyToUpdate.attendeesParty.length.toString()),
         ],
       ),
     );
@@ -83,10 +83,11 @@ class _LessonViewState extends State<LessonView> {
     Widget textSection = Padding(
       padding: const EdgeInsets.all(32),
       child: Text(
-        'Le cours de ${arguments.discipline} se déroulera le '
-        '${arguments.lessonDateTime} '
-        'dans : ${arguments.ground}. '
-        'Merci de vous présenter 15 minutes avant le début du cours. ',
+        'La soirée ayant pour thème : ${arguments.theme} se déroulera le '
+        '${arguments.partyDateTime} '
+        'dans le club house de l\'écurie. '
+        'Veuillez laisser un message avec ce que vous comptez ramener si '
+        'vous souhaitez vous joindre à nous. ',
         softWrap: true,
       ),
     );
@@ -106,7 +107,7 @@ class _LessonViewState extends State<LessonView> {
         body: ListView(
           children: [
             Image.asset(
-              selectLessonImg(),
+              selectPartyImg(),
               width: 600,
               height: 240,
               fit: BoxFit.cover,
@@ -146,19 +147,15 @@ class _LessonViewState extends State<LessonView> {
     );
   }
 
-  String selectLessonImg() {
-    switch (lessonToUpdate.discipline) {
-      case 'endurance':
+  String selectPartyImg() {
+    switch (partyToUpdate.theme) {
+      case 'happyHour':
         {
-          return 'img/endurance.jpg';
-        }
-      case 'showJumping':
-        {
-          return 'img/contest.jpg';
+          return 'img/apero.jpg';
         }
       default:
         {
-          return 'img/dressage.jpg';
+          return 'img/dinner.jpg';
         }
     }
   }
@@ -169,13 +166,13 @@ class _LessonViewState extends State<LessonView> {
         builder: (context) {
           return StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
-              title: const Text('Souhaitez-vous rejoindre le cours ?'),
+              title: const Text('Souhaitez-vous rejoindre la soirée ?'),
               actions: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(primary: Colors.green),
                   child: const Text('Oui'),
                   onPressed: () {
-                    _joinLesson();
+                    _joinParty();
                   },
                 ),
                 ElevatedButton(
@@ -191,8 +188,8 @@ class _LessonViewState extends State<LessonView> {
         });
   }
 
-  void _joinLesson() async {
-    for (dynamic element in lessonToUpdate.attendees) {
+  void _joinParty() async {
+    for (dynamic element in partyToUpdate.attendeesParty) {
       if (element['user'] == user.id) {
         isSignIn = true;
         break;
@@ -201,8 +198,8 @@ class _LessonViewState extends State<LessonView> {
 
     if (!isSignIn) {
       setState(() {
-        lessonToUpdate.attendees.add(user.id!);
-        lessonUseCase.updateLessonById(lessonToUpdate);
+        partyToUpdate.attendeesParty.add(user.id!);
+        partyUseCase.updatePartyById(partyToUpdate);
       });
     }
 

@@ -9,11 +9,11 @@ class PartyUseCase {
   }
 
   Future<Party?> fetchPartyById(id) async {
-    api.fetchPartyById(id).then((value) => value);
+    return api.fetchPartyById(id).then((value) => value);
   }
 
   Future<Party?> createParty(party) async {
-    api.createParty(party).then((value) => value);
+    return api.createParty(party).then((value) => value);
   }
 
   Future<Party?> updatePartyById(party) async {

@@ -49,7 +49,7 @@ class Party {
   String user;
   String theme;
   String? picturePath;
-  List<AttendeeParty>? attendeesParty;
+  List<dynamic>? attendeesParty;
   bool isValid;
   DateTime createdAt;
   DateTime partyDateTime;
@@ -71,7 +71,7 @@ class Party {
       id: json['_id'] != null ? json['_id']! as String : "",
       name: json['name'] as String,
       picturePath: json['picturePath'] != null ? json['picturePath']! as String : "",
-      attendeesParty: json['attendees'] != null ? json['attendees']! as List<AttendeeParty> : [],
+      attendeesParty: json['attendees'] != null ? json['attendees']! as List<dynamic> : [],
       user: json['user'] as String,
       theme: json['theme'] as String,
       isValid: json['isValid'] as bool,
@@ -85,7 +85,7 @@ class Party {
       '_id': id,
       'name': name,
       'picturePath': picturePath,
-      'attendees':  [], // @todo : use the attendees list ---> attendeesParty,
+      'attendees': attendeesParty,
       'user': user,
       'theme': theme,
       'isValid': isValid,

@@ -77,6 +77,10 @@ class User {
     return this.type == UserType.owner.toShortString();
   }
 
+  String name(){
+    return this.userName;
+  }
+
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['_id'] != null ? json['_id']! as String : "",

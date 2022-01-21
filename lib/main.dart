@@ -28,7 +28,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const LoginScreen(),
+      home:LoginScreen()
+      //home: const ListEvents(),
     );
   }
 }

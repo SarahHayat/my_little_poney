@@ -244,7 +244,7 @@ class _ContestViewState extends State<ContestView> {
         trailing: DeleteButton(
           display: !user.isManager() && currentUser.isManager(),
           onPressed: (){
-            dialogue(user);
+            // dialogue(user);
           },
         )
     );

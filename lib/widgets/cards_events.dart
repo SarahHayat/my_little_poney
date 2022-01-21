@@ -429,4 +429,91 @@ class CardsEvents extends Card {
     );
   }
 
+  Card cardUsers(int position, BuildContext context, User listEvents){
+    return Card(
+      elevation: 2.0,
+      child: Container(
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(5)),
+          color: Color.fromRGBO(118, 170, 32, 1.0),
+        ),
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height / 4,
+        child: Row(
+          children: [
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.25,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: const [
+                        Icon(
+                          Icons.account_circle,
+                          size: 20,
+                        ),
+                        Text(
+                          'User',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 12),
+                        ),
+                      ],
+                    ),
+                    Text(
+                      '${listEvents.type}',
+                      style: const TextStyle(fontSize: 10),
+                    ),
+                    Text(
+                      '${listEvents.role}',
+                      style:
+                      const TextStyle(fontSize: 10),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 20),
+              child: VerticalDivider(
+                color: Colors.black,
+                thickness: 0.5,
+              ),
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width * 0.60,
+              padding: const EdgeInsets.only(left: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(listEvents.userName,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 24),
+                          overflow: TextOverflow.ellipsis),
+                      _remainingTime(listEvents.createdAt!),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 18.0),
+                        child: CircleAvatar(
+                          radius: 35,
+                          backgroundColor: Colors.white,
+                          // backgroundImage: NetworkImage(listEvents.profilePicture!),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
 }

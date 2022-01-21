@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:my_little_poney/models/Contest.dart';
 import 'package:my_little_poney/models/Lesson.dart';
 import 'package:my_little_poney/models/Party.dart';
+import 'package:my_little_poney/models/User.dart';
 import 'package:my_little_poney/usecase/contest_usecase.dart';
 import 'package:my_little_poney/usecase/lesson_usecase.dart';
 import 'package:my_little_poney/usecase/party_usecase.dart';
@@ -41,18 +42,20 @@ class MyListEvents extends State<ListEvents> {
 
   _cardsEvents(int position, BuildContext context, List<dynamic> listEvents) {
     var eventPosition = listEvents[position];
+
     if (eventPosition.runtimeType == Contest && _yesterday(eventPosition.createdAt)) {
       return cardsEvents.cardContest(position, context, eventPosition);
     } else if (eventPosition.runtimeType == Lesson && _yesterday(eventPosition.createdAt)) {
       return cardsEvents.cardLesson(position, context, eventPosition);
-    } else
-      if (eventPosition.runtimeType == Party && _yesterday(eventPosition.createdAt)) {
+    } else if (eventPosition.runtimeType == Party && _yesterday(eventPosition.createdAt)) {
       return cardsEvents.cardParty(position, context, eventPosition);
+    } else if (eventPosition.runtimeType == User) {
+      return cardsEvents.cardUsers(position, context, eventPosition);
     }
   }
 
   Future<List<dynamic>?> _getAllData() async {
-    return [await partyUseCase.getAllParties(), await lessonUseCase.getAllLessons(), await contestUseCase.getAllContests()];
+    return [await partyUseCase.getAllParties(), await lessonUseCase.getAllLessons(), await contestUseCase.getAllContests(), await userUseCase.getAllUser()];
   }
 
   @override
@@ -87,7 +90,7 @@ class MyListEvents extends State<ListEvents> {
                           height: 2,
                           color: Colors.black,
                         ),
-                        items: <String>['all', 'contest', 'lesson', 'party']
+                        items: <String>['all', 'contest', 'lesson', 'party', 'users']
                             .map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
@@ -136,14 +139,16 @@ class MyListEvents extends State<ListEvents> {
       listEvents = listEvents.where((i) => i.runtimeType == Lesson).toList();
     } else if (dropdownValue == 'party') {
       listEvents = listEvents.where((i) => i.runtimeType == Party).toList();
+    } else if (dropdownValue == 'users') {
+      listEvents = listEvents.where((i) => i.runtimeType == User).toList();
     }
     return ListView.builder(
         itemCount: listEvents.length,
         itemBuilder: (context, position) {
           if(listEvents.length > 1){
             final sortedItems = listEvents..sort((a, b) => isDescending
-                ? b.name.compareTo(a.name)
-                : a.name.compareTo(b.name));
+                ? (b.name.toString()).compareTo(a.name.toString())
+                : a.name.toString().compareTo(b.name.toString()));
             return Container(child: _cardsEvents(position, context, sortedItems));
           } else{
           }

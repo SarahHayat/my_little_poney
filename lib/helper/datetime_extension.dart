@@ -93,6 +93,11 @@ extension DateTimeExtension on DateTime{
     return date;
   }
 
+  /// Returns date after adding some minutes, and return a formated date
+  String addMinutesAndStringify(int nbMinutes){
+    return this.add(Duration( minutes: nbMinutes)).getFrenchDateTime();
+  }
+
   /// Returns 'true' if this date and [comparedDate] are in the same week.
   bool areDateSameWeek(DateTime comparedDate){
     return this.getWeekFirstDay().getOnlyDate() == comparedDate.getWeekFirstDay().getOnlyDate();

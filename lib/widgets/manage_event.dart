@@ -36,6 +36,7 @@ class _ManageEventState extends State<ManageEvent> {
   @override
   void initState() {
     super.initState();
+    isUpdated = false;
   }
 
   @override
@@ -64,6 +65,11 @@ class _ManageEventState extends State<ManageEvent> {
   /// Else, we display a message to unespected user
   _buildScaffoldBody(){
     if(currentUser.isManager()){
+      if(isUpdated){
+        setState(() {
+          isUpdated = false;
+        });
+      }
       return Row(
         children: [
           ColumnList(
@@ -184,12 +190,10 @@ class _ManageEventState extends State<ManageEvent> {
     Lesson? removedParty = await lessonUseCase.updateLessonById(lesson);
 
     if(removedParty !=null){
-      _refreshScreen();
+      setState(() {
+        isUpdated = true;
+      });
     }
-  }
-
-  _refreshScreen(){
-    Navigator.of(context).build(context); // == kill app
   }
 
   _updateParty(Party party, bool isValid) async{
@@ -198,12 +202,15 @@ class _ManageEventState extends State<ManageEvent> {
     Party? removedParty = await partyUseCase.updatePartyById(party);
 
     if(removedParty !=null){
-      _refreshScreen();
+      setState(() {
+        isUpdated = true;
+      });
     }
   }
 
   /// Return Future [Lesson] list from DB, used in FutureBuilder
   Future<List<Lesson>?> getAllLessons() async {
+    log("get all lessons");
     return await lessonUseCase.getAllLessons();
   }
 

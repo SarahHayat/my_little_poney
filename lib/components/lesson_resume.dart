@@ -14,8 +14,8 @@ class LessonResume extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children:[
-            Text('duration: ${lesson.duration}'),
             Text('date: ${lesson.lessonDateTime.getFrenchDateTime()}'),
+            Text('end: ${lesson.lessonDateTime.addMinutesAndStringify(lesson.duration)}'),
             TextIcon(title: "accepted: ", icon:Icon(lesson.isValid ? Icons.check : Icons.do_not_disturb_on) ),
           ]
       ),

@@ -9,7 +9,7 @@ class ContestUseCase {
   }
 
   Future<Contest?> fetchContestById(id) async {
-    api.fetchContestById(id).then((value) => value);
+    return api.fetchContestById(id).then((value) => value);
   }
 
   Future<Contest?> createContest(contest) async {

@@ -50,6 +50,7 @@ class ContestServiceApi {
       },
       body: jsonEncode(contest.toJson()),
     );
+
     if (jsonDecode(response.body)['picturePath'] != null) {
       return Contest.fromJson(jsonDecode(response.body));
     } else {

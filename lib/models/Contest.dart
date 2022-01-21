@@ -40,7 +40,7 @@ class Contest {
   String picturePath;
   DateTime contestDateTime;
   DateTime? createdAt;
-  List<AttendeeContest> attendeesContest;
+  List<dynamic> attendeesContest;
   bool isValid;
 
   Contest({
@@ -58,8 +58,8 @@ class Contest {
   factory Contest.fromJson(Map<String, dynamic> json) {
     return Contest(
       id: json['_id'] != null ? json['_id']! as String : "",
-      attendeesContest: json['attendeesContest'] != null
-          ? json['attendeesContest']! as List<AttendeeContest>
+      attendeesContest: json['attendees'] != null
+          ? json['attendees']! as List<dynamic>
           : [],
       user: json['user'] as String,
       name: json['name'] as String,
@@ -75,7 +75,7 @@ class Contest {
   Map<String, Object?> toJson() {
     return {
       '_id': id,
-      'attendeesContest': attendeesContest,
+      'attendees': attendeesContest,
       'user': user,
       'name': name,
       'address': address,

@@ -172,8 +172,8 @@ class HorsesPageState extends State<HorsesPage> {
     return Container();
   }
 
-  Future<Null> buildDialogDetail(Horse horse) {
-    return showDialog(
+  Future buildDialogDetail(Horse horse) {
+    final dial = showDialog(
       context: context,
       builder: (BuildContext ctx) {
         return SimpleDialog(
@@ -183,6 +183,7 @@ class HorsesPageState extends State<HorsesPage> {
         );
       },
     );
+    return dial.then((_) => setState(() {}));
   }
 
   Future<List<Horse>?> getAllHorses() async {

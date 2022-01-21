@@ -38,6 +38,7 @@ class _LessonListState extends State<LessonListView> {
     dateController.text = ""; //set the initial value of text field
     getAllLessonsFromDb();
     super.initState();
+    user = User.fromJson(storage.getItem('user'));
   }
 
   Future<List<Lesson>?> getAllLessonsFromDb() async {

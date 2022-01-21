@@ -278,7 +278,7 @@ class CardsEvents extends Card {
                             'Créer par : $userLesson',
                             style: const TextStyle(fontSize: 10),
                           ),
-                          _remainingTime(listEvents.createdAt),
+                          _remainingTime(listEvents.createdAt!),
                         ],
                       ),
                       Column(

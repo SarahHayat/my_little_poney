@@ -30,6 +30,16 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final snackBar = SnackBar(
+      content: const Text('Inscription réussi, veuillez vous connecter !'),
+      action: SnackBarAction(
+        label: 'Connexion',
+        onPressed: () {
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
+              builder: (BuildContext context) => const LoginScreen()));
+        },
+      ),
+    );
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.grey[200],
@@ -160,10 +170,8 @@ class _SignupScreenState extends State<SignupScreen> {
                                       isloading = false;
                                     });
                                     storage.setItem('user', user.toJson());
-                                    Navigator.of(context).pushReplacement(
-                                        MaterialPageRoute(
-                                            builder: (BuildContext context) =>
-                                                const LoginScreen()));
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackBar);
                                   }).catchError((onError) {
                                     setState(() {
                                       isloading = false;

@@ -51,7 +51,7 @@ class _ContestListState extends State<ContestListView> {
           future: getAllContestsFromDb(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              return buildListView(snapshot.data, _buildRow);
+              return ListViewSeparated(data: snapshot.data,buildListItem: _buildRow);
             } else if (snapshot.hasError) {
               return Center(child: Text(snapshot.error.toString()));
             }

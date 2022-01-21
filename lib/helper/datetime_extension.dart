@@ -93,6 +93,11 @@ extension DateTimeExtension on DateTime{
     return date;
   }
 
+  /// Returns date after adding some minutes, and return a formated date
+  String addMinutesAndStringify(int nbMinutes){
+    return this.add(Duration( minutes: nbMinutes)).getFrenchDateTime();
+  }
+
   /// Returns 'true' if this date and [comparedDate] are in the same week.
   bool areDateSameWeek(DateTime comparedDate){
     return this.getWeekFirstDay().getOnlyDate() == comparedDate.getWeekFirstDay().getOnlyDate();
@@ -111,5 +116,11 @@ extension DateTimeExtension on DateTime{
   /// Returns date and time with 'd/m/Y H:i' format
   String getFrenchDateTime(){
     return  "${getFrenchDate()} ${this.hour.left0()}:${this.minute.left0()}";
+  }
+
+  ///  For Dev only, used to fake fixed date (2022-01-16)
+  DateTime _fakeDate(int nbDays){
+    int sundayDate = 16;
+    return DateTime.parse("2022-01-${sundayDate + nbDays}");
   }
 }

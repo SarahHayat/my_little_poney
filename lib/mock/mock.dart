@@ -116,7 +116,7 @@ class Mock {
     id: "id1",
     picturePath: "picture path party",
     attendeesParty: [],
-    theme: ThemeParty.happyHour.toShortString(),
+    theme: "happyHour",
     isValid: true,
     createdAt: DateTime.now(),
     partyDateTime: DateTime.now(),
@@ -127,11 +127,11 @@ class Mock {
     attendees:[],
     name: "saut d'obstacle",
     user: 'userManagerOwner',
-    ground: Ground.carousel.toString(),
+    ground: "carousel",
     lessonDateTime: DateTime.now(),
     createdAt: DateTime.now(),
     duration: 30,
-    discipline: Discipline.endurance.toString(),
+    discipline: "endurance",
     isValid: true,
   );
 

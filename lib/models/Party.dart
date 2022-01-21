@@ -78,12 +78,12 @@ class Party {
       '_id': id,
       'name': name,
       'picturePath': picturePath,
-      'attendeesParty': attendeesParty,
+      'attendeesParty': [], // @todo : use the attendees list ---> attendeesParty,
       'user': user,
       'theme': theme,
       'isValid': isValid,
-      'createdAt': createdAt,
-      'partyDateTime': partyDateTime,
+      'createdAt': createdAt.toString(),
+      'partyDateTime': partyDateTime.toString(),
     };
   }
 }

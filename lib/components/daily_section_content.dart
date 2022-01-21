@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_little_poney/components/background_image.dart';
 import 'package:my_little_poney/helper/datetime_extension.dart';
 
 class DailySectionContent extends StatelessWidget {
@@ -18,7 +19,7 @@ class DailySectionContent extends StatelessWidget {
               children: [
                 Icon(
                   date.compareTo(DateTime.now().getOnlyDate())>=0 ? Icons.school_outlined : Icons.do_not_disturb_on,
-                  color: date.getWeekDayColor(),
+                  color: Colors.blue,
                 ),
                 Container(width: 10,),
                 Text("${date.getWeekDayName()}, ${date.day} ${date.getMonthName()}" ),

@@ -18,7 +18,7 @@ class AttendeeContest {
   factory AttendeeContest.fromJson(Map<String, dynamic> json) {
     return AttendeeContest(
       user: json['user'] != null ? json['user']! as String : "",
-      level: json['user'] != null ? json['user']! as String : "",
+      level: json['level'] != null ? json['level']! as String : "",
     );
   }
 

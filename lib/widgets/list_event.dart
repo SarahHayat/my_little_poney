@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:my_little_poney/models/Contest.dart';
 import 'package:my_little_poney/models/Lesson.dart';
 import 'package:my_little_poney/models/Party.dart';
@@ -30,8 +32,8 @@ class MyListEvents extends State<ListEvents> {
 
   CardsEvents cardsEvents = CardsEvents();
 
-  _yesterday(DateTime dateTime) {
-    DateTime yesterday = DateTime.now().subtract(const Duration(days: 1));
+  _yesterday(DateTime dateTime){
+    DateTime yesterday =  DateTime.now().subtract(const Duration(days: 1));
     if (dateTime.toLocal().day != yesterday.day) {
       return true;
     } else {
@@ -42,27 +44,19 @@ class MyListEvents extends State<ListEvents> {
   _cardsEvents(int position, BuildContext context, List<dynamic> listEvents) {
     var eventPosition = listEvents[position];
 
-    if (eventPosition.runtimeType == Contest &&
-        _yesterday(eventPosition.createdAt)) {
+    if (eventPosition.runtimeType == Contest && _yesterday(eventPosition.createdAt)) {
       return cardsEvents.cardContest(position, context, eventPosition);
-    } else if (eventPosition.runtimeType == Lesson &&
-        _yesterday(eventPosition.createdAt)) {
+    } else if (eventPosition.runtimeType == Lesson && _yesterday(eventPosition.createdAt)) {
       return cardsEvents.cardLesson(position, context, eventPosition);
-    } else if (eventPosition.runtimeType == Party &&
-        _yesterday(eventPosition.createdAt)) {
+    } else if (eventPosition.runtimeType == Party && _yesterday(eventPosition.createdAt)) {
       return cardsEvents.cardParty(position, context, eventPosition);
-    } else if (eventPosition.runtimeType == User) {
+    } else if (eventPosition.runtimeType == User && _yesterday(eventPosition.createdAt)) {
       return cardsEvents.cardUsers(position, context, eventPosition);
     }
   }
 
   Future<List<dynamic>?> _getAllData() async {
-    return [
-      await partyUseCase.getAllParties(),
-      await lessonUseCase.getAllLessons(),
-      await contestUseCase.getAllContests(),
-      await userUseCase.getAllUser()
-    ];
+    return [await partyUseCase.getAllParties(), await lessonUseCase.getAllLessons(), await contestUseCase.getAllContests(), await userUseCase.getAllUser()];
   }
 
   @override
@@ -73,8 +67,7 @@ class MyListEvents extends State<ListEvents> {
       ),
       body: FutureBuilder<List<dynamic>?>(
         future: _getAllData(),
-        builder:
-            (BuildContext context, AsyncSnapshot<List<dynamic>?> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<List<dynamic>?> snapshot) {
           if (snapshot.hasData) {
             listEvents = snapshot.data!.expand((x) => x).toList();
             return Container(
@@ -98,13 +91,8 @@ class MyListEvents extends State<ListEvents> {
                           height: 2,
                           color: Colors.black,
                         ),
-                        items: <String>[
-                          'all',
-                          'contest',
-                          'lesson',
-                          'party',
-                          'users'
-                        ].map<DropdownMenuItem<String>>((String value) {
+                        items: <String>['all', 'contest', 'lesson', 'party', 'users']
+                            .map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
                             child: Text(value),
@@ -158,14 +146,13 @@ class MyListEvents extends State<ListEvents> {
     return ListView.builder(
         itemCount: listEvents.length,
         itemBuilder: (context, position) {
-          if (listEvents.length > 1) {
-            final sortedItems = listEvents
-              ..sort((a, b) => isDescending
-                  ? (b.name.toString()).compareTo(a.name.toString())
-                  : a.name.toString().compareTo(b.name.toString()));
-            return Container(
-                child: _cardsEvents(position, context, sortedItems));
-          } else {}
+          if(listEvents.length > 1){
+            final sortedItems = listEvents..sort((a, b) => isDescending
+                ? (b.name.toString()).compareTo(a.name.toString())
+                : a.name.toString().compareTo(b.name.toString()));
+            return Container(child: _cardsEvents(position, context, sortedItems));
+          } else{
+          }
           return Container(child: _cardsEvents(position, context, listEvents));
         });
   }

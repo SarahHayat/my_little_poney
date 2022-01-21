@@ -32,4 +32,8 @@ class UserUseCase {
   Future<User> resetPassword(String email,String username) async {
     return api.resetPassword(email, username).then((value) => value).catchError((onError) => throw Exception('Failed to load user'));
   }
+
+  Future<List<User>> fetchUsersByIds(List<String> ids) async {
+    return api.fetchUsersByIds(ids).then((value) => value).catchError((onError) => throw Exception('Failed to load users'));
+  }
 }

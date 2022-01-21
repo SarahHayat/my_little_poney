@@ -21,12 +21,21 @@ class _ContestViewState extends State<ContestView> {
   final LocalStorage storage = LocalStorage('poney_app');
   late User user;
   bool isSignIn = false;
-  late Future<List<User>> users;
+  late List<User> resUsers;
 
   @override
   void initState() {
     super.initState();
     user = User.fromJson(storage.getItem('user'));
+
+  }
+
+  Future<List<User>> _getUsers(List<dynamic> attendeesContest) async {
+    List<String> ids = [];
+    for (dynamic element in attendeesContest) {
+       ids.add(element['user']);
+    }
+    return await userUseCase.fetchUsersByIds(ids);
   }
 
   @override
@@ -106,7 +115,7 @@ class _ContestViewState extends State<ContestView> {
             onPressed: () => Navigator.of(context).pop(),
           ),
         ),
-        body: ListView(
+        body: Column(
           children: [
             Image.asset(
               'img/contest.jpg',
@@ -117,6 +126,40 @@ class _ContestViewState extends State<ContestView> {
             titleSection,
             buttonSection,
             textSection,
+            FutureBuilder<List<User>>(
+                future: _getUsers(contestToUpdate.attendeesContest),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    resUsers = snapshot.data!;
+                    return Expanded(
+                      child: ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: resUsers.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return
+                              Padding(
+                                padding: const EdgeInsets.all(15.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Image.network(resUsers[index].profilePicture!, width: 150,),
+                                    Column(crossAxisAlignment: CrossAxisAlignment.end,
+                                        children: [
+                                      Text(resUsers[index].userName),
+                                      Text(resUsers[index].email),
+                                      Text(resUsers[index].age.toString() + " ans"),
+                                    ] )
+                                  ],
+                                ),
+                              );
+                        },),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text(snapshot.error.toString()));
+                  }
+                  return const Center(child: CircularProgressIndicator());
+                }),
           ],
         ),
       ),
@@ -176,8 +219,8 @@ class _ContestViewState extends State<ContestView> {
                         levelValue = newValue!;
                       });
                     },
-                    items: Level.values
-                        .map<DropdownMenuItem<String>>((Level value) {
+                    items:
+                    Level.values.map<DropdownMenuItem<String>>((Level value) {
                       return DropdownMenuItem<String>(
                         value: value.name,
                         child: Text(value.name),
@@ -197,25 +240,32 @@ class _ContestViewState extends State<ContestView> {
               ],
             );
           });
-        });
+
+        }).then((_) => setState(() {}));
   }
 
   void _joinContest() async {
+
     AttendeeContest newAttendee =
         AttendeeContest(user: user.id!, level: levelValue);
 
-    for (dynamic element in contestToUpdate.attendeesContest) {
-      if (element['user'] == user.id) {
+
+
+
+    for(dynamic element in contestToUpdate.attendeesContest) {
+
+      if(element['user'] == user.id) {
         isSignIn = true;
         break;
       }
     }
 
+
     if (!isSignIn) {
       setState(() {
-        contestToUpdate.attendeesContest.add(newAttendee);
-        contestUseCase.updateContestById(contestToUpdate);
+        contestToUpdate.attendeesContest.add(newAttendee.toJson());
       });
+    contestUseCase.updateContestById(contestToUpdate);
     }
 
     Navigator.pop(context);

@@ -42,6 +42,7 @@ class ContestServiceApi {
   }
 
   Future<Contest> updateContest(Contest contest) async {
+
     final response = await http.patch(
       Uri.parse('https://my-little-poney.herokuapp.com/contests/${contest.id}'),
       headers: <String, String>{

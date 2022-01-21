@@ -288,7 +288,7 @@ class CardsEvents extends Card {
                             'Durée: ',
                             style: TextStyle(fontSize: 10),
                           ),
-                          Text(listEvents.duration == 60 ? '1 hour' : '30 minutes', style: const TextStyle(fontSize: 14),)
+                          Text(listEvents.duration == 60 ? '1 h' : '30 min', style: const TextStyle(fontSize: 14),)
                         ],
                       ),
                       Column(

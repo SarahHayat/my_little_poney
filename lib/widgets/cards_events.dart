@@ -16,30 +16,30 @@ class CardsEvents extends Card {
     return user;
   }
 
-  _dateTimeFormat(DateTime dateTime){
+  _dateTimeFormat(DateTime dateTime) {
     return DateFormat('yyyy-MM-dd - HH:mm').format(dateTime);
   }
 
-
-
-  RichText _remainingTime(DateTime dateTime){
-    String timeRemain = dateTime.difference(DateTime.now()).toString().split('.')[0];
+  RichText _remainingTime(DateTime dateTime) {
+    String timeRemain =
+        dateTime.difference(DateTime.now()).toString().split('.')[0];
     int hours = int.parse(timeRemain.split(':')[0]);
     int minutes = int.parse(timeRemain.split(':')[1]);
     int seconds = int.parse(timeRemain.split(':')[2]);
-    if(hours == 0){
-      if(minutes == 0){
+    if (hours == 0) {
+      if (minutes == 0) {
         return RichText(
           text: TextSpan(
               style: const TextStyle(
                 fontSize: 10.0,
                 color: Colors.black,
               ),
-            children: <TextSpan>[
-              TextSpan(text:'depuis '),
-              TextSpan(text:'$seconds s', style: const TextStyle(fontWeight: FontWeight.bold))
-            ]
-          ),
+              children: <TextSpan>[
+                TextSpan(text: 'depuis '),
+                TextSpan(
+                    text: '$seconds s',
+                    style: const TextStyle(fontWeight: FontWeight.bold))
+              ]),
         );
       } else {
         return RichText(
@@ -49,10 +49,11 @@ class CardsEvents extends Card {
                 color: Colors.black,
               ),
               children: <TextSpan>[
-                TextSpan(text:'depuis '),
-                TextSpan(text:'$minutes min', style: const TextStyle(fontWeight: FontWeight.bold))
-              ]
-          ),
+                TextSpan(text: 'depuis '),
+                TextSpan(
+                    text: '$minutes min',
+                    style: const TextStyle(fontWeight: FontWeight.bold))
+              ]),
         );
       }
     } else {
@@ -63,25 +64,27 @@ class CardsEvents extends Card {
               color: Colors.black,
             ),
             children: <TextSpan>[
-              TextSpan(text:'depuis '),
-              TextSpan(text:'${hours.toString().split('-')[1]} h', style: const TextStyle(fontWeight: FontWeight.bold))
-            ]
-        ),
+              TextSpan(text: 'depuis '),
+              TextSpan(
+                  text: '${hours.toString().split('-')[1]} h',
+                  style: const TextStyle(fontWeight: FontWeight.bold))
+            ]),
       );
     }
   }
 
-  FutureBuilder<User?> cardParty(int position, BuildContext context, Party listEvents) {
+  FutureBuilder<User?> cardParty(
+      int position, BuildContext context, Party listEvents) {
     String? userParty;
     String? userComment;
     return FutureBuilder<User?>(
       future: _getUserByid(listEvents.user),
-      builder: (context, snapshot){
-        if(snapshot.hasData){
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
           userParty = snapshot.data?.userName;
-          Map<String, dynamic> mapAttendees = listEvents.attendeesParty?[0];
+          Map<String, dynamic> mapAttendees = listEvents.attendeesParty[0];
           userComment = mapAttendees['comment'];
-        }else{
+        } else {
           userParty = '...loading';
         }
         return Card(
@@ -117,16 +120,14 @@ class CardsEvents extends Card {
                           ],
                         ),
                         Text(
-                          listEvents.isValid
-                              ? 'Disponible'
-                              : 'Indisponible',
-                          style:
-                          const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                          listEvents.isValid ? 'Disponible' : 'Indisponible',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 12),
                         ),
                         Text(
                           listEvents.theme,
-                          style:
-                          const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 12),
                         ),
                       ],
                     ),
@@ -157,7 +158,7 @@ class CardsEvents extends Card {
                             'Créer par : $userParty',
                             style: const TextStyle(fontSize: 10),
                           ),
-                          _remainingTime(listEvents.createdAt),
+                          _remainingTime(listEvents.createdAt!),
                         ],
                       ),
                       Column(
@@ -167,7 +168,8 @@ class CardsEvents extends Card {
                             'Date: ',
                             style: TextStyle(fontSize: 10),
                           ),
-                          Text(_dateTimeFormat(listEvents.partyDateTime), style: const TextStyle(fontSize: 14)),
+                          Text(_dateTimeFormat(listEvents.partyDateTime),
+                              style: const TextStyle(fontSize: 14)),
                         ],
                       ),
                       Column(
@@ -177,7 +179,9 @@ class CardsEvents extends Card {
                             'Commentaires: ',
                             style: TextStyle(fontSize: 10),
                           ),
-                          Text('${listEvents.attendeesParty?.length != 0 ? listEvents.attendeesParty?.length : 'Pas de commentaires'}', style: const TextStyle(fontSize: 14)),
+                          Text(
+                              '${listEvents.attendeesParty.length != 0 ? listEvents.attendeesParty.length : 'Pas de commentaires'}',
+                              style: const TextStyle(fontSize: 14)),
                         ],
                       )
                     ],
@@ -191,15 +195,16 @@ class CardsEvents extends Card {
     );
   }
 
-  FutureBuilder<User?> cardLesson(int position, BuildContext context, Lesson listEvents) {
+  FutureBuilder<User?> cardLesson(
+      int position, BuildContext context, Lesson listEvents) {
     String? userLesson;
     return FutureBuilder<User?>(
       future: _getUserByid(listEvents.user),
-      builder: (context, snapshot){
-        if(snapshot.hasData){
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
           userLesson = snapshot.data?.userName;
-        }else{
-          userLesson  = '...loading';
+        } else {
+          userLesson = '...loading';
         }
         return Card(
           elevation: 2.0,
@@ -234,11 +239,9 @@ class CardsEvents extends Card {
                           ],
                         ),
                         Text(
-                          listEvents.isValid
-                              ? 'Disponible'
-                              : 'Indisponible',
-                          style:
-                          const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                          listEvents.isValid ? 'Disponible' : 'Indisponible',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 12),
                         ),
                         Text(
                           '${_remainingTime(listEvents.createdAt)}',
@@ -246,13 +249,13 @@ class CardsEvents extends Card {
                         ),
                         Text(
                           listEvents.ground,
-                          style:
-                          const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 12),
                         ),
                         Text(
                           listEvents.discipline,
-                          style:
-                          const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 12),
                         ),
                       ],
                     ),
@@ -292,7 +295,10 @@ class CardsEvents extends Card {
                             'Durée: ',
                             style: TextStyle(fontSize: 10),
                           ),
-                          Text(listEvents.duration == 60 ? '1 hour' : '30 minutes', style: const TextStyle(fontSize: 14),)
+                          Text(
+                            listEvents.duration == 60 ? '1 hour' : '30 minutes',
+                            style: const TextStyle(fontSize: 14),
+                          )
                         ],
                       ),
                       Column(
@@ -302,7 +308,8 @@ class CardsEvents extends Card {
                             'Date: ',
                             style: TextStyle(fontSize: 10),
                           ),
-                          Text('${_dateTimeFormat(listEvents.lessonDateTime)}', style: const TextStyle(fontSize: 14)),
+                          Text('${_dateTimeFormat(listEvents.lessonDateTime)}',
+                              style: const TextStyle(fontSize: 14)),
                         ],
                       )
                     ],
@@ -316,16 +323,17 @@ class CardsEvents extends Card {
     );
   }
 
-  FutureBuilder<User?> cardContest(int position, BuildContext context, Contest listEvents) {
+  FutureBuilder<User?> cardContest(
+      int position, BuildContext context, Contest listEvents) {
     String? userContest;
     String? userAttendeesContestLevel;
     Map<String, dynamic> mapAttendees;
     return FutureBuilder<User?>(
       future: _getUserByid(listEvents.user),
-      builder: (context, snapshot){
-        if(snapshot.hasData){
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
           userContest = snapshot.data?.userName;
-        } else{
+        } else {
           userContest = '...loading';
         }
         return Card(
@@ -361,11 +369,9 @@ class CardsEvents extends Card {
                           ],
                         ),
                         Text(
-                          listEvents.isValid
-                              ? 'Disponible'
-                              : 'Indisponible',
-                          style:
-                          const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                          listEvents.isValid ? 'Disponible' : 'Indisponible',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 12),
                         ),
                       ],
                     ),
@@ -405,7 +411,10 @@ class CardsEvents extends Card {
                             'Adresse: ',
                             style: TextStyle(fontSize: 10),
                           ),
-                          Text(listEvents.address, style: const TextStyle(fontSize: 14),)
+                          Text(
+                            listEvents.address,
+                            style: const TextStyle(fontSize: 14),
+                          )
                         ],
                       ),
                       Column(
@@ -415,7 +424,8 @@ class CardsEvents extends Card {
                             'Date: ',
                             style: TextStyle(fontSize: 10),
                           ),
-                          Text('${_dateTimeFormat(listEvents.contestDateTime)}', style: const TextStyle(fontSize: 14)),
+                          Text('${_dateTimeFormat(listEvents.contestDateTime)}',
+                              style: const TextStyle(fontSize: 14)),
                         ],
                       ),
                     ],
@@ -429,7 +439,7 @@ class CardsEvents extends Card {
     );
   }
 
-  Card cardUsers(int position, BuildContext context, User listEvents){
+  Card cardUsers(int position, BuildContext context, User listEvents) {
     return Card(
       elevation: 2.0,
       child: Container(
@@ -468,8 +478,7 @@ class CardsEvents extends Card {
                     ),
                     Text(
                       '${listEvents.role}',
-                      style:
-                      const TextStyle(fontSize: 10),
+                      style: const TextStyle(fontSize: 10),
                     ),
                   ],
                 ),
@@ -515,5 +524,4 @@ class CardsEvents extends Card {
       ),
     );
   }
-
 }

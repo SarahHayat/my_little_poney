@@ -25,13 +25,14 @@ class PartyServiceApi {
       throw Exception('Failed to load party');
     }
   }
+
   Future<Party> createParty(Party party) async {
     final response = await http.post(
       Uri.parse('https://my-little-poney.herokuapp.com/parties'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: party.toJson(),
+      body: jsonEncode(party.toJson()),
     );
 
     if (response.statusCode == 201) {
@@ -54,7 +55,8 @@ class PartyServiceApi {
     if (response.statusCode == 200) {
       return Party.fromJson(jsonDecode(response.body));
     } else {
-      throw Exception('Failed to update party ${party.id}. code error : ${response.statusCode}');
+      throw Exception(
+          'Failed to update party ${party.id}. code error : ${response.statusCode}');
     }
   }
 

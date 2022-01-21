@@ -25,6 +25,7 @@ class LessonServiceApi {
       throw Exception('Failed to load lesson');
     }
   }
+
   Future<Lesson> createLesson(Lesson lesson) async {
     final response = await http.post(
       Uri.parse('https://my-little-poney.herokuapp.com/lessons'),

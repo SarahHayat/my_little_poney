@@ -1,13 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_little_poney/helper/string_extension.dart';
-
-import 'User.dart';
 
 enum ThemeParty {
   happyHour,
   dinner,
 }
+
 extension ThemePartyExtension on ThemeParty {
   Icon getIcon() {
     switch (this) {
@@ -24,7 +22,6 @@ extension ThemePartyExtension on ThemeParty {
     return this.toString().enumValueToNormalCase();
   }
 }
-
 
 class AttendeeParty {
   String user;
@@ -49,20 +46,20 @@ class Party {
   String user;
   String theme;
   String? picturePath;
-  List<dynamic>? attendeesParty;
+  List<dynamic> attendeesParty;
   bool isValid;
-  DateTime createdAt;
+  DateTime? createdAt;
   DateTime partyDateTime;
 
   Party({
     this.id,
     required this.name,
     this.picturePath,
-    this.attendeesParty,
+    required this.attendeesParty,
     required this.user,
     required this.theme,
     this.isValid = false,
-    required this.createdAt,
+    this.createdAt,
     required this.partyDateTime,
   });
 
@@ -70,8 +67,10 @@ class Party {
     return Party(
       id: json['_id'] != null ? json['_id']! as String : "",
       name: json['name'] as String,
-      picturePath: json['picturePath'] != null ? json['picturePath']! as String : "",
-      attendeesParty: json['attendees'] != null ? json['attendees']! as List<dynamic> : [],
+      picturePath:
+          json['picturePath'] != null ? json['picturePath']! as String : "",
+      attendeesParty:
+          json['attendees'] != null ? json['attendees']! as List<dynamic> : [],
       user: json['user'] as String,
       theme: json['theme'] as String,
       isValid: json['isValid'] as bool,

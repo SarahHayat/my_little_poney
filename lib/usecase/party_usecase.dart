@@ -17,7 +17,7 @@ class PartyUseCase {
   }
 
   Future<Party?> updatePartyById(party) async {
-    api.updateParty(party).then((value) => value);
+    return api.updateParty(party).then((value) => value);
   }
 
   Future<Party?> deletePartyById(id) async {

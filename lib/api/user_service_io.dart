@@ -71,7 +71,7 @@ class UserServiceApi {
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: jsonEncode(user.toJson()),
+      body: user.toJson(),
     );
 
     if (response.statusCode == 200) {

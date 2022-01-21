@@ -29,7 +29,7 @@ class _ManageEventState extends State<ManageEvent> {
   final LessonUseCase lessonUseCase = LessonUseCase();
   final PartyUseCase partyUseCase = PartyUseCase();
   final User currentUser = Mock.userManagerOwner2;
-
+  late bool isUpdated;
   DateTime selectedDate = DateTime.now();
 
   @override
@@ -41,7 +41,7 @@ class _ManageEventState extends State<ManageEvent> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Lessons / Party : ${selectedDate.getFrenchDate()}"),
+          title: Text("Lessons / Parties : ${selectedDate.getFrenchDate()}"),
           elevation: 10,
           centerTitle: true,
           leading: CustomDatePicker(initialDate: selectedDate, onSelected: _updateSelectedDate,)
@@ -65,44 +65,45 @@ class _ManageEventState extends State<ManageEvent> {
     if(currentUser.isManager()){
       return Row(
         children: [
-          FutureBuilder<List<Lesson>?>(
-            future: getAllLessons(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                List<Lesson> data = snapshot.data!;
-                List<Lesson> displayedLessons = _filterLessons(data);
-                return ColumnList(
-                    title: "Lessons",
-                    icon: Icon(Icons.school_outlined),
-                    child: ListViewSeparated(data: displayedLessons, buildListItem: _buildItemLesson)
+          ColumnList(
+            title: "Lessons",
+            icon: Icon(Icons.school_outlined),
+            child: FutureBuilder<List<Lesson>?>(
+              future: getAllLessons(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  List<Lesson> data = snapshot.data!;
+                  List<Lesson> displayedLessons = _filterLessons(data);
+                  return  ListViewSeparated(data: displayedLessons, buildListItem: _buildItemLesson);
+                } else if (snapshot.hasError) {
+                  return Text("${snapshot.error}");
+                }
+                return const Center(
+                    child: CircularProgressIndicator()
                 );
-              } else if (snapshot.hasError) {
-                return Text("${snapshot.error}");
-              }
-              return const Center(
-                  child: CircularProgressIndicator()
-              );
-            },
+              },
+            ),
           ),
-          FutureBuilder<List<Party>?>(
-            future: getAllParties(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                List<Party> data = snapshot.data!;
-                List<Party> displayedParties = _filterParty(data);
-                return ColumnList(
-                    title: "Partys",
-                    icon: Icon(Icons.liquor_sharp),
-                    child: ListViewSeparated(data: displayedParties, buildListItem: _buildItemParty)
+          ColumnList(
+            title: "Parties",
+            icon: Icon(Icons.liquor_sharp),
+            child:
+            FutureBuilder<List<Party>?>(
+              future: getAllParties(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  List<Party> data = snapshot.data!;
+                  List<Party> displayedParties = _filterParty(data);
+                  return ListViewSeparated(data: displayedParties, buildListItem: _buildItemParty);
+                } else if (snapshot.hasError) {
+                  return Text("${snapshot.error}");
+                }
+                return const Center(
+                    child: CircularProgressIndicator()
                 );
-              } else if (snapshot.hasError) {
-                return Text("${snapshot.error}");
-              }
-              return const Center(
-                  child: CircularProgressIndicator()
-              );
-            },
-          ),
+              },
+            ),
+          )
         ]
       );
     }
@@ -170,33 +171,43 @@ class _ManageEventState extends State<ManageEvent> {
   //endregion
 
   //region api call & front setting
-  _updateLesson(Lesson lesson, bool isValid){
+  _updateLesson(Lesson lesson, bool isValid) async {
     //@todo : add one more row to update data on this lesson in DB with a request
     log("Update lesson ${lesson.name} $isValid");
-    setState(() {
-      //need a method to update lesson validate bool
-      //allLessons.remove(lesson);
-    });
+    lesson.isValid = isValid;
+    Lesson? removedParty = await lessonUseCase.updateLessonById(lesson);
+
+    if(removedParty !=null){
+      _refreshScreen();
+    }
   }
 
-  _updateParty(Party party, bool isValid){
-    //@todo : add one more row to update data on this party in DB with a request
+  _refreshScreen(){
+    Navigator.of(context).build(context); // == kill app
+  }
+
+  _updateParty(Party party, bool isValid) async{
     log("Update party ${party.theme} $isValid");
-    setState(() {
-      //need a method to update party validate bool
-      //allLessons.remove(lesson);
-    });
+    party.isValid = isValid;
+    Party? removedParty = await partyUseCase.updatePartyById(party);
+
+    if(removedParty !=null){
+      _refreshScreen();
+    }
   }
 
+  /// Return Future [Lesson] list from DB, used in FutureBuilder
   Future<List<Lesson>?> getAllLessons() async {
     return await lessonUseCase.getAllLessons();
   }
 
+  /// Return Future [Party] list from DB, used in FutureBuilder
   Future<List<Party>?> getAllParties() async {
     return await partyUseCase.getAllParties();
   }
   //endregion
 
+  /// Filter [allLessons] depending on [selectedDate] week
   List<Lesson> _filterLessons(List<Lesson> allLessons){
     DateTime date = selectedDate.getOnlyDate();
     List<Lesson> lessonList = [];
@@ -208,7 +219,7 @@ class _ManageEventState extends State<ManageEvent> {
     return lessonList;
   }
 
-  /// Filter events depending on [selectedDate] week
+  /// Filter [allParty] depending on [selectedDate] week
   /// condition for same day => allLessons[i].lessonDateTime.getOnlyDate() == date
   /// condition for same week => allParty[i].partyDateTime.areDateSameWeek(date)
   List<Party> _filterParty(List<Party> allParty){

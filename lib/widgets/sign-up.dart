@@ -163,7 +163,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                     Navigator.of(context).pushReplacement(
                                         MaterialPageRoute(
                                             builder: (BuildContext context) =>
-                                                Navigation()));
+                                                const LoginScreen()));
                                   }).catchError((onError) {
                                     setState(() {
                                       isloading = false;

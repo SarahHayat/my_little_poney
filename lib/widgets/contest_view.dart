@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:my_little_poney/models/Contest.dart';
-import 'package:my_little_poney/helper/temporaryContest.dart';
 import 'package:my_little_poney/models/User.dart';
 import 'package:my_little_poney/usecase/contest_usecase.dart';
 import 'package:my_little_poney/usecase/user_usecase.dart';
@@ -30,6 +29,13 @@ class _ContestViewState extends State<ContestView> {
     user = User.fromJson(storage.getItem('user'));
   }
 
+  // _getUsers() async {
+  //   Future<List<User>> resHorses =  horseCase.getAllHorses();
+  //   log(resHorses.toString());
+  //   setState(() {
+  //     horses = resHorses;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -211,6 +217,7 @@ class _ContestViewState extends State<ContestView> {
 
     AttendeeContest newAttendee =
         AttendeeContest(user: user.id!, level: levelValue);
+
 
 
     for(dynamic element in contestToUpdate.attendeesContest) {

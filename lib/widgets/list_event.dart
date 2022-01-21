@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:my_little_poney/models/Contest.dart';
-import 'package:my_little_poney/models/Horse.dart';
 import 'package:my_little_poney/models/Lesson.dart';
 import 'package:my_little_poney/models/Party.dart';
-import 'package:my_little_poney/models/User.dart';
 import 'package:my_little_poney/usecase/contest_usecase.dart';
 import 'package:my_little_poney/usecase/lesson_usecase.dart';
 import 'package:my_little_poney/usecase/party_usecase.dart';
+import 'package:my_little_poney/usecase/user_usecase.dart';
 import 'package:my_little_poney/widgets/cards_events.dart';
 
 class ListEvents extends StatefulWidget {
@@ -26,15 +26,28 @@ class MyListEvents extends State<ListEvents> {
   PartyUseCase partyUseCase = PartyUseCase();
   ContestUseCase contestUseCase = ContestUseCase();
   LessonUseCase lessonUseCase = LessonUseCase();
+  UserUseCase userUseCase = UserUseCase();
+
+  CardsEvents cardsEvents = CardsEvents();
+
+  _yesterday(DateTime dateTime){
+    DateTime yesterday =  DateTime.now().subtract(const Duration(days: 1));
+    if (dateTime.toLocal().day != yesterday.day) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   _cardsEvents(int position, BuildContext context, List<dynamic> listEvents) {
     var eventPosition = listEvents[position];
-    if (eventPosition.runtimeType == Contest) {
-      return CardsEvents.cardContest(position, context, eventPosition);
-    } else if (eventPosition.runtimeType == Lesson) {
-      return CardsEvents.cardLesson(position, context, eventPosition);
-    } else if (eventPosition.runtimeType == Party) {
-      return CardsEvents.cardParty(position, context, eventPosition);
+    if (eventPosition.runtimeType == Contest && _yesterday(eventPosition.createdAt)) {
+      return cardsEvents.cardContest(position, context, eventPosition);
+    } else if (eventPosition.runtimeType == Lesson && _yesterday(eventPosition.createdAt)) {
+      return cardsEvents.cardLesson(position, context, eventPosition);
+    } else
+      if (eventPosition.runtimeType == Party && _yesterday(eventPosition.createdAt)) {
+      return cardsEvents.cardParty(position, context, eventPosition);
     }
   }
 

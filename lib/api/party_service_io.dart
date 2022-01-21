@@ -43,6 +43,7 @@ class PartyServiceApi {
   }
 
   Future<Party?> updateParty(Party party) async {
+    log(party.toJson().toString());
     final response = await http.patch(
       Uri.parse('https://my-little-poney.herokuapp.com/parties/${party.id}'),
       headers: <String, String>{

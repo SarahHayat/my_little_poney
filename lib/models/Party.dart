@@ -27,13 +27,20 @@ extension ThemePartyExtension on ThemeParty {
 
 
 class AttendeeParty {
-  User user;
+  String user;
   String comment;
 
   AttendeeParty(
     this.comment, {
     required this.user,
   });
+
+  Map<String, Object?> toJson() {
+    return {
+      'comment': comment,
+      'user': user,
+    };
+  }
 }
 
 class Party {
@@ -64,7 +71,7 @@ class Party {
       id: json['_id'] != null ? json['_id']! as String : "",
       name: json['name'] as String,
       picturePath: json['picturePath'] != null ? json['picturePath']! as String : "",
-      attendeesParty: json['attendeesParty'] != null ? json['attendeesParty']! as List<AttendeeParty> : [],
+      attendeesParty: json['attendees'] != null ? json['attendees']! as List<AttendeeParty> : [],
       user: json['user'] as String,
       theme: json['theme'] as String,
       isValid: json['isValid'] as bool,
@@ -78,7 +85,7 @@ class Party {
       '_id': id,
       'name': name,
       'picturePath': picturePath,
-      'attendeesParty': [], // @todo : use the attendees list ---> attendeesParty,
+      'attendees':  [], // @todo : use the attendees list ---> attendeesParty,
       'user': user,
       'theme': theme,
       'isValid': isValid,

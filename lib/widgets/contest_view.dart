@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:my_little_poney/helper/temporaryContest.dart';
 import 'package:my_little_poney/models/Contest.dart';
+import 'package:my_little_poney/helper/temporaryContest.dart';
 import 'package:my_little_poney/usecase/contest_usecase.dart';
 
 class ContestView extends StatefulWidget {
@@ -64,7 +64,7 @@ class _ContestViewState extends State<ContestView> {
     Widget buttonSection = Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        _buildButtonColumn(color, Icons.add_task, 'Participer'),
+        _buildButtonColumn(color, Icons.group_add, 'Participer'),
       ],
     );
 
@@ -79,7 +79,9 @@ class _ContestViewState extends State<ContestView> {
       ),
     );
 
-    return  Scaffold(
+    return MaterialApp(
+      title: 'Concours d\'équitation',
+      home: Scaffold(
         appBar: AppBar(
           title: const Text('Concours d\'équitation'),
         ),
@@ -96,7 +98,8 @@ class _ContestViewState extends State<ContestView> {
             textSection,
           ],
         ),
-      );
+      ),
+    );
   }
 
   Column _buildButtonColumn(Color color, IconData icon, String label) {

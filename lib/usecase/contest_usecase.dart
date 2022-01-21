@@ -17,7 +17,10 @@ class ContestUseCase {
   }
 
   Future<Contest?> updateContestById(contest) async {
-    return api.updateContest(contest).then((value) => value);
+    return api
+        .updateContest(contest)
+        .then((value) => value)
+        .catchError((onError) => onError);
   }
 
   Future<Contest?> deleteContestById(id) async {

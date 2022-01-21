@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:my_little_poney/api/contest_service_io.dart';
 import 'package:my_little_poney/helper/listview.dart';
 import 'package:my_little_poney/models/Contest.dart';
 import 'package:my_little_poney/helper/temporaryContest.dart';
@@ -178,13 +177,12 @@ class _ContestListState extends State<ContestListView> {
 
   createContest() {
     Contest newContestObject = Contest(
-      user: userRiderDp.id.toString(),
-      attendeesContest: [],
-      name: nameController.value.text,
-      address: adressController.value.text,
-      picturePath: pictureController.value.text,
-      contestDateTime: DateTime.parse(dateController.text)
-    );
+        user: userRiderDp.id.toString(),
+        attendeesContest: [],
+        name: nameController.value.text,
+        address: adressController.value.text,
+        picturePath: pictureController.value.text,
+        contestDateTime: DateTime.parse(dateController.text));
 
     Future<Contest?> createdContest =
         contestUseCase.createContest(newContestObject);

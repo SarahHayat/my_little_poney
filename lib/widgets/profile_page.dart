@@ -307,8 +307,7 @@ class ProfilPageState extends State<ProfilePage> {
     user.email = emailController.value.text;
     user.userName = usernameController.value.text;
     user.phoneNumber = phoneNumberController.value.text;
-    print(ageController.value.text);
-    user.age = int.parse(ageController.value.text);
+    user.age = ageController.value.text == "" ? 0 : int.parse(ageController.value.text);
     user.profilePicture = photoController.value.text;
     user.ffeLink = ffeProfileController.value.text;
     user.role = dropdownValueRole;

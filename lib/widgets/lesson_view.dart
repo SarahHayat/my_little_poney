@@ -108,7 +108,7 @@ class _LessonViewState extends State<LessonView> {
         body: ListView(
           children: [
             Image.asset(
-              'img/contest.jpg',
+              selectLessonImg(),
               width: 600,
               height: 240,
               fit: BoxFit.cover,
@@ -147,6 +147,23 @@ class _LessonViewState extends State<LessonView> {
         ),
       ],
     );
+  }
+
+  String selectLessonImg() {
+    switch (lessonToUpdate.discipline) {
+      case 'endurance':
+        {
+          return 'img/endurance.jpg';
+        }
+      case 'showJumping':
+        {
+          return 'img/contest.jpg';
+        }
+      default:
+        {
+          return 'img/dressage.jpg';
+        }
+    }
   }
 
   Future<void> _shouldJoin(BuildContext context) async {

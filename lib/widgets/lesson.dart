@@ -248,8 +248,7 @@ class _LessonListState extends State<LessonListView> {
   createLesson() {
     Lesson newLessonObject = Lesson(
         attendees: [],
-        user:
-            '61ea67263c72e55c7232e5d7', // changer par user.id! quand merge master
+        user: user.id!,
         ground: groundValue,
         name: nameController.value.text,
         discipline: disciplineValue,

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
-import 'package:my_little_poney/components/delete_button.dart';
-import 'package:my_little_poney/components/user_tile.dart';
 import 'package:my_little_poney/models/Contest.dart';
 import 'package:my_little_poney/models/User.dart';
 import 'package:my_little_poney/usecase/contest_usecase.dart';
@@ -21,14 +19,14 @@ class _ContestViewState extends State<ContestView> {
   UserUseCase userUseCase = UserUseCase();
   late Contest contestToUpdate;
   final LocalStorage storage = LocalStorage('poney_app');
-  late User currentUser;
+  late User user;
   bool isSignIn = false;
   late List<User> resUsers;
 
   @override
   void initState() {
     super.initState();
-    currentUser = User.fromJson(storage.getItem('user'));
+    user = User.fromJson(storage.getItem('user'));
 
   }
 
@@ -37,9 +35,7 @@ class _ContestViewState extends State<ContestView> {
     for (dynamic element in attendeesContest) {
        ids.add(element['user']);
     }
-
-    Future<List<User>> res =  userUseCase.fetchUsersByIds(ids);
-    return await res;
+    return await userUseCase.fetchUsersByIds(ids);
   }
 
   @override
@@ -105,11 +101,9 @@ class _ContestViewState extends State<ContestView> {
       ),
     );
 
-    return MaterialApp(
-      title: 'Concours d\'équitation',
-      home: Scaffold(
+    return Scaffold(
         appBar: AppBar(
-          title: const Text('Concours d\'équitation'),
+          title: Text(arguments.name),
           elevation: 0,
           leading: IconButton(
             icon: const Icon(
@@ -135,20 +129,30 @@ class _ContestViewState extends State<ContestView> {
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     resUsers = snapshot.data!;
-                    return ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      itemCount: resUsers.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Image.network(resUsers[index].profilePicture!, width: 150,),
-                                Text(resUsers[index].userName)
-                              ],
-                            );
-                      },);
+                    return Expanded(
+                      child: ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: resUsers.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return
+                              Padding(
+                                padding: const EdgeInsets.all(15.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Image.network(resUsers[index].profilePicture!, width: 150,),
+                                    Column(crossAxisAlignment: CrossAxisAlignment.end,
+                                        children: [
+                                      Text(resUsers[index].userName),
+                                      Text(resUsers[index].email),
+                                      Text(resUsers[index].age.toString() + " ans"),
+                                    ] )
+                                  ],
+                                ),
+                              );
+                        },),
+                    );
                   } else if (snapshot.hasError) {
                     return Center(child: Text(snapshot.error.toString()));
                   }
@@ -156,8 +160,7 @@ class _ContestViewState extends State<ContestView> {
                 }),
           ],
         ),
-      ),
-    );
+      );
   }
 
   Column _buildButtonColumn(Color color, IconData icon, String label) {
@@ -235,40 +238,31 @@ class _ContestViewState extends State<ContestView> {
             );
           });
 
-        });
-  }
-
-  Widget _buildRow(User user) {
-    return UserTile(
-        user: user,
-        trailing: DeleteButton(
-          display: !user.isManager() && currentUser.isManager(),
-          onPressed: (){
-            // dialogue(user);
-          },
-        )
-    );
+        }).then((_) => setState(() {}));
   }
 
   void _joinContest() async {
 
     AttendeeContest newAttendee =
-        AttendeeContest(user: currentUser.id!, level: levelValue);
+        AttendeeContest(user: user.id!, level: levelValue);
+
 
 
 
     for(dynamic element in contestToUpdate.attendeesContest) {
-      if(element['user'] == currentUser.id) {
+
+      if(element['user'] == user.id) {
         isSignIn = true;
         break;
       }
     }
 
+
     if (!isSignIn) {
       setState(() {
-        contestToUpdate.attendeesContest.add(newAttendee);
-        contestUseCase.updateContestById(contestToUpdate);
+        contestToUpdate.attendeesContest.add(newAttendee.toJson());
       });
+    contestUseCase.updateContestById(contestToUpdate);
     }
 
     Navigator.pop(context);

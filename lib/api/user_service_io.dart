@@ -57,12 +57,12 @@ class UserServiceApi {
         'ids': ids,
       }),
     );
-    print(jsonDecode(response.body));
     if (response.statusCode == 201) {
       List<User> users = [];
       for (dynamic element in jsonDecode(response.body)) {
         users.add(User.fromJson(element));
       }
+      // print(users);
       return users;
     } else {
       throw Exception('Failed to load user');

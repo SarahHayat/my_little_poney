@@ -32,7 +32,7 @@ class LessonServiceApi {
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
-      body: lesson.toJson(),
+      body: jsonEncode(lesson.toJson()),
     );
 
     if (response.statusCode == 201) {

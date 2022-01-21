@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:my_little_poney/widgets/contest_view.dart';
 import 'package:my_little_poney/widgets/horses_page.dart';
 import 'package:my_little_poney/widgets/party_view.dart';
+import 'package:my_little_poney/widgets/lesson_view.dart';
 import 'package:my_little_poney/widgets/list_event.dart';
 import 'package:my_little_poney/widgets/login.dart';
 import 'package:my_little_poney/widgets/reset-password.dart';
+
+import 'models/User.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,6 +24,7 @@ class MyApp extends StatelessWidget {
         // put routes here
         ContestView.tag: (context) => const ContestView(),
         PartyView.tag: (context) => const PartyView(),
+        LessonView.tag: (context) => const LessonView(),
         HorsesPage.routeName: (context) => HorsesPage(),
         ListEvents.routeName: (context) => const ListEvents(),
         ResetScreen.routeName: (context) => const ResetScreen(),

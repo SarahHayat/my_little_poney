@@ -1,46 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
 import 'package:my_little_poney/helper/listview.dart';
-import 'package:my_little_poney/models/Party.dart';
-import 'package:my_little_poney/models/User.dart';
-import 'party_view.dart';
+import 'package:my_little_poney/models/Lesson.dart';
+import '../models/User.dart';
+import 'lesson_view.dart';
 import 'package:intl/intl.dart';
-import 'package:my_little_poney/usecase/party_usecase.dart';
+import 'package:my_little_poney/usecase/lesson_usecase.dart';
 
-class PartyListView extends StatefulWidget {
-  const PartyListView({Key? key, required this.title}) : super(key: key);
-  static const tag = "party_view_list";
+class LessonListView extends StatefulWidget {
+  const LessonListView({Key? key, required this.title}) : super(key: key);
+  static const tag = "lesson_view_list";
 
   final String title;
 
   @override
-  State<PartyListView> createState() => _PartyListState();
+  State<LessonListView> createState() => _LessonListState();
 }
 
-class _PartyListState extends State<PartyListView> {
-  PartyUseCase partyUseCase = PartyUseCase();
+class _LessonListState extends State<LessonListView> {
+  LessonUseCase lessonUseCase = LessonUseCase();
   final LocalStorage storage = LocalStorage('poney_app');
   late User user;
 
-  late List<Party>? parties;
+  late List<Lesson>? lessons;
 
-  late Party newParty;
+  late Lesson newLesson;
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController dateController = TextEditingController();
-  String themeValue = ThemeParty.dinner.name;
+
+  String groundValue = Ground.carousel.name;
+  String disciplineValue = Discipline.dressage.name;
+  int durationValue = 30;
 
   @override
   void initState() {
     dateController.text = ""; //set the initial value of text field
-    getAllPartiesFromDb();
+    getAllLessonsFromDb();
     super.initState();
     user = User.fromJson(storage.getItem('user'));
   }
 
-  Future<List<Party>?> getAllPartiesFromDb() async {
-    parties = await partyUseCase.getAllParties();
-    return parties;
+  Future<List<Lesson>?> getAllLessonsFromDb() async {
+    lessons = await lessonUseCase.getAllLessons();
+    return lessons;
   }
 
   @override
@@ -49,8 +52,8 @@ class _PartyListState extends State<PartyListView> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: FutureBuilder<List<Party>?>(
-          future: getAllPartiesFromDb(),
+      body: FutureBuilder<List<Lesson>?>(
+          future: getAllLessonsFromDb(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return ListViewSeparated(
@@ -63,38 +66,40 @@ class _PartyListState extends State<PartyListView> {
           }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _createParty(context);
+          _createLesson(context);
         },
-        tooltip: 'Créer une soirée',
+        tooltip: 'Créer une lesson',
         child: const Icon(Icons.add_task),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 
-  Widget _buildRow(Party party) {
+  Widget _buildRow(Lesson lesson) {
     return ListTile(
       onTap: () {
-        Navigator.of(context).pushNamed(PartyView.tag, arguments: party);
+        Navigator.of(context).pushNamed(LessonView.tag, arguments: lesson);
       },
       title: Row(
-        children: [Text(party.name)],
+        children: [Text(lesson.name)],
       ),
       subtitle: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Thème: ${party.theme}'),
-            Text('Date: ${party.partyDateTime}'),
+            Text('Lieu: ${lesson.ground}'),
+            Text('Date: ${lesson.lessonDateTime}'),
+            Text('Discipline: ${lesson.discipline}'),
+            Text('Durée: ${lesson.duration} minutes'),
           ]),
     );
   }
 
-  Future<void> _createParty(BuildContext context) async {
+  Future<void> _createLesson(BuildContext context) async {
     return showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: const Text('Créer une soirée'),
+            title: const Text('Créer une lesson'),
             content: StatefulBuilder(
               builder: (context, setState) {
                 return Card(
@@ -108,10 +113,10 @@ class _PartyListState extends State<PartyListView> {
                         TextFormField(
                           controller: nameController,
                           decoration: const InputDecoration(
-                              hintText: "Nom de la soirée"),
+                              hintText: "Nom de la lesson"),
                         ),
                         DropdownButton<String>(
-                          value: themeValue,
+                          value: groundValue,
                           icon: const Icon(Icons.arrow_downward),
                           elevation: 16,
                           style: const TextStyle(color: Colors.deepPurple),
@@ -121,12 +126,11 @@ class _PartyListState extends State<PartyListView> {
                           ),
                           onChanged: (String? newValue) {
                             setState(() {
-                              themeValue = newValue!;
+                              groundValue = newValue!;
                             });
                           },
-                          items: ThemeParty.values
-                              .map<DropdownMenuItem<String>>(
-                                  (ThemeParty value) {
+                          items: Ground.values
+                              .map<DropdownMenuItem<String>>((Ground value) {
                             return DropdownMenuItem<String>(
                               value: value.name,
                               child: Text(value.name),
@@ -140,7 +144,7 @@ class _PartyListState extends State<PartyListView> {
                               icon: Icon(
                                   Icons.calendar_today), //icon of text field
                               labelText:
-                                  "Date de la soirée" //label text of field
+                                  "Date de la lesson" //label text of field
                               ),
                           readOnly:
                               true, //set it true, so that user will not able to edit text
@@ -170,6 +174,51 @@ class _PartyListState extends State<PartyListView> {
                             }
                           },
                         ),
+                        DropdownButton<int>(
+                          value: durationValue,
+                          icon: const Icon(Icons.arrow_downward),
+                          elevation: 16,
+                          style: const TextStyle(color: Colors.deepPurple),
+                          underline: Container(
+                            height: 2,
+                            color: Colors.deepPurpleAccent,
+                          ),
+                          onChanged: (int? newValue) {
+                            setState(() {
+                              durationValue = newValue!;
+                            });
+                          },
+                          items: <int>[30, 60]
+                              .map<DropdownMenuItem<int>>((int value) {
+                            return DropdownMenuItem<int>(
+                              value: value,
+                              child: Text(value.toString()),
+                            );
+                          }).toList(),
+                        ),
+                        DropdownButton<String>(
+                          value: disciplineValue,
+                          icon: const Icon(Icons.arrow_downward),
+                          elevation: 16,
+                          style: const TextStyle(color: Colors.deepPurple),
+                          underline: Container(
+                            height: 2,
+                            color: Colors.deepPurpleAccent,
+                          ),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              disciplineValue = newValue!;
+                            });
+                          },
+                          items: Discipline.values
+                              .map<DropdownMenuItem<String>>(
+                                  (Discipline value) {
+                            return DropdownMenuItem<String>(
+                              value: value.name,
+                              child: Text(value.name),
+                            );
+                          }).toList(),
+                        ),
                       ],
                     ),
                   ),
@@ -188,7 +237,7 @@ class _PartyListState extends State<PartyListView> {
                 style: ElevatedButton.styleFrom(primary: Colors.green),
                 child: const Text('Ajouter'),
                 onPressed: () {
-                  createParty();
+                  createLesson();
                   Navigator.pop(context);
                 },
               ),
@@ -197,19 +246,21 @@ class _PartyListState extends State<PartyListView> {
         });
   }
 
-  createParty() {
-    Party newPartyObject = Party(
-        attendeesParty: [],
+  createLesson() {
+    Lesson newLessonObject = Lesson(
+        attendees: [],
         user: user.id!,
-        theme: themeValue,
+        ground: groundValue,
         name: nameController.value.text,
-        partyDateTime: DateTime.parse(dateController.text));
+        discipline: disciplineValue,
+        duration: durationValue,
+        lessonDateTime: DateTime.parse(dateController.text));
 
-    Future<Party?> createdParty = partyUseCase.createParty(newPartyObject);
+    Future<Lesson?> createdLesson = lessonUseCase.createLesson(newLessonObject);
 
     setState(() {
-      parties?.add(newPartyObject);
-      newParty = newPartyObject;
+      lessons?.add(newLessonObject);
+      newLesson = newLessonObject;
     });
   }
 }

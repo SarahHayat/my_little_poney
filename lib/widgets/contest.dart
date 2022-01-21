@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:my_little_poney/helper/listview.dart';
 import 'package:my_little_poney/models/Contest.dart';
 import 'package:my_little_poney/helper/temporaryContest.dart';
@@ -21,7 +22,8 @@ class _ContestListState extends State<ContestListView> {
   ContestUseCase contestUseCase = ContestUseCase();
 
   late List<Contest>? contests;
-
+  final LocalStorage storage = LocalStorage('poney_app');
+  late User user;
   late Contest newContest;
 
   final TextEditingController nameController = TextEditingController();
@@ -34,6 +36,7 @@ class _ContestListState extends State<ContestListView> {
     super.initState();
     dateController.text = ""; //set the initial value of text field
     getAllContestsFromDb();
+    user = User.fromJson(storage.getItem('user'));
   }
 
   Future<List<Contest>?> getAllContestsFromDb() async {
@@ -172,12 +175,12 @@ class _ContestListState extends State<ContestListView> {
               ),
             ],
           );
-        });
+        }).then((_) => setState(() {}));
   }
 
   createContest() {
     Contest newContestObject = Contest(
-      user: userRiderDp.id.toString(),
+      user: user.id!,
       attendeesContest: [],
       name: nameController.value.text,
       address: adressController.value.text,

@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
-import 'package:my_little_poney/models/Contest.dart';
+import 'package:my_little_poney/models/Lesson.dart';
 import 'package:my_little_poney/models/User.dart';
-import 'package:my_little_poney/usecase/contest_usecase.dart';
+import 'package:my_little_poney/usecase/lesson_usecase.dart';
 import 'package:my_little_poney/usecase/user_usecase.dart';
 
-class ContestView extends StatefulWidget {
-  const ContestView({Key? key}) : super(key: key);
-  static const tag = "contest_view";
+class LessonView extends StatefulWidget {
+  const LessonView({Key? key}) : super(key: key);
+  static const tag = "lesson_view";
 
   @override
-  State<ContestView> createState() => _ContestViewState();
+  State<LessonView> createState() => _LessonViewState();
 }
 
-class _ContestViewState extends State<ContestView> {
-  String levelValue = Level.amateur.name;
-  ContestUseCase contestUseCase = ContestUseCase();
+class _LessonViewState extends State<LessonView> {
+  LessonUseCase lessonUseCase = LessonUseCase();
   UserUseCase userUseCase = UserUseCase();
-  late Contest contestToUpdate;
+  late Lesson lessonToUpdate;
   final LocalStorage storage = LocalStorage('poney_app');
   late User user;
   bool isSignIn = false;
@@ -31,8 +30,8 @@ class _ContestViewState extends State<ContestView> {
 
   @override
   Widget build(BuildContext context) {
-    final arguments = ModalRoute.of(context)?.settings.arguments as Contest;
-    contestToUpdate = arguments;
+    final arguments = ModalRoute.of(context)?.settings.arguments as Lesson;
+    lessonToUpdate = arguments;
 
     Widget titleSection = Container(
       padding: const EdgeInsets.all(32),
@@ -54,7 +53,7 @@ class _ContestViewState extends State<ContestView> {
                   ),
                 ),
                 Text(
-                  arguments.address,
+                  '${arguments.ground}, ${arguments.discipline}',
                   style: TextStyle(
                     color: Colors.grey[500],
                   ),
@@ -67,7 +66,7 @@ class _ContestViewState extends State<ContestView> {
             Icons.person,
             color: Colors.red[500],
           ),
-          Text(contestToUpdate.attendeesContest.length.toString()),
+          Text(lessonToUpdate.attendees.length.toString()),
         ],
       ),
     );
@@ -84,10 +83,10 @@ class _ContestViewState extends State<ContestView> {
     Widget textSection = Padding(
       padding: const EdgeInsets.all(32),
       child: Text(
-        'Le concours se déroulera le '
-        '${arguments.contestDateTime} '
-        'a l\'addresse : ${arguments.address}. '
-        'Merci de vous présenter une heure avant le début du concours. ',
+        'Le cours de ${arguments.discipline} se déroulera le '
+        '${arguments.lessonDateTime} '
+        'dans : ${arguments.ground}. '
+        'Merci de vous présenter 15 minutes avant le début du cours. ',
         softWrap: true,
       ),
     );
@@ -142,7 +141,7 @@ class _ContestViewState extends State<ContestView> {
               ),
             ),
             onPressed: () {
-              _selectLevel(context);
+              _shouldJoin(context);
             },
           ),
         ),
@@ -150,48 +149,26 @@ class _ContestViewState extends State<ContestView> {
     );
   }
 
-  Future<void> _selectLevel(BuildContext context) async {
+  Future<void> _shouldJoin(BuildContext context) async {
     return showDialog(
         context: context,
         builder: (context) {
           return StatefulBuilder(builder: (context, setState) {
             return AlertDialog(
-              title: const Text('Choisissez un niveau ?'),
-              content: Card(
-                elevation: 5,
-                margin: const EdgeInsets.all(20),
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: DropdownButton<String>(
-                    value: levelValue,
-                    icon: const Icon(Icons.arrow_downward),
-                    elevation: 16,
-                    style: const TextStyle(color: Colors.deepPurple),
-                    underline: Container(
-                      height: 2,
-                      color: Colors.deepPurpleAccent,
-                    ),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        levelValue = newValue!;
-                      });
-                    },
-                    items: Level.values
-                        .map<DropdownMenuItem<String>>((Level value) {
-                      return DropdownMenuItem<String>(
-                        value: value.name,
-                        child: Text(value.name),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ),
+              title: const Text('Souhaitez-vous rejoindre le cours ?'),
               actions: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(primary: Colors.green),
-                  child: const Text('Ok'),
+                  child: const Text('Oui'),
                   onPressed: () {
-                    _joinContest();
+                    _joinLesson();
+                  },
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(primary: Colors.green),
+                  child: const Text('Non'),
+                  onPressed: () {
+                    Navigator.pop(context);
                   },
                 ),
               ],
@@ -200,11 +177,8 @@ class _ContestViewState extends State<ContestView> {
         });
   }
 
-  void _joinContest() async {
-    AttendeeContest newAttendee =
-        AttendeeContest(user: user.id!, level: levelValue);
-
-    for (dynamic element in contestToUpdate.attendeesContest) {
+  void _joinLesson() async {
+    for (dynamic element in lessonToUpdate.attendees) {
       if (element['user'] == user.id) {
         isSignIn = true;
         break;
@@ -213,8 +187,8 @@ class _ContestViewState extends State<ContestView> {
 
     if (!isSignIn) {
       setState(() {
-        contestToUpdate.attendeesContest.add(newAttendee);
-        contestUseCase.updateContestById(contestToUpdate);
+        lessonToUpdate.attendees.add(user.id!);
+        lessonUseCase.updateLessonById(lessonToUpdate);
       });
     }
 

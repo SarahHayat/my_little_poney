@@ -9,15 +9,18 @@ class LessonUseCase {
   }
 
   Future<Lesson?> fetchLessonById(id) async {
-    api.fetchLessonById(id).then((value) => value);
+    return api.fetchLessonById(id).then((value) => value);
   }
 
-  Future<Lesson?> creatLesson(lesson) async {
-    api.createLesson(lesson).then((value) => value);
+  Future<Lesson?> createLesson(lesson) async {
+    return api.createLesson(lesson).then((value) => value);
   }
 
   Future<Lesson?> updateLessonById(lesson) async {
-    return api.updateLesson(lesson).then((value) => value);
+    return api
+        .updateLesson(lesson)
+        .then((value) => value)
+        .catchError((onError) => onError);
   }
 
   Future<Lesson?> deleteLessonById(id) async {

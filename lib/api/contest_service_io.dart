@@ -42,7 +42,6 @@ class ContestServiceApi {
   }
 
   Future<Contest> updateContest(Contest contest) async {
-
     final response = await http.patch(
       Uri.parse('https://my-little-poney.herokuapp.com/contests/${contest.id}'),
       headers: <String, String>{
@@ -50,7 +49,7 @@ class ContestServiceApi {
       },
       body: jsonEncode(contest.toJson()),
     );
-    print(jsonDecode(response.body));
+
     if (jsonDecode(response.body)['picturePath'] != null) {
       return Contest.fromJson(jsonDecode(response.body));
     } else {

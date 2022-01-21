@@ -1,7 +1,5 @@
 import 'package:my_little_poney/helper/string_extension.dart';
 
-import 'User.dart';
-
 enum Ground {
   carousel,
   arena,
@@ -12,6 +10,7 @@ enum Discipline {
   showJumping,
   endurance,
 }
+
 extension DisciplineExtension on Discipline {
   String toShortString() {
     return this.toString().enumValueToNormalCase();
@@ -24,20 +23,20 @@ class Lesson {
   String user;
   String ground;
   DateTime lessonDateTime;
-  DateTime createdAt;
+  DateTime? createdAt;
   int duration;
   String discipline;
-  List<dynamic>? attendees;
+  List<dynamic> attendees;
   bool isValid;
 
   Lesson({
     this.id,
-    this.attendees,
+    required this.attendees,
     required this.name,
     required this.user,
     required this.ground,
     required this.lessonDateTime,
-    required this.createdAt,
+    this.createdAt,
     required this.duration,
     required this.discipline,
     this.isValid = false,
@@ -62,7 +61,8 @@ class Lesson {
   Map<String, Object?> toJson() {
     return {
       '_id': id,
-      'attendees': attendees,// @todo : user real attendees value  ----> attendees,
+      'attendees':
+          attendees != null ? attendees as List<dynamic> : [] as List<dynamic>,
       'name': name,
       'user': user,
       'ground': ground,

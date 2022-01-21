@@ -1,5 +1,3 @@
-import 'User.dart';
-
 enum Level {
   amateur,
   club1,
@@ -58,9 +56,8 @@ class Contest {
   factory Contest.fromJson(Map<String, dynamic> json) {
     return Contest(
       id: json['_id'] != null ? json['_id']! as String : "",
-      attendeesContest: json['attendees'] != null
-          ? json['attendees']! as List<dynamic>
-          : [],
+      attendeesContest:
+          json['attendees'] != null ? json['attendees']! as List<dynamic> : [],
       user: json['user'] != null ? json['user'] as String : "",
       name: json['name'] != null ? json['name'] as String : "",
       address: json['address'] != null ? json['name'] as String : "",
@@ -75,7 +72,9 @@ class Contest {
   Map<String, Object?> toJson() {
     return {
       '_id': id,
-      'attendees': attendeesContest != null ? attendeesContest as List<dynamic> : [] as List<dynamic>,
+      'attendees': attendeesContest != null
+          ? attendeesContest as List<dynamic>
+          : [] as List<dynamic>,
       'user': user,
       'name': name,
       'address': address,

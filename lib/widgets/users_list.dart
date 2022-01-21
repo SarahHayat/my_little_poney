@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:my_little_poney/components/background_image.dart';
 import 'package:my_little_poney/components/yes_no_dialog.dart';
 import 'package:my_little_poney/helper/list_extension.dart';
@@ -22,11 +23,13 @@ class _UsersListState extends State<UsersList> {
   final UserUseCase userCase = UserUseCase();
   late Future<List<User>> users ;
   final List<User> removedUsers = [];
-  final User currentUser = Mock.userManagerOwner2;
+  late User currentUser;
+  final LocalStorage storage = LocalStorage('poney_app');
 
   @override
   void initState() {
     super.initState();
+    currentUser = User.fromJson(storage.getItem('user'));
     _getUsers();
   }
 
@@ -34,7 +37,7 @@ class _UsersListState extends State<UsersList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Users List"),
+        title: Text("Liste des adhérents"),
         elevation: 10,
         centerTitle: true,
       ),

@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:my_little_poney/components/background_image.dart';
 import 'package:my_little_poney/components/yes_no_dialog.dart';
 import 'package:my_little_poney/helper/list_extension.dart';
@@ -33,19 +34,21 @@ class _HorsesListState extends State<HorsesList> {
   final HorseUseCase horseCase = HorseUseCase();
   late Future<List<Horse>> horses ;
   final List<Horse> removedHorses = [];
-  final User currentUser = Mock.userManagerOwner;
+  late User currentUser;
+  final LocalStorage storage = LocalStorage('poney_app');
 
   @override
   void initState() {
     super.initState();
     _getHorses();
+    currentUser = User.fromJson(storage.getItem('user'));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Horses List"),
+          title: Text("Liste des cheveaux"),
           elevation: 10,
           centerTitle: true,
         ),

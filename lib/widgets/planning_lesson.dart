@@ -1,10 +1,10 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:my_little_poney/components/background_image.dart';
 import 'package:my_little_poney/helper/datetime_extension.dart';
 import 'package:my_little_poney/helper/listview.dart';
-import 'package:my_little_poney/mock/mock.dart';
 import 'package:my_little_poney/models/Lesson.dart';
 import 'package:my_little_poney/models/User.dart';
 import 'package:my_little_poney/components/custom_datepicker.dart';
@@ -24,12 +24,14 @@ class PlanningLesson extends StatefulWidget {
 
 class _PlanningLessonState extends State<PlanningLesson> {
   final LessonUseCase lessonUseCase = LessonUseCase();
-  final User currentUser = Mock.userManagerOwner2;
   DateTime selectedDate = DateTime.now();
+  late User currentUser;
+  final LocalStorage storage = LocalStorage('poney_app');
 
   @override
   void initState() {
     super.initState();
+    currentUser = User.fromJson(storage.getItem('user'));
   }
 
   /// Filter lessons depending on [selectedDate] week
@@ -63,7 +65,7 @@ class _PlanningLessonState extends State<PlanningLesson> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Lesson planning week : ${selectedDate.getWeekFirstDay().getFrenchDate()}"),
+        title: Text("Planning de la semaine : ${selectedDate.getWeekFirstDay().getFrenchDate()}"),
         elevation: 10,
         centerTitle: true,
         leading: CustomDatePicker(initialDate: selectedDate, onSelected: _updateSelectedDate,),

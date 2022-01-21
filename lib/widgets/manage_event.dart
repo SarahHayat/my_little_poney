@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:my_little_poney/components/background_image.dart';
 import 'package:my_little_poney/components/yes_no_dialog.dart';
 import 'package:my_little_poney/helper/datetime_extension.dart';
@@ -29,21 +30,23 @@ class ManageEvent extends StatefulWidget {
 class _ManageEventState extends State<ManageEvent> {
   final LessonUseCase lessonUseCase = LessonUseCase();
   final PartyUseCase partyUseCase = PartyUseCase();
-  final User currentUser = Mock.userManagerOwner2;
   late bool isUpdated;
   DateTime selectedDate = DateTime.now();
+  late User currentUser;
+  final LocalStorage storage = LocalStorage('poney_app');
 
   @override
   void initState() {
     super.initState();
     isUpdated = false;
+    currentUser = User.fromJson(storage.getItem('user'));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Lessons / Parties : ${selectedDate.getFrenchDate()}"),
+          title: Text("Cours / Soirées : ${selectedDate.getFrenchDate()}"),
           elevation: 10,
           centerTitle: true,
           leading: CustomDatePicker(initialDate: selectedDate, onSelected: _updateSelectedDate,)

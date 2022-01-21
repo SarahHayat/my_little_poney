@@ -36,11 +36,27 @@ class UserServiceApi {
         'password': password,
       }),
     );
-    if (response.statusCode == 201) {
-      print('hello');
+    if (jsonDecode(response.body)['userName'] != null) {
       User user = User.fromJson(jsonDecode(response.body));
-      print('yolo');
-      print(user.userName);
+      return user;
+    } else {
+      throw Exception('Failed to load user');
+    }
+  }
+
+  Future<User> resetPassword(String email,String userName) async {
+    final response = await http.post(
+      Uri.parse('https://my-little-poney.herokuapp.com/users/forget'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'email': email,
+        'userName': userName,
+      }),
+    );
+    if (jsonDecode(response.body)['userName'] != null) {
+      User user = User.fromJson(jsonDecode(response.body));
       return user;
     } else {
       throw Exception('Failed to load user');

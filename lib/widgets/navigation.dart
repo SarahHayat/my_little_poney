@@ -49,7 +49,7 @@ class NavigationState extends State<Navigation> {
   ];
   List<Map<String, dynamic>> bottomBarLinks = [
     {
-      "widget": ContestListView(title: 'Liste des événements'),
+      "widget": ListEvents(),
       "title": "Evenement",
       "icon": Icon(Icons.list)
     },

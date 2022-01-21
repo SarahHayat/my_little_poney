@@ -63,7 +63,7 @@ class MyListEvents extends State<ListEvents> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('List events'),
+        title: const Text('Derniers Évenements'),
       ),
       body: FutureBuilder<List<dynamic>?>(
         future: _getAllData(),

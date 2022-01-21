@@ -194,7 +194,7 @@ class _PartyListState extends State<PartyListView> {
               ),
             ],
           );
-        });
+        }).then((_) => setState((){}));
   }
 
   createParty() {

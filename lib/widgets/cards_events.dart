@@ -72,14 +72,11 @@ class CardsEvents extends Card {
 
   FutureBuilder<User?> cardParty(int position, BuildContext context, Party listEvents) {
     String? userParty;
-    String? userComment;
     return FutureBuilder<User?>(
       future: _getUserByid(listEvents.user),
       builder: (context, snapshot){
         if(snapshot.hasData){
           userParty = snapshot.data?.userName;
-          Map<String, dynamic> mapAttendees = listEvents.attendeesParty[0];
-          userComment = mapAttendees['comment'];
         }else{
           userParty = '...loading';
         }
